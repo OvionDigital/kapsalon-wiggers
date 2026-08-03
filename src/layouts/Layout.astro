@@ -1,0 +1,28 @@
+---
+import "../styles/global.css";
+import BreakpointIndicator from "../components/BreakpointIndicator.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title = "Kapsalon Wiggers", description = "Kapsalon Wiggers" } =
+  Astro.props;
+---
+
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <BreakpointIndicator />
+    <slot />
+  </body>
+</html>

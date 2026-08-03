@@ -1,0 +1,230 @@
+@import "tailwindcss";
+@import "./grid.css";
+
+:root {
+  /* Colors */
+
+  /* Fonts */
+
+  /* Breakpoints */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* Container */
+  --container-md: 728px;
+  --container-lg: 960px;
+  --container-xl: 1140px;
+  --container-2xl: 1440px;
+  --container-padding: 0.75rem;
+  --container-padding-mobile: 1rem;
+  --container-fluid-padding: 3rem;
+  --container-fluid-padding-tablet: 1.5rem;
+
+  /* Grid */
+  --grid-columns: 12;
+  --grid-gap: 1.5rem;
+  --grid-gap-mobile: 1rem;
+
+  /* Spacing */
+  --section-margin: 6rem;
+  --section-margin-mobile: 3rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+p {
+  margin: 0;
+}
+
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+html.no-scroll,
+html.no-scroll body {
+  overflow: hidden;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-hover);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.btn:focus-visible {
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  font-family: var(--font-heading);
+}
+
+h1 {
+  font-size: clamp(2rem, 1.5rem + 2.5vw, 4.5rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 1.1rem + 2vw, 3.5rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 0.975rem + 1.375vw, 2.625rem);
+}
+
+#bp-indicator {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  letter-spacing: 0.05em;
+
+  .bp-label {
+    display: none;
+  }
+  .default {
+    display: inline;
+  }
+
+  @media (max-width: theme(--breakpoint-2xl)) {
+    background: #7c3aed;
+    .default {
+      display: none;
+    }
+    .xxl {
+      display: inline;
+    }
+  }
+
+  @media (max-width: theme(--breakpoint-xl)) {
+    background: #0891b2;
+    .xxl {
+      display: none;
+    }
+    .xl {
+      display: inline;
+    }
+  }
+
+  @media (max-width: theme(--breakpoint-lg)) {
+    background: #059669;
+    .xl {
+      display: none;
+    }
+    .lg {
+      display: inline;
+    }
+  }
+
+  @media (max-width: theme(--breakpoint-md)) {
+    background: #d97706;
+    .lg {
+      display: none;
+    }
+    .md {
+      display: inline;
+    }
+  }
+
+  @media (max-width: theme(--breakpoint-sm)) {
+    background: #dc2626;
+    .md {
+      display: none;
+    }
+    .sm {
+      display: inline;
+    }
+  }
+}
+
+.container {
+  max-width: var(--container-2xl);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+
+  @media (max-width: theme(--breakpoint-2xl)) {
+    max-width: var(--container-xl);
+  }
+
+  @media (max-width: theme(--breakpoint-xl)) {
+    max-width: var(--container-lg);
+  }
+
+  @media (max-width: theme(--breakpoint-lg)) {
+    max-width: var(--container-md);
+  }
+
+  @media (max-width: theme(--breakpoint-md)) {
+    padding-inline: var(--container-padding-mobile);
+  }
+}
+
+.container-fluid {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--container-fluid-padding);
+
+  @media (max-width: theme(--breakpoint-xl)) {
+    padding-inline: 0 var(--container-fluid-padding-tablet);
+  }
+
+  @media (max-width: theme(--breakpoint-md)) {
+    padding-inline: var(--container-padding-mobile);
+  }
+}
+
+section {
+  padding-block: var(--section-margin);
+
+  @media (max-width: theme(--breakpoint-md)) {
+    padding-block: var(--section-margin-mobile);
+  }
+}
