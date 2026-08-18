@@ -1,0 +1,101 @@
+---
+import "../styles/global.css";
+import BreakpointIndicator from "../components/BreakpointIndicator.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import StickyBookingButton from "../components/StickyBookingButton.astro";
+import { payoff, vestigingen, reviews } from "../data/vestigingen";
+import { parseDagenEngels, parseTijden } from "../lib/openingstijden";
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = `Kapsalon Wiggers — ${payoff.toLowerCase()}. Dames- en herenkapsalon in Wehl.`,
+  ogImage = "/og-image.jpg",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(ogImage, Astro.site);
+
+// ── JSON-LD (schema.org HairSalon) ────────────────────────────────
+// Vertaalt de openingstijden uit vestigingen.ts naar OpeningHoursSpecification.
+const vestiging = vestigingen[0];
+
+const openingHoursSpecification = vestiging.openingstijden
+  .map((tijd) => {
+    const geopend = parseTijden(tijd.tijden);
+    if (!geopend) return null;
+    return {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: parseDagenEngels(tijd.dagen),
+      opens: geopend.opens,
+      closes: geopend.closes,
+    };
+  })
+  .filter(Boolean);
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "HairSalon",
+  name: "Kapsalon Wiggers",
+  url: canonicalURL.toString(),
+  telephone: vestiging.telefoon.replace(/\s/g, ""),
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: vestiging.adres,
+    postalCode: vestiging.postcode,
+    addressLocality: vestiging.plaats,
+    addressCountry: "NL",
+  },
+  openingHoursSpecification,
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: reviews.score,
+    reviewCount: reviews.aantal,
+  },
+};
+---
+
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:locale" content="nl_NL" />
+    <meta property="og:site_name" content="Kapsalon Wiggers" />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(structuredData)}
+      is:inline
+    />
+
+    <title>{title}</title>
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a href="#main" class="skip-link">Ga direct naar de inhoud</a>
+    <BreakpointIndicator />
+    <Header />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+    <StickyBookingButton />
+  </body>
+</html>

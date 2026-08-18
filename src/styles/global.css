@@ -1,11 +1,76 @@
 @import "tailwindcss";
 @import "./grid.css";
 
+/* Lokaal gebundelde webfonts (fontsource) — geen Google Fonts CDN, geen
+   cookies of trackers van derden. Newsreader is een variabele font (gewichten
+   200–800 in één bestand) en sluit qua karakter aan bij de Times New Roman
+   uit het bestaande logo, maar is getekend voor schermgebruik. */
+@import "@fontsource-variable/newsreader/standard.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+
+/*
+ * Design tokens — huisstijl van Kapsalon Wiggers.
+ * Dit is de enige plek waar kleuren, fonts, het typeschaal en vormgeving
+ * (radius, container) gedefinieerd worden. Via @theme genereert Tailwind
+ * hier automatisch utility classes van (bv. bg-cream, text-ink, font-heading,
+ * text-h1, rounded-full).
+ */
+@theme {
+  /* Colors — warme, ambachtelijke barbierspalet. Contrastwaarden zijn
+     handmatig geverifieerd (WCAG 2.1 relative luminance), zie toelichting. */
+  --color-cream: #faf7f2; /* achtergrond */
+  --color-sand: #efe6d8; /* diepere zandtint voor afwisselende secties */
+  --color-olive: #6f6b45; /* gedempt, warm derde accent */
+  --color-burgundy: #4a2f1f; /* afgestemd op het donkerbruin uit het logo */
+  --color-burgundy-dark: #3b2619; /* hover-variant */
+  --color-ink: #241b14; /* koppen */
+  /* bodytekst — 9,9:1 op cream, 8,6:1 op sand. Let op: "body" botst met
+     --text-body (font-size) onder dezelfde Tailwind text-* prefix. Gebruik
+     hiervoor daarom altijd text-[var(--color-body)], nooit de kortere
+     text-body utility (die verwijst naar de font-size-token). */
+  --color-body: #4a3c2e;
+  --color-muted: #6b5d4c; /* secundaire tekst — 6,0:1 op cream, 5,2:1 op sand */
+  --color-white: #ffffff;
+  --color-border: #ddd3c0;
+  --color-hover: var(--color-burgundy); /* focus-ring kleur */
+
+  /* Fonts — lokaal gebundeld via @fontsource */
+  --font-heading: "Newsreader Variable", Georgia, "Times New Roman", serif;
+  --font-body:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+
+  /* Typeschaal — grote sprong tussen koppen en body, vloeiend via clamp() */
+  --text-display: clamp(2.75rem, 2rem + 3.75vw, 5.5rem);
+  --text-display--line-height: 1.05;
+  --text-h1: clamp(2.25rem, 1.75rem + 2.5vw, 4rem);
+  --text-h1--line-height: 1.1;
+  --text-h2: clamp(1.75rem, 1.4rem + 1.75vw, 2.75rem);
+  --text-h2--line-height: 1.15;
+  --text-h3: clamp(1.375rem, 1.15rem + 1.125vw, 2rem);
+  --text-h3--line-height: 1.2;
+  --text-h4: clamp(1.125rem, 1rem + 0.625vw, 1.5rem);
+  --text-h4--line-height: 1.25;
+  /* Let op: de utility text-body botst met --color-body (allebei "body"
+     onder de Tailwind text-* prefix) — Tailwind kiest hier altijd de kleur.
+     Gebruik voor de font-size dus text-(length:--text-body). */
+  --text-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-body--line-height: 1.6;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.4;
+
+  /* Vorm */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-full: 9999px;
+}
+
 :root {
-  /* Colors */
-
-  /* Fonts */
-
   /* Breakpoints */
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
@@ -14,6 +79,8 @@
   --breakpoint-2xl: 1536px;
 
   /* Container */
+  --container: var(--container-2xl);
+  --container-prose: 65ch; /* houdt regellengte in tekstblokken onder ~75 tekens */
   --container-md: 728px;
   --container-lg: 960px;
   --container-xl: 1140px;
@@ -28,87 +95,271 @@
   --grid-gap: 1.5rem;
   --grid-gap-mobile: 1rem;
 
-  /* Spacing */
-  --section-margin: 6rem;
-  --section-margin-mobile: 3rem;
+  /* Spacing — sectie-ritme, vloeiend van ~4rem (mobiel) naar ~8rem (desktop) */
+  --space-section: clamp(4rem, 2.5rem + 7vw, 8rem);
+
+  /* Header — vaste hoogte-aanname voor scroll-padding op anchors */
+  --header-height: 6.5rem;
+
+  /* Gedeelde transition-duration voor alle hover-/scroll-states */
+  --transition-duration: 200ms;
+
+  /* Duur van de entree-animatie (hero) */
+  --duration-entrance: 700ms;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+/*
+ * @layer base/components hieronder: Tailwind's eigen @import "tailwindcss"
+ * declareert de laagvolgorde theme, base, components, utilities (utilities
+ * wint). Onze eigen CSS moet in diezelfde lagen zitten — anders is hij
+ * ongelaagd, en ongelaagde CSS wint altijd van @layer, ongeacht brontekst-
+ * volgorde. Zonder dit zou bv. h1,h2{color:ink} altijd winnen van een
+ * text-white/text-sand utility-klasse.
+ */
+@layer base {
+  html {
+    scroll-padding-top: var(--header-height);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body,
+  p {
+    margin: 0;
+  }
+
+  img,
+  picture {
+    max-width: 100%;
+    display: block;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-body);
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1rem;
+  }
+
+  html.no-scroll,
+  html.no-scroll body {
+    overflow: hidden;
+  }
+
+  main {
+    margin-top: var(--space-section);
+  }
+
+  /* Uitzondering: een full-bleed hero (zoals op de homepage) moet direct
+     tegen de header aan sluiten tot één blok — geen extra ademruimte. */
+  main:has(> #hero) {
+    margin-top: 0;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--color-hover);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    font-family: var(--font-heading);
+    color: var(--color-ink);
+  }
+
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1--line-height);
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+  }
+
+  h3 {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+  }
+
+  h4 {
+    font-size: var(--text-h4);
+    line-height: var(--text-h4--line-height);
+  }
+
+  section {
+    padding-block: var(--space-section);
+  }
 }
 
-body,
-p {
-  margin: 0;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-img,
-picture {
-  max-width: 100%;
-  display: block;
-}
+@layer components {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 
-body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 1rem;
-}
+  .skip-link {
+    position: absolute;
+    top: 0;
+    left: 1rem;
+    z-index: 100;
+    transform: translateY(-120%);
+    padding: 0.6rem 1.1rem;
+    background-color: var(--color-burgundy);
+    color: var(--color-white);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-small);
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform var(--transition-duration) ease;
+  }
 
-html.no-scroll,
-html.no-scroll body {
-  overflow: hidden;
-}
+  .skip-link:focus-visible {
+    transform: translateY(1rem);
+  }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    border-radius: var(--radius-full);
+    transition:
+      background-color var(--transition-duration) ease,
+      color var(--transition-duration) ease,
+      transform var(--transition-duration) ease;
+  }
 
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--color-hover);
-  outline-offset: 4px;
-  border-radius: 4px;
-}
+  .btn:focus-visible {
+    outline-offset: 3px;
+  }
 
-.btn:focus-visible {
-  outline-offset: 3px;
-}
+  .btn-primary {
+    background-color: var(--color-burgundy);
+    color: var(--color-white);
+  }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-  line-height: 1.2;
-  font-weight: 400;
-  letter-spacing: -0.03em;
-  font-family: var(--font-heading);
-}
+  .btn-primary:hover {
+    background-color: var(--color-burgundy-dark);
+  }
 
-h1 {
-  font-size: clamp(2rem, 1.5rem + 2.5vw, 4.5rem);
-}
+  /* Inverse knop-variant voor gebruik op donkere (burgundy) achtergronden,
+     zoals de header en de footer. */
+  .btn-inverted {
+    background-color: var(--color-cream);
+    color: var(--color-burgundy);
+  }
 
-h2 {
-  font-size: clamp(1.5rem, 1.1rem + 2vw, 3.5rem);
-}
+  .btn-inverted:hover {
+    background-color: var(--color-white);
+  }
 
-h3 {
-  font-size: clamp(1.25rem, 0.975rem + 1.375vw, 2.625rem);
+  /* Outline-variant voor secundaire acties op donkere/fotografische
+     achtergronden, zoals de hero. */
+  .btn-outline {
+    background-color: transparent;
+    color: var(--color-cream);
+    border: 1.5px solid var(--color-cream);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--color-cream);
+    color: var(--color-burgundy);
+  }
+
+  .label {
+    font-family: var(--font-body);
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .text-display {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+
+  .container {
+    max-width: var(--container-2xl);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+
+    @media (max-width: theme(--breakpoint-2xl)) {
+      max-width: var(--container-xl);
+    }
+
+    @media (max-width: theme(--breakpoint-xl)) {
+      max-width: var(--container-lg);
+    }
+
+    @media (max-width: theme(--breakpoint-lg)) {
+      max-width: var(--container-md);
+    }
+
+    @media (max-width: theme(--breakpoint-md)) {
+      padding-inline: var(--container-padding-mobile);
+    }
+  }
+
+  .container-fluid {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 var(--container-fluid-padding);
+
+    @media (max-width: theme(--breakpoint-xl)) {
+      padding-inline: 0 var(--container-fluid-padding-tablet);
+    }
+
+    @media (max-width: theme(--breakpoint-md)) {
+      padding-inline: var(--container-padding-mobile);
+    }
+  }
+
+  .container-prose {
+    max-width: var(--container-prose);
+    width: 100%;
+    margin-inline: auto;
+  }
 }
 
 #bp-indicator {
@@ -181,50 +432,5 @@ h3 {
     .sm {
       display: inline;
     }
-  }
-}
-
-.container {
-  max-width: var(--container-2xl);
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
-
-  @media (max-width: theme(--breakpoint-2xl)) {
-    max-width: var(--container-xl);
-  }
-
-  @media (max-width: theme(--breakpoint-xl)) {
-    max-width: var(--container-lg);
-  }
-
-  @media (max-width: theme(--breakpoint-lg)) {
-    max-width: var(--container-md);
-  }
-
-  @media (max-width: theme(--breakpoint-md)) {
-    padding-inline: var(--container-padding-mobile);
-  }
-}
-
-.container-fluid {
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 var(--container-fluid-padding);
-
-  @media (max-width: theme(--breakpoint-xl)) {
-    padding-inline: 0 var(--container-fluid-padding-tablet);
-  }
-
-  @media (max-width: theme(--breakpoint-md)) {
-    padding-inline: var(--container-padding-mobile);
-  }
-}
-
-section {
-  padding-block: var(--section-margin);
-
-  @media (max-width: theme(--breakpoint-md)) {
-    padding-block: var(--section-margin-mobile);
   }
 }

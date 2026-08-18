@@ -1,0 +1,38 @@
+---
+/**
+ * BookingButton — CTA "Afspraak maken".
+ *
+ * TIJDELIJK: verwijst nu naar een tel:-link, opgebouwd uit het telefoonnummer
+ * in vestigingen.ts. Zodra de Aimy-boekingsomgeving live is, vervang je de
+ * `href` hieronder door de boekingslink van Aimy (en mag het `tel:`-gedrag
+ * vervallen) — dat hoeft dan maar op één plek.
+ */
+import { vestigingen } from "../data/vestigingen";
+
+interface Props {
+  class?: string;
+  label?: string;
+  variant?: "solid" | "inverted";
+  size?: "default" | "lg";
+}
+
+const {
+  class: className = "",
+  label = "Afspraak maken",
+  variant = "solid",
+  size = "default",
+} = Astro.props;
+
+const telefoon = vestigingen[0].telefoon.replace(/\s/g, "");
+
+const variantClass = variant === "inverted" ? "btn-inverted" : "btn-primary";
+const sizeClass =
+  size === "lg" ? "px-6 py-3.5 text-h4" : "px-4 py-2 text-small";
+---
+
+<a
+  href={`tel:${telefoon}`}
+  class={`btn ${variantClass} ${sizeClass} hover:-translate-y-px ${className}`}
+>
+  {label}
+</a>

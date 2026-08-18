@@ -1,0 +1,58 @@
+---
+import BookingButton from "./BookingButton.astro";
+---
+
+<div
+  id="sticky-booking"
+  class="pointer-events-none fixed right-4 bottom-4 z-40 opacity-0 transition-opacity duration-(--transition-duration) sm:right-6 sm:bottom-6"
+>
+  <BookingButton class="shadow-lg shadow-black/20" />
+</div>
+
+<script>
+  const el = document.getElementById("sticky-booking");
+  const footer = document.querySelector("footer");
+  const hero = document.getElementById("hero");
+
+  if (el) {
+    // Op pagina's met een hero (nu alleen de homepage) mag de knop pas
+    // verschijnen zodra de hero — met zijn eigen knoppen — niet meer in
+    // beeld is, zodat ze nooit overlappen. Op pagina's zonder hero valt de
+    // knop terug op een simpele scroll-afstand.
+    let sectionCleared = !hero;
+    let footerVisible = false;
+
+    const updateVisibility = () => {
+      const shouldShow = sectionCleared && !footerVisible;
+      el.classList.toggle("opacity-0", !shouldShow);
+      el.classList.toggle("pointer-events-none", !shouldShow);
+    };
+
+    if (hero) {
+      const heroObserver = new IntersectionObserver(([entry]) => {
+        sectionCleared = !entry.isIntersecting;
+        updateVisibility();
+      });
+      heroObserver.observe(hero);
+    } else {
+      window.addEventListener(
+        "scroll",
+        () => {
+          sectionCleared = window.scrollY > 400;
+          updateVisibility();
+        },
+        { passive: true },
+      );
+    }
+
+    if (footer) {
+      const footerObserver = new IntersectionObserver(([entry]) => {
+        footerVisible = entry.isIntersecting;
+        updateVisibility();
+      });
+      footerObserver.observe(footer);
+    }
+
+    updateVisibility();
+  }
+</script>

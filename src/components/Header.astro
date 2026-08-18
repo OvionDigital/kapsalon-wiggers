@@ -1,0 +1,98 @@
+---
+import Logo from "./Logo.astro";
+import Nav from "./Nav.astro";
+import BookingButton from "./BookingButton.astro";
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-40 bg-burgundy transition-[background-color,box-shadow] duration-(--transition-duration)"
+>
+  <div class="container flex items-center justify-between py-5 md:py-6">
+    <Logo variant="light" />
+
+    <div class="hidden items-center gap-6 md:flex">
+      <Nav />
+      <BookingButton variant="inverted" />
+    </div>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      class="inline-flex items-center justify-center rounded-sm p-2 text-cream md:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="sr-only">Menu openen</span>
+      <svg
+        id="icon-open"
+        xmlns="http://www.w3.org/2000/svg"
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+      <svg
+        id="icon-close"
+        xmlns="http://www.w3.org/2000/svg"
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        class="hidden"
+        aria-hidden="true"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div
+    id="mobile-menu"
+    class="hidden border-t border-white/15 bg-burgundy-dark md:hidden"
+  >
+    <Nav />
+    <div class="px-4 pb-4">
+      <BookingButton variant="inverted" class="w-full" />
+    </div>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+  const iconOpen = document.getElementById("icon-open");
+  const iconClose = document.getElementById("icon-close");
+  const header = document.getElementById("site-header");
+
+  toggle?.addEventListener("click", () => {
+    const isOpen = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!isOpen));
+    menu?.classList.toggle("hidden", isOpen);
+    iconOpen?.classList.toggle("hidden", !isOpen);
+    iconClose?.classList.toggle("hidden", isOpen);
+    document.documentElement.classList.toggle("no-scroll", !isOpen);
+  });
+
+  const updateScrollState = () => {
+    const scrolled = window.scrollY > 8;
+    header?.classList.toggle("bg-burgundy-dark", scrolled);
+    header?.classList.toggle("shadow-lg", scrolled);
+    header?.classList.toggle("bg-burgundy", !scrolled);
+  };
+
+  updateScrollState();
+  window.addEventListener("scroll", updateScrollState, { passive: true });
+</script>

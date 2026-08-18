@@ -1,0 +1,133 @@
+---
+import Logo from "./Logo.astro";
+import { vestigingen, payoff, reviews } from "../data/vestigingen";
+
+const currentYear = new Date().getFullYear();
+
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/behandelingen-tarieven", label: "Behandelingen & Tarieven" },
+  { href: "/over-wiggers", label: "Over Wiggers" },
+  { href: "/contact", label: "Contact" },
+];
+
+const sterren = Array.from({ length: 5 });
+---
+
+<footer class="mt-auto bg-burgundy">
+  <div class="container py-16">
+    <div class="g-grid-12 gap-y-10">
+      <div class="g-col-12 g-col-md-5">
+        <Logo variant="light" />
+        {
+          /* --color-body botst met --text-body (beide willen de Tailwind
+             text-* naam "body"); daarom hier bewust text-(length:--text-body)
+             in plaats van de kortere text-body utility. */
+        }
+        <p class="mt-4 text-(length:--text-body) text-sand">
+          {payoff}. Dé vertrouwde kapsalon van Wehl — voor heren, dames en
+          kinderen.
+        </p>
+
+        <p class="mt-4 flex items-center gap-2 text-small text-sand">
+          <span class="flex items-center gap-0.5" aria-hidden="true">
+            {
+              sterren.map(() => (
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="text-white"
+                >
+                  <path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6 2.9-6.6z" />
+                </svg>
+              ))
+            }
+          </span>
+          <span class="font-semibold text-white">{reviews.score}</span>
+          <span>uit {reviews.aantal} Google-reviews</span>
+        </p>
+
+        <a
+          href="#"
+          class="mt-4 inline-flex items-center gap-2 text-small font-medium text-sand no-underline transition-colors duration-(--transition-duration) hover:text-white"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.86c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94Z"
+            ></path>
+          </svg>
+          Volg ons op Facebook
+        </a>
+      </div>
+
+      <nav aria-label="Footer navigatie" class="g-col-6 g-col-md-3">
+        <h2 class="label text-sand">Menu</h2>
+        <ul class="mt-3 flex flex-col gap-1">
+          {
+            navItems.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="inline-block py-0.5 text-small leading-tight text-sand no-underline transition-colors duration-(--transition-duration) hover:text-white"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      {
+        vestigingen.map((vestiging) => (
+          <div class="g-col-6 g-col-md-4">
+            <h2 class="label text-sand">{vestiging.naam}</h2>
+            <address class="mt-3 text-small text-sand not-italic">
+              {vestiging.adres}, {vestiging.postcode} {vestiging.plaats}
+              <br />
+              <a
+                href={`tel:${vestiging.telefoon.replace(/\s/g, "")}`}
+                class="text-sand no-underline transition-colors duration-(--transition-duration) hover:text-white"
+              >
+                {vestiging.telefoon}
+              </a>
+            </address>
+            <dl class="mt-4 flex flex-col gap-1 text-small text-sand">
+              {vestiging.openingstijden.map((tijd) => (
+                <div class="flex gap-3">
+                  <dt class="w-20 shrink-0">{tijd.dagen}</dt>
+                  <dd class="m-0">{tijd.tijden}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))
+      }
+    </div>
+
+    <div
+      class="mt-12 flex flex-col gap-4 border-t border-white/15 pt-6 text-label text-sand sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>&copy; {currentYear} Kapsalon Wiggers. Alle rechten voorbehouden.</p>
+      <p>
+        Website door{" "}
+        <a
+          href="https://oviondigital.nl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-medium text-sand no-underline transition-colors duration-(--transition-duration) hover:text-white"
+        >
+          Ovion Digital
+        </a>
+      </p>
+    </div>
+  </div>
+</footer>

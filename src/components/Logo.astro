@@ -1,0 +1,34 @@
+---
+/**
+ * Logo — placeholder tot het aangeleverde SVG-logobestand van de klant er is.
+ *
+ * Het echte logo is een woordmerk: klein "Dames- en Herenkapsalon" boven
+ * groot "Wiggers", in Times New Roman, wit op donkerbruin. Dit is een
+ * tekstuele lockup met dezelfde structuur (geen kaderbadge), zodat het later
+ * in één keer door het echte bestand vervangen kan worden. De `variant`-prop
+ * regelt licht/donker zodat dezelfde component zowel in de header (lichte
+ * achtergrond) als in de footer (donkere achtergrond) leesbaar blijft.
+ */
+interface Props {
+  variant?: "dark" | "light";
+  class?: string;
+}
+
+const { variant = "dark", class: className = "" } = Astro.props;
+
+const eyebrowColor = variant === "light" ? "text-cream/70" : "text-muted";
+const wordmarkColor = variant === "light" ? "text-white" : "text-ink";
+---
+
+<a
+  href="/"
+  class={`inline-flex flex-col leading-none no-underline ${className}`}
+  aria-label="Kapsalon Wiggers — naar de homepage"
+>
+  <span class={`label ${eyebrowColor}`}>Dames- en Herenkapsalon</span>
+  <span
+    class={`mt-1 font-heading text-h3 font-semibold tracking-[-0.01em] ${wordmarkColor}`}
+  >
+    Wiggers
+  </span>
+</a>

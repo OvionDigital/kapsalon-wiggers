@@ -1,0 +1,126 @@
+---
+import { Image } from "astro:assets";
+import heroImage from "../../assets/Firefly_Photorealistic editorial photograph inside a warm, upscale hair salon. A female_hairs 624775.jpg";
+import BookingButton from "../BookingButton.astro";
+import { vestigingen, reviews } from "../../data/vestigingen";
+import { hero } from "../../data/hero";
+import { openingstijdVandaag } from "../../lib/openingstijden";
+
+const vandaag = openingstijdVandaag(vestigingen[0].openingstijden);
+const vandaagTekst = vandaag.open
+  ? `Vandaag geopend: ${vandaag.tijden}`
+  : "Vandaag gesloten";
+---
+
+<section
+  id="hero"
+  class="relative flex items-center overflow-hidden bg-burgundy py-16 md:min-h-[max(75vh,30rem)] md:py-0"
+>
+  <div class="absolute inset-0">
+    <Image
+      src={heroImage}
+      alt="Sfeerbeeld van het interieur van Kapsalon Wiggers"
+      widths={[640, 960, 1280, 1920, 2400]}
+      sizes="100vw"
+      format="avif"
+      loading="eager"
+      fetchpriority="high"
+      class="h-full w-full object-cover"
+    />
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-burgundy/70 via-burgundy/85 to-burgundy-dark/95"
+    >
+    </div>
+  </div>
+
+  <div class="container relative z-10">
+    <div class="max-w-2xl text-left">
+      <p class="hero-animate hero-animate-1 label text-sand">
+        {hero.eyebrow}
+      </p>
+
+      <h1 class="hero-animate hero-animate-2 mt-4 text-white">
+        {
+          hero.headingLines.map((line) => (
+            <>
+              {line}
+              <br />
+            </>
+          ))
+        }
+      </h1>
+
+      <p
+        class="hero-animate hero-animate-3 mt-6 text-(length:--text-body) text-sand"
+      >
+        {hero.intro}
+      </p>
+
+      <div
+        class="hero-animate hero-animate-4 mt-8 flex flex-wrap items-center gap-4"
+      >
+        <BookingButton label={hero.primaryCta} size="lg" />
+        <a
+          href={hero.secondaryCta.href}
+          class="btn btn-outline px-6 py-3.5 text-h4"
+        >
+          {hero.secondaryCta.label}
+        </a>
+      </div>
+    </div>
+
+    <div
+      class="hero-animate hero-animate-5 mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/15 pt-6 text-small text-sand md:mt-16"
+    >
+      <p class="flex items-center gap-1.5">
+        <span class="font-semibold text-white">{reviews.score}</span>
+        <span>uit {reviews.aantal} Google-reviews</span>
+      </p>
+      <span class="h-4 w-px bg-white/25" aria-hidden="true"></span>
+      <p>{hero.feiten.doelgroep}</p>
+      <span class="h-4 w-px bg-white/25" aria-hidden="true"></span>
+      <p>{vandaagTekst}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes hero-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-animate {
+    animation: hero-fade-up var(--duration-entrance) ease-out both;
+  }
+
+  .hero-animate-1 {
+    animation-delay: 0ms;
+  }
+  .hero-animate-2 {
+    animation-delay: 90ms;
+  }
+  .hero-animate-3 {
+    animation-delay: 180ms;
+  }
+  .hero-animate-4 {
+    animation-delay: 270ms;
+  }
+  .hero-animate-5 {
+    animation-delay: 360ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-animate {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
