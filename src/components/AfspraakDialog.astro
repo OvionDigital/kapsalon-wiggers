@@ -1,0 +1,192 @@
+---
+import { vestigingen } from "../data/vestigingen";
+import { afspraak } from "../data/afspraak";
+import { getAfspraakStatus } from "../lib/openingstijden";
+
+const vestiging = vestigingen[0];
+const telefoonHref = vestiging.telefoon.replace(/\s/g, "");
+
+const status = getAfspraakStatus(vestiging.openingstijden);
+const statusTekst = status.open
+  ? `Vandaag geopend: ${status.tijden}`
+  : status.volgende
+    ? `Nu gesloten — weer open op ${status.volgende.dag} vanaf ${status.volgende.opent}`
+    : "Nu gesloten";
+---
+
+<dialog
+  id="afspraak-dialog"
+  aria-labelledby="afspraak-titel"
+  class="fixed inset-x-0 top-auto bottom-0 z-50 m-0 max-h-[85vh] w-full overflow-y-auto rounded-t-md border-0 bg-cream p-0 shadow-lg backdrop:bg-ink/60 md:inset-0 md:top-auto md:bottom-auto md:m-auto md:h-fit md:max-h-[85vh] md:w-full md:max-w-md md:rounded-md"
+>
+  <div class="relative p-6 sm:p-8">
+    <button
+      type="button"
+      id="afspraak-sluiten"
+      aria-label="Dialoog sluiten"
+      class="absolute top-3 right-3 inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-(--transition-duration) hover:bg-sand hover:text-ink"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <h2 id="afspraak-titel" class="pr-10 text-h3">Maak een afspraak</h2>
+    <p class="mt-2 text-small text-muted">
+      We werken nog niet met online boeken — een afspraak maken gaat
+      telefonisch.
+    </p>
+
+    {
+      afspraak.modus === "aimy" ? (
+        <>
+          {afspraak.aimyUrl ? (
+            <a
+              href={afspraak.aimyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-primary mt-6 w-full px-6 py-4 text-h4"
+            >
+              Plan online een afspraak
+            </a>
+          ) : (
+            <p class="mt-6 text-small text-muted">
+              Online boeken komt hier zodra dat is ingesteld.
+            </p>
+          )}
+          <p class="mt-4 text-small text-muted">
+            Liever bellen?{" "}
+            <a
+              href={`tel:${telefoonHref}`}
+              class="font-semibold text-burgundy hover:underline"
+            >
+              {vestiging.telefoon}
+            </a>
+          </p>
+        </>
+      ) : (
+        <a
+          href={`tel:${telefoonHref}`}
+          class="mt-6 block font-heading text-display font-semibold text-burgundy no-underline hover:underline"
+        >
+          {vestiging.telefoon}
+        </a>
+      )
+    }
+
+    <p class="mt-6 text-small font-semibold text-ink">{statusTekst}</p>
+
+    <hr class="mt-6 border-border" />
+
+    <p class="mt-6 text-small text-muted">
+      Liever mailen?{" "}
+      <a
+        href="/contact#contactgegevens"
+        class="font-semibold text-burgundy hover:underline"
+      >
+        Ga naar het contactformulier
+      </a>
+    </p>
+  </div>
+</dialog>
+
+<style>
+  /* @starting-style stuurt de entree-animatie aan — dit is een native
+     CSS-mechanisme dat werkt ongeacht hóe de dialoog geopend wordt (via de
+     knoppen, of bijvoorbeeld handmatig via showModal() in de console). Geen
+     JS-timing-trucjes nodig, dus geen risico dat de animatie stil breekt
+     zodra iets anders dan onze eigen openDialog() de dialoog opent. */
+  dialog {
+    transition:
+      opacity var(--transition-duration) ease-out,
+      transform var(--transition-duration) ease-out;
+  }
+
+  dialog[open] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @starting-style {
+    dialog[open] {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+  }
+
+  @media (min-width: 768px) {
+    dialog[open] {
+      transform: scale(1);
+    }
+
+    @starting-style {
+      dialog[open] {
+        transform: scale(0.95);
+      }
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById("afspraak-dialog") as HTMLDialogElement | null;
+  const closeButton = document.getElementById("afspraak-sluiten");
+  let triggerElement: HTMLElement | null = null;
+
+  function lockScroll() {
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.documentElement.classList.add("no-scroll");
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+  }
+
+  function unlockScroll() {
+    document.documentElement.classList.remove("no-scroll");
+    document.body.style.paddingRight = "";
+  }
+
+  function openDialog(trigger: HTMLElement | null) {
+    if (!dialog || dialog.open) return;
+    triggerElement = trigger;
+    dialog.showModal();
+    lockScroll();
+  }
+
+  function closeDialog() {
+    dialog?.close();
+  }
+
+  dialog?.addEventListener("close", () => {
+    unlockScroll();
+    triggerElement?.focus();
+    triggerElement = null;
+  });
+
+  // Klik op de backdrop (buiten de dialoog-inhoud) sluit 'm.
+  dialog?.addEventListener("click", (event) => {
+    if (event.target === dialog) closeDialog();
+  });
+
+  closeButton?.addEventListener("click", () => closeDialog());
+
+  // Eén gedelegeerde listener vangt alle huidige én toekomstige knoppen met
+  // data-afspraak-trigger op — geen losse handler per knop nodig.
+  document.addEventListener("click", (event) => {
+    const target = event.target as Element | null;
+    const trigger = target?.closest<HTMLElement>("[data-afspraak-trigger]");
+    if (trigger) {
+      event.preventDefault();
+      openDialog(trigger);
+    }
+  });
+</script>

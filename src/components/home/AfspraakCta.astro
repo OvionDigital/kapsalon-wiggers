@@ -1,0 +1,24 @@
+---
+import AfspraakButton from "../AfspraakButton.astro";
+import { vestigingen } from "../../data/vestigingen";
+import { cta } from "../../data/home";
+
+const vestiging = vestigingen[0];
+---
+
+<section class="bg-burgundy">
+  <div class="container flex flex-col items-center gap-6 text-center">
+    <h2 class="text-white">{cta.heading}</h2>
+    <p class="text-(length:--text-body) text-sand">{cta.tekst}</p>
+
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <AfspraakButton kleur="inverted" size="lg" />
+      <a
+        href={`tel:${vestiging.telefoon.replace(/\s/g, "")}`}
+        class="text-h4 font-semibold text-white no-underline hover:underline"
+      >
+        {vestiging.telefoon}
+      </a>
+    </div>
+  </div>
+</section>

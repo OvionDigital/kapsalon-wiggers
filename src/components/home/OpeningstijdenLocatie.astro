@@ -1,0 +1,65 @@
+---
+import { Image } from "astro:assets";
+import kaartImage from "../../assets/kaart-placeholder.jpg";
+import Openingstijden from "../Openingstijden.astro";
+import { vestigingen } from "../../data/vestigingen";
+import { getGoogleMapsHref } from "../../lib/salon";
+
+const vestiging = vestigingen[0];
+const mapsHref = getGoogleMapsHref(
+  vestiging.adres,
+  vestiging.postcode,
+  vestiging.plaats,
+);
+---
+
+<section class="bg-cream">
+  <div class="container">
+    <div class="grid gap-10 md:grid-cols-2 md:gap-14">
+      <div>
+        <h2>Openingstijden</h2>
+        <div class="mt-6">
+          <Openingstijden />
+        </div>
+      </div>
+
+      <div>
+        <h2>Locatie</h2>
+        <address class="mt-6 text-(length:--text-body) text-(--color-body) not-italic">
+          {vestiging.naam}
+          <br />
+          {vestiging.adres}, {vestiging.postcode} {vestiging.plaats}
+          <br />
+          <a
+            href={`tel:${vestiging.telefoon.replace(/\s/g, "")}`}
+            class="text-burgundy no-underline hover:underline"
+          >
+            {vestiging.telefoon}
+          </a>
+        </address>
+
+        <a
+          href={mapsHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group relative mt-4 block overflow-hidden rounded-md"
+        >
+          <Image
+            src={kaartImage}
+            alt={`Plattegrond met de ligging van Kapsalon Wiggers in ${vestiging.plaats}`}
+            width={1200}
+            height={800}
+            loading="lazy"
+            class="h-48 w-full object-cover transition-transform duration-(--transition-duration) group-hover:scale-105"
+          />
+          <span
+            class="absolute inset-0 flex items-center justify-center bg-ink/0 text-small font-semibold text-white opacity-0 transition-opacity duration-(--transition-duration) group-hover:bg-ink/40 group-hover:opacity-100"
+          >
+            Open in Google Maps
+            <span class="sr-only"> (opent in een nieuw tabblad)</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

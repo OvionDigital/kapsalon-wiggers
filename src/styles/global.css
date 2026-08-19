@@ -119,6 +119,7 @@
 @layer base {
   html {
     scroll-padding-top: var(--header-height);
+    scroll-behavior: smooth;
   }
 
   *,
@@ -162,7 +163,10 @@
   }
 
   a:focus-visible,
-  button:focus-visible {
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
     outline: 2px solid var(--color-hover);
     outline-offset: 4px;
     border-radius: 4px;
@@ -290,16 +294,29 @@
   }
 
   /* Outline-variant voor secundaire acties op donkere/fotografische
-     achtergronden, zoals de hero. */
+     achtergronden, zoals de hero. Sand i.p.v. cream voor extra contrast
+     tegen de donkere overlay. */
   .btn-outline {
     background-color: transparent;
-    color: var(--color-cream);
-    border: 1.5px solid var(--color-cream);
+    color: var(--color-sand);
+    border: 1.5px solid var(--color-sand);
   }
 
   .btn-outline:hover {
-    background-color: var(--color-cream);
+    background-color: var(--color-sand);
     color: var(--color-burgundy);
+  }
+
+  /* Gevulde variant voor gebruik op donkere/fotografische achtergronden waar
+     extra contrast nodig is — bv. de hero-CTA, die zich anders te veel met de
+     burgundy-overlay vermengde. */
+  .btn-sand {
+    background-color: var(--color-sand);
+    color: var(--color-burgundy);
+  }
+
+  .btn-sand:hover {
+    background-color: var(--color-white);
   }
 
   .label {

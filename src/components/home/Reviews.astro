@@ -1,0 +1,43 @@
+---
+import { reviews } from "../../data/vestigingen";
+import { uitgelichteReviews } from "../../data/home";
+
+const sterren = Array.from({ length: 5 });
+---
+
+<section class="bg-cream">
+  <div class="container text-center">
+    <h2 class="label text-muted">Wat klanten zeggen</h2>
+
+    <div class="mt-4 flex flex-col items-center gap-2">
+      <span class="text-display font-heading font-semibold text-ink">
+        {reviews.score}
+      </span>
+      <span class="flex items-center gap-1" aria-hidden="true">
+        {
+          sterren.map(() => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-burgundy">
+              <path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6 2.9-6.6z" />
+            </svg>
+          ))
+        }
+      </span>
+      <p class="text-small text-muted">uit {reviews.aantal} Google-reviews</p>
+    </div>
+
+    <div class="mt-12 grid gap-6 text-left md:grid-cols-3">
+      {
+        uitgelichteReviews.map((review) => (
+          <blockquote class="rounded-md bg-sand p-6">
+            <p class="text-(length:--text-body) text-(--color-body)">
+              “{review.tekst}”
+            </p>
+            <footer class="mt-4 text-small font-semibold text-ink">
+              <cite class="not-italic">{review.naam}</cite>
+            </footer>
+          </blockquote>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,52 @@
+---
+/**
+ * AfspraakButton — de knop "Afspraak maken", overal op de site.
+ *
+ * Opent altijd hetzelfde AfspraakDialog-paneel (gemount in BaseLayout) via
+ * data-afspraak-trigger. Zonder JavaScript blijft het gewoon een link naar
+ * het contactblok op /contact, dus nooit een dode knop.
+ */
+interface Props {
+  /** primair = gevuld (kleur bepaalt licht/donker), secundair = outline, zwevend = gevuld + schaduw voor de losse floating button. */
+  variant?: "primair" | "secundair" | "zwevend";
+  /** Alleen relevant voor variant="primair"/"zwevend": solid = burgundy-op-licht, inverted = crème-op-donker, sand = sand-op-donker (extra contrast, bv. de hero). */
+  kleur?: "solid" | "inverted" | "sand";
+  size?: "default" | "lg" | "sm";
+  label?: string;
+  class?: string;
+}
+
+const {
+  variant = "primair",
+  kleur = "solid",
+  size = "default",
+  label = "Afspraak maken",
+  class: className = "",
+} = Astro.props;
+
+const variantClass =
+  variant === "secundair"
+    ? "btn-outline"
+    : kleur === "inverted"
+      ? "btn-inverted"
+      : kleur === "sand"
+        ? "btn-sand"
+        : "btn-primary";
+
+const sizeClasses = {
+  default: "px-4 py-2 text-small",
+  lg: "px-6 py-3.5 text-h4",
+  // Vaste 18px op klantverzoek, niet de vloeiende --text-h4-schaal.
+  sm: "px-5 py-2.5 text-[18px]",
+};
+const sizeClass = sizeClasses[size];
+const zwevendClass = variant === "zwevend" ? "shadow-lg shadow-black/20" : "";
+---
+
+<a
+  href="/contact#contactgegevens"
+  data-afspraak-trigger
+  class={`btn ${variantClass} ${sizeClass} ${zwevendClass} hover:-translate-y-px ${className}`}
+>
+  {label}
+</a>

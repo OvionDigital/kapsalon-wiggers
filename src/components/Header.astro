@@ -1,19 +1,38 @@
 ---
 import Logo from "./Logo.astro";
 import Nav from "./Nav.astro";
-import BookingButton from "./BookingButton.astro";
+import AfspraakButton from "./AfspraakButton.astro";
+
+interface Props {
+  /** Start transparant met een grote logo (bv. boven een full-bleed hero) en
+   *  wordt pas na het scrollen compact en gevuld. Standaard uit: overige
+   *  pagina's tonen de header meteen in de normale, compacte staat. */
+  transparentStart?: boolean;
+}
+
+const { transparentStart = false } = Astro.props;
 ---
 
 <header
   id="site-header"
-  class="sticky top-0 z-40 bg-burgundy transition-[background-color,box-shadow] duration-(--transition-duration)"
+  data-transparent-start={transparentStart}
+  class:list={[
+    "header-enter top-0 z-40 transition-[background-color,box-shadow] duration-(--transition-duration)",
+    // sticky blijft in de documentflow en duwt de content eronder omlaag —
+    // prima voor de gewone (altijd gevulde) header, maar daarmee kan een
+    // transparante header nooit over de hero heen "zweven". Op de homepage
+    // moet hij dus echt uit de flow (fixed), zodat de hero op y=0 begint en
+    // de header er transparant overheen ligt.
+    transparentStart ? "fixed inset-x-0" : "sticky",
+    transparentStart ? "bg-transparent" : "bg-burgundy",
+  ]}
 >
   <div class="container flex items-center justify-between py-5 md:py-6">
-    <Logo variant="light" />
+    <Logo variant="light" size={transparentStart ? "large" : "compact"} />
 
     <div class="hidden items-center gap-6 md:flex">
       <Nav />
-      <BookingButton variant="inverted" />
+      <AfspraakButton kleur="inverted" />
     </div>
 
     <button
@@ -65,10 +84,29 @@ import BookingButton from "./BookingButton.astro";
   >
     <Nav />
     <div class="px-4 pb-4">
-      <BookingButton variant="inverted" class="w-full" />
+      <AfspraakButton kleur="inverted" class="w-full" />
     </div>
   </div>
 </header>
+
+<style>
+  /* Laadanimatie: de header valt kort na het laden zachtjes op zijn plek. */
+  @keyframes header-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .header-enter {
+    animation: header-fade-in var(--duration-entrance) ease-out both;
+  }
+
+</style>
 
 <script>
   const toggle = document.getElementById("menu-toggle");
@@ -76,21 +114,56 @@ import BookingButton from "./BookingButton.astro";
   const iconOpen = document.getElementById("icon-open");
   const iconClose = document.getElementById("icon-close");
   const header = document.getElementById("site-header");
+  const logo = header?.querySelector<HTMLElement>("[data-logo]");
+  const isTransparentStart = header?.dataset.transparentStart === "true";
+
+  const closeMenu = () => {
+    toggle?.setAttribute("aria-expanded", "false");
+    menu?.classList.add("hidden");
+    iconOpen?.classList.remove("hidden");
+    iconClose?.classList.add("hidden");
+    document.documentElement.classList.remove("no-scroll");
+  };
 
   toggle?.addEventListener("click", () => {
     const isOpen = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!isOpen));
-    menu?.classList.toggle("hidden", isOpen);
-    iconOpen?.classList.toggle("hidden", !isOpen);
-    iconClose?.classList.toggle("hidden", isOpen);
-    document.documentElement.classList.toggle("no-scroll", !isOpen);
+    if (isOpen) {
+      closeMenu();
+      return;
+    }
+    toggle.setAttribute("aria-expanded", "true");
+    menu?.classList.remove("hidden");
+    iconOpen?.classList.add("hidden");
+    iconClose?.classList.remove("hidden");
+    document.documentElement.classList.add("no-scroll");
   });
 
+  // Sluit het mobiele menu zodra een link erin wordt aangeklikt — ook de
+  // afspraakknop, die geen paginanavigatie doet maar de dialoog opent. Zonder
+  // dit zou het menu (en zijn no-scroll) achter de dialoog open blijven staan.
+  menu?.addEventListener("click", (event) => {
+    const link = (event.target as Element | null)?.closest("a");
+    if (link) closeMenu();
+  });
+
+  const SCROLL_THRESHOLD = 100;
+
   const updateScrollState = () => {
-    const scrolled = window.scrollY > 8;
-    header?.classList.toggle("bg-burgundy-dark", scrolled);
-    header?.classList.toggle("shadow-lg", scrolled);
-    header?.classList.toggle("bg-burgundy", !scrolled);
+    const scrolled = window.scrollY > SCROLL_THRESHOLD;
+
+    if (isTransparentStart) {
+      header?.classList.toggle("bg-transparent", !scrolled);
+      header?.classList.toggle("bg-burgundy-dark", scrolled);
+      header?.classList.toggle("shadow-lg", scrolled);
+      // Zelfde twee klassen als Logo.astro zelf gebruikt voor
+      // size="compact"/"large", zodat er geen tweede naam uit de pas loopt.
+      logo?.classList.toggle("h-9", scrolled);
+      logo?.classList.toggle("h-[3.375rem]", !scrolled);
+    } else {
+      header?.classList.toggle("bg-burgundy-dark", scrolled);
+      header?.classList.toggle("shadow-lg", scrolled);
+      header?.classList.toggle("bg-burgundy", !scrolled);
+    }
   };
 
   updateScrollState();

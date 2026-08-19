@@ -1,0 +1,219 @@
+---
+import { privacyRegel } from "../../data/contact";
+
+const inputClass =
+  "mt-2 w-full rounded-sm border border-border bg-white px-4 py-3 text-(length:--text-body) text-ink placeholder:text-muted";
+---
+
+<section class="bg-cream">
+  <div class="container">
+    <div class="max-w-[var(--container-prose)]">
+      <h2>Stuur ons een bericht</h2>
+      <p class="mt-3 text-(length:--text-body) text-(--color-body)">
+        Liever niet bellen? Vul het formulier in en we reageren zo snel
+        mogelijk.
+      </p>
+
+      <form
+        id="contact-form"
+        method="POST"
+        action="/api/contact"
+        class="mt-8 flex flex-col gap-6"
+      >
+        <div>
+          <label for="naam" class="block text-small font-semibold text-ink">
+            Naam
+          </label>
+          <input
+            type="text"
+            id="naam"
+            name="naam"
+            autocomplete="name"
+            required
+            aria-describedby="naam-fout"
+            class={inputClass}
+          />
+          <p id="naam-fout" class="mt-1 text-small text-burgundy" hidden></p>
+        </div>
+
+        <div>
+          <label for="email" class="block text-small font-semibold text-ink">
+            E-mailadres
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            autocomplete="email"
+            required
+            aria-describedby="email-fout"
+            class={inputClass}
+          />
+          <p id="email-fout" class="mt-1 text-small text-burgundy" hidden></p>
+        </div>
+
+        <div>
+          <label
+            for="bericht"
+            class="block text-small font-semibold text-ink"
+          >
+            Bericht
+          </label>
+          <textarea
+            id="bericht"
+            name="bericht"
+            rows="5"
+            required
+            aria-describedby="bericht-fout"
+            class={inputClass}
+          ></textarea>
+          <p id="bericht-fout" class="mt-1 text-small text-burgundy" hidden>
+          </p>
+        </div>
+
+        {
+          /* Honeypot — verborgen via clip (net als .sr-only), bewust niet
+             display:none, want daar reageren simpele spambots juist niet op.
+             aria-hidden + tabindex="-1" houdt hem weg bij toetsenbord/AT. */
+        }
+        <div class="sr-only" aria-hidden="true">
+          <label for="website">Laat dit veld leeg</label>
+          <input
+            type="text"
+            id="website"
+            name="website"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+        <input type="hidden" id="ts" name="ts" value="" />
+
+        <button
+          type="submit"
+          id="contact-submit"
+          class="btn btn-primary self-start px-6 py-3 text-small"
+        >
+          <span data-submit-label>Versturen</span>
+        </button>
+
+        <p
+          id="contact-status"
+          role="status"
+          aria-live="polite"
+          class="text-small text-ink"
+        >
+        </p>
+      </form>
+
+      <p class="mt-6 text-small text-muted">{privacyRegel}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  const statusEl = document.getElementById("contact-status");
+  const submitButton = document.getElementById(
+    "contact-submit",
+  ) as HTMLButtonElement | null;
+  const submitLabel = submitButton?.querySelector("[data-submit-label]");
+
+  if (form && statusEl && submitButton) {
+    // novalidate wordt alleen via JS gezet: zonder JS blijft de native
+    // HTML-validatie (required/type=email) volledig intact.
+    form.setAttribute("novalidate", "");
+
+    const tsField = document.getElementById("ts") as HTMLInputElement | null;
+    if (tsField) tsField.value = String(Date.now());
+
+    const velden = ["naam", "email", "bericht"] as const;
+
+    const setError = (naam: string, message: string) => {
+      const input = document.getElementById(naam) as
+        | HTMLInputElement
+        | HTMLTextAreaElement
+        | null;
+      const fout = document.getElementById(`${naam}-fout`);
+      if (!input || !fout) return;
+
+      if (message) {
+        fout.textContent = message;
+        fout.hidden = false;
+        input.setAttribute("aria-invalid", "true");
+      } else {
+        fout.textContent = "";
+        fout.hidden = true;
+        input.removeAttribute("aria-invalid");
+      }
+    };
+
+    const valideerVeld = (naam: (typeof velden)[number]) => {
+      const input = document.getElementById(naam) as
+        | HTMLInputElement
+        | HTMLTextAreaElement
+        | null;
+      if (!input) return true;
+
+      if (input.validity.valueMissing) {
+        setError(naam, "Dit veld is verplicht.");
+        return false;
+      }
+      if (input instanceof HTMLInputElement && input.validity.typeMismatch) {
+        setError(naam, "Vul een geldig e-mailadres in.");
+        return false;
+      }
+      setError(naam, "");
+      return true;
+    };
+
+    velden.forEach((naam) => {
+      document
+        .getElementById(naam)
+        ?.addEventListener("blur", () => valideerVeld(naam));
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const isGeldig = velden.map(valideerVeld).every(Boolean);
+      if (!isGeldig) {
+        statusEl.textContent = "Controleer de gemarkeerde velden hieronder.";
+        return;
+      }
+
+      submitButton.disabled = true;
+      if (submitLabel) submitLabel.textContent = "Versturen…";
+      statusEl.textContent = "";
+
+      try {
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json().catch(() => null);
+
+        if (response.ok) {
+          statusEl.textContent =
+            data?.message ?? "Bedankt, je bericht is verstuurd!";
+          form.reset();
+          if (tsField) tsField.value = String(Date.now());
+        } else {
+          statusEl.textContent =
+            data?.message ??
+            "Er ging iets mis bij het versturen. Probeer het later opnieuw of bel ons.";
+        }
+      } catch {
+        statusEl.textContent =
+          "Er ging iets mis bij het versturen. Probeer het later opnieuw of bel ons.";
+      } finally {
+        submitButton.disabled = false;
+        if (submitLabel) submitLabel.textContent = "Versturen";
+      }
+    });
+  }
+</script>

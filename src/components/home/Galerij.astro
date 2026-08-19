@@ -1,0 +1,52 @@
+---
+import { Image } from "astro:assets";
+import galerij1 from "../../assets/galerij-1-placeholder.jpg";
+import galerij2 from "../../assets/galerij-2-placeholder.jpg";
+import galerij3 from "../../assets/galerij-3-placeholder.jpg";
+import galerij4 from "../../assets/galerij-4-placeholder.jpg";
+import galerij5 from "../../assets/galerij-5-placeholder.jpg";
+import galerij6 from "../../assets/galerij-6-placeholder.jpg";
+import { galerij } from "../../data/home";
+
+const afbeeldingen = {
+  "galerij-1": { src: galerij1, span: "md:col-span-1 md:row-span-2" },
+  "galerij-2": { src: galerij2, span: "md:col-span-1 md:row-span-1" },
+  "galerij-3": { src: galerij3, span: "md:col-span-2 md:row-span-1" },
+  "galerij-4": { src: galerij4, span: "md:col-span-1 md:row-span-2" },
+  "galerij-5": { src: galerij5, span: "md:col-span-1 md:row-span-1" },
+  "galerij-6": { src: galerij6, span: "md:col-span-2 md:row-span-1" },
+} as const;
+---
+
+<section class="bg-sand">
+  <div class="container">
+    <h2 class="text-center">Sfeer en vakwerk</h2>
+
+    <div
+      class="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-flow-dense md:auto-rows-40 md:grid-cols-4 md:gap-4 md:overflow-visible md:pb-0"
+    >
+      {
+        galerij.map((item) => {
+          const { src, span } = afbeeldingen[item.bestand as keyof typeof afbeeldingen];
+          return (
+            <div
+              class:list={[
+                "h-48 w-64 shrink-0 snap-start overflow-hidden rounded-md md:h-auto md:w-auto md:shrink",
+                span,
+              ]}
+            >
+              <Image
+                src={src}
+                alt={item.alt}
+                width={800}
+                height={600}
+                loading="lazy"
+                class="h-full w-full object-cover"
+              />
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

@@ -1,34 +1,44 @@
 ---
 /**
- * Logo — placeholder tot het aangeleverde SVG-logobestand van de klant er is.
- *
- * Het echte logo is een woordmerk: klein "Dames- en Herenkapsalon" boven
- * groot "Wiggers", in Times New Roman, wit op donkerbruin. Dit is een
- * tekstuele lockup met dezelfde structuur (geen kaderbadge), zodat het later
- * in één keer door het echte bestand vervangen kan worden. De `variant`-prop
- * regelt licht/donker zodat dezelfde component zowel in de header (lichte
- * achtergrond) als in de footer (donkere achtergrond) leesbaar blijft.
+ * Logo — het echte woordmerk van de klant, ingeladen als inline SVG (niet
+ * <img>) zodat fill="currentColor" in het bestand kan meekleuren met de
+ * variant-prop. Zo werkt hetzelfde bestand op zowel de donkere header/footer
+ * als een eventuele lichte achtergrond.
  */
+import fs from "node:fs";
+import path from "node:path";
+
 interface Props {
   variant?: "dark" | "light";
+  /** large = 150% van compact (3.375rem i.p.v. 2.25rem) — voor de header
+   *  boven een full-bleed hero, die groot start en compact wordt na scrollen. */
+  size?: "compact" | "large";
   class?: string;
 }
 
-const { variant = "dark", class: className = "" } = Astro.props;
-
-const eyebrowColor = variant === "light" ? "text-cream/70" : "text-muted";
+const {
+  variant = "dark",
+  size = "compact",
+  class: className = "",
+} = Astro.props;
 const wordmarkColor = variant === "light" ? "text-white" : "text-ink";
+const sizeClass = size === "large" ? "h-[3.375rem]" : "h-9";
+
+const logoSvg = fs.readFileSync(
+  path.join(process.cwd(), "public/images/Logo-Kapsalon-Wiggers.svg"),
+  "utf-8",
+);
 ---
 
 <a
   href="/"
-  class={`inline-flex flex-col leading-none no-underline ${className}`}
   aria-label="Kapsalon Wiggers — naar de homepage"
+  class={`inline-flex items-center no-underline ${wordmarkColor} ${className}`}
 >
-  <span class={`label ${eyebrowColor}`}>Dames- en Herenkapsalon</span>
   <span
-    class={`mt-1 font-heading text-h3 font-semibold tracking-[-0.01em] ${wordmarkColor}`}
-  >
-    Wiggers
-  </span>
+    data-logo
+    class={`w-auto origin-left transition-[height] duration-(--transition-duration) ease-out [&>svg]:h-full [&>svg]:w-auto ${sizeClass}`}
+    aria-hidden="true"
+    set:html={logoSvg}
+  />
 </a>

@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets";
+import lanzaImage from "../../assets/product-lanza-placeholder.jpg";
+import gladjakkersImage from "../../assets/product-gladjakkers-placeholder.jpg";
+import { producten } from "../../data/behandelingen";
+
+const afbeeldingen = {
+  lanza: lanzaImage,
+  gladjakkers: gladjakkersImage,
+} as const;
+---
+
+<section class="bg-sand">
+  <div class="container">
+    <h2 class="text-center">Producten die we gebruiken en verkopen</h2>
+
+    <div class="mx-auto mt-10 grid max-w-3xl gap-8 md:grid-cols-2">
+      {
+        producten.map((product) => (
+          <div class="flex flex-col items-center gap-4 text-center">
+            <Image
+              src={afbeeldingen[product.afbeelding as keyof typeof afbeeldingen]}
+              alt={`Productbeeld van ${product.naam}`}
+              width={600}
+              height={600}
+              loading="lazy"
+              class="h-28 w-28 rounded-full object-cover"
+            />
+            <h3 class="text-h4">{product.naam}</h3>
+            <p class="text-small text-muted">{product.omschrijving}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

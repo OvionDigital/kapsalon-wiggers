@@ -14,8 +14,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       naar de homepage, of neem contact met ons op als je een afspraak wilt
       maken.
     </p>
-    <a href="/" class="btn btn-primary mt-8 px-6 py-3 text-small">
-      Terug naar de homepage
-    </a>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+      <a href="/" class="btn btn-primary px-6 py-3 text-small">
+        Terug naar de homepage
+      </a>
+      <a
+        href="/behandelingen-tarieven"
+        class="btn border border-burgundy bg-transparent px-6 py-3 text-small text-burgundy hover:bg-burgundy hover:text-white"
+      >
+        Bekijk behandelingen &amp; tarieven
+      </a>
+    </div>
   </div>
 </BaseLayout>

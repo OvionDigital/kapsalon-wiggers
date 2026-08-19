@@ -1,0 +1,89 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import Intro from "../components/behandelingen/Intro.astro";
+import SnelNavigatie from "../components/behandelingen/SnelNavigatie.astro";
+import CategorieBlok from "../components/behandelingen/CategorieBlok.astro";
+import WerkFoto from "../components/behandelingen/WerkFoto.astro";
+import Producten from "../components/behandelingen/Producten.astro";
+import AfspraakCta from "../components/home/AfspraakCta.astro";
+import heroImage from "../assets/behandelingen-hero-placeholder.jpg";
+import werkFoto1 from "../assets/werk-foto-1-placeholder.jpg";
+import werkFoto2 from "../assets/werk-foto-2-placeholder.jpg";
+import { categorieen } from "../data/behandelingen";
+import { getSalonId } from "../lib/salon";
+
+const [heren, dames, kinderen, overig] = categorieen;
+
+// JSON-LD: OfferCatalog per categorie, gekoppeld aan de HairSalon uit
+// BaseLayout via provider.@id.
+const offerCatalog = {
+  "@context": "https://schema.org",
+  "@type": "OfferCatalog",
+  name: "Behandelingen en tarieven",
+  provider: { "@id": getSalonId(Astro.site) },
+  itemListElement: categorieen.map((categorie) => ({
+    "@type": "OfferCatalog",
+    name: categorie.naam,
+    itemListElement: categorie.behandelingen.map((behandeling) => ({
+      "@type": "Offer",
+      priceCurrency: "EUR",
+      ...(typeof behandeling.prijs === "number"
+        ? { price: behandeling.prijs }
+        : {}),
+      itemOffered: {
+        "@type": "Service",
+        name: behandeling.naam,
+        ...(behandeling.toelichting
+          ? { description: behandeling.toelichting }
+          : {}),
+      },
+    })),
+  })),
+};
+---
+
+<BaseLayout
+  title="Behandelingen & Tarieven | Kapsalon Wiggers — kapper in Wehl"
+  description="Bekijk de tarieven van Kapsalon Wiggers in Wehl: knippen, kleuren en verzorging voor heren, dames en kinderen. Kapsalon prijzen Wehl, altijd met persoonlijk advies."
+  extraJsonLd={[offerCatalog]}
+>
+  <PageHero
+    eyebrow="Tarieven"
+    title="Behandelingen & Tarieven"
+    intro="Duidelijke prijzen voor heren, dames en kinderen — met altijd tijd voor advies vooraf."
+    image={heroImage}
+    imageAlt="Sfeerbeeld van behandelingen bij Kapsalon Wiggers"
+  />
+
+  <Intro />
+  <SnelNavigatie />
+
+  <CategorieBlok categorie={heren} achtergrond="sand" />
+  <WerkFoto
+    src={werkFoto1}
+    alt="Sfeerbeeld van een knipbeurt in uitvoering"
+    achtergrond="cream"
+  />
+  <CategorieBlok categorie={dames} achtergrond="sand" />
+  <CategorieBlok categorie={kinderen} achtergrond="cream" />
+  <WerkFoto
+    src={werkFoto2}
+    alt="Sfeerbeeld van de salon tijdens een behandeling"
+    achtergrond="sand"
+  />
+  <CategorieBlok categorie={overig} achtergrond="cream" />
+
+  <div class="bg-cream py-8">
+    <div class="container">
+      <p class="text-center text-small text-muted">
+        Prijzen zijn indicatief en kunnen afhankelijk van haarlengte en
+        gewenste behandeling afwijken — we geven je vooraf altijd een
+        duidelijke indicatie.
+      </p>
+    </div>
+  </div>
+
+  <Producten />
+  <AfspraakCta />
+</BaseLayout>

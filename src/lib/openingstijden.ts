@@ -59,6 +59,16 @@ const jsDagIndexNaarNL: DagAfkorting[] = [
   "Za",
 ];
 
+const dagVolNaam: Record<DagAfkorting, string> = {
+  Ma: "maandag",
+  Di: "dinsdag",
+  Wo: "woensdag",
+  Do: "donderdag",
+  Vr: "vrijdag",
+  Za: "zaterdag",
+  Zo: "zondag",
+};
+
 export function vandaagAfkorting(datum: Date = new Date()): DagAfkorting {
   return jsDagIndexNaarNL[datum.getDay()];
 }
@@ -82,4 +92,38 @@ export function openingstijdVandaag(
     }
   }
   return { open: false };
+}
+
+export type AfspraakStatus =
+  | { open: true; tijden: string }
+  | { open: false; volgende: { dag: string; opent: string } | null };
+
+/** Zoals openingstijdVandaag, maar zoekt bij gesloten ook de eerstvolgende
+ *  openingsdag op (t/m 7 dagen vooruit) — voor het afspraakpaneel. */
+export function getAfspraakStatus(
+  openingstijden: Openingstijd[],
+  datum: Date = new Date(),
+): AfspraakStatus {
+  const vandaag = openingstijdVandaag(openingstijden, datum);
+  if (vandaag.open) return vandaag;
+
+  for (let i = 1; i <= 7; i++) {
+    const volgendeDatum = new Date(datum);
+    volgendeDatum.setDate(datum.getDate() + i);
+    const afkorting = vandaagAfkorting(volgendeDatum);
+
+    for (const item of openingstijden) {
+      if (parseDagenNL(item.dagen).includes(afkorting)) {
+        const tijd = parseTijden(item.tijden);
+        if (tijd) {
+          return {
+            open: false,
+            volgende: { dag: dagVolNaam[afkorting], opent: tijd.opens },
+          };
+        }
+      }
+    }
+  }
+
+  return { open: false, volgende: null };
 }

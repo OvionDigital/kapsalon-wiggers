@@ -1,0 +1,52 @@
+---
+import type { Categorie } from "../../data/behandelingen";
+import { formatPrijs } from "../../lib/prijzen";
+
+interface Props {
+  categorie: Categorie;
+  achtergrond: "cream" | "sand";
+}
+
+const { categorie, achtergrond } = Astro.props;
+---
+
+<section
+  id={categorie.id}
+  class:list={[
+    "scroll-mt-(--header-height)",
+    achtergrond === "sand" ? "bg-sand" : "bg-cream",
+  ]}
+>
+  <div class="container">
+    <div class="max-w-[var(--container-prose)]">
+      <h2>{categorie.naam}</h2>
+      <p class="mt-3 text-(length:--text-body) text-(--color-body)">
+        {categorie.omschrijving}
+      </p>
+    </div>
+
+    <dl class="mt-8 flex max-w-[var(--container-prose)] flex-col gap-4">
+      {
+        categorie.behandelingen.map((behandeling) => (
+          <div>
+            <div class="flex items-baseline gap-2">
+              <dt class="min-w-0 text-ink">{behandeling.naam}</dt>
+              <span
+                class="min-w-4 flex-1 translate-y-[-0.3em] border-b border-dotted border-border"
+                aria-hidden="true"
+              />
+              <dd class="flex-none font-semibold whitespace-nowrap text-ink">
+                {formatPrijs(behandeling.prijs)}
+              </dd>
+            </div>
+            {behandeling.toelichting && (
+              <p class="mt-0.5 text-small text-muted">
+                {behandeling.toelichting}
+              </p>
+            )}
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

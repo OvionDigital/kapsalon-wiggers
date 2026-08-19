@@ -1,0 +1,48 @@
+---
+import Openingstijden from "../Openingstijden.astro";
+import { vestigingen } from "../../data/vestigingen";
+import { parkerenNotitie } from "../../data/contact";
+
+const vestiging = vestigingen[0];
+---
+
+<section id="contactgegevens" class="scroll-mt-(--header-height) bg-cream">
+  <div class="container">
+    <div class="grid gap-10 md:grid-cols-2 md:gap-14">
+      <div>
+        <h2>Contactgegevens</h2>
+
+        <a
+          href={`tel:${vestiging.telefoon.replace(/\s/g, "")}`}
+          class="mt-6 block text-h2 font-semibold text-burgundy no-underline hover:underline"
+        >
+          {vestiging.telefoon}
+        </a>
+
+        <address class="mt-6 text-(length:--text-body) text-(--color-body) not-italic">
+          Kapsalon Wiggers
+          <br />
+          {vestiging.adres}, {vestiging.postcode} {vestiging.plaats}
+          <br />
+          <a
+            href={`mailto:${vestiging.email}`}
+            class="text-burgundy no-underline hover:underline"
+          >
+            {vestiging.email}
+          </a>
+        </address>
+
+        <p class="mt-6 text-small text-muted">
+          {parkerenNotitie}
+        </p>
+      </div>
+
+      <div>
+        <h2>Openingstijden</h2>
+        <div class="mt-6">
+          <Openingstijden />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import ContactGegevens from "../components/contact/ContactGegevens.astro";
+import Kaart from "../components/contact/Kaart.astro";
+import ContactFormulier from "../components/contact/ContactFormulier.astro";
+import AfspraakCta from "../components/home/AfspraakCta.astro";
+import heroImage from "../assets/contact-hero-placeholder.jpg";
+import { getSalonId } from "../lib/salon";
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const contactPageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  url: canonicalURL.toString(),
+  about: { "@id": getSalonId(Astro.site) },
+};
+---
+
+<BaseLayout
+  title="Contact | Kapsalon Wiggers — kapper in Wehl"
+  description="Neem contact op met Kapsalon Wiggers in Wehl. Bel voor een afspraak of stuur een bericht — hier vind je adres, openingstijden en route."
+  extraJsonLd={[contactPageJsonLd]}
+>
+  <PageHero
+    eyebrow="Contact"
+    title="Contact"
+    intro="Bel ons voor een afspraak, of stuur een bericht via het formulier."
+    image={heroImage}
+    imageAlt="Sfeerbeeld van de gevel van Kapsalon Wiggers in Wehl"
+  />
+
+  <ContactGegevens />
+  <Kaart />
+  <ContactFormulier />
+  <AfspraakCta />
+</BaseLayout>

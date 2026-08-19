@@ -1,6 +1,6 @@
-// TODO: verifiëren bij klant — adres, telefoonnummer en openingstijden
-// hieronder zijn verzonnen placeholders en kloppen niet. Vervang ze door de
-// definitieve gegevens zodra de klant ze aanlevert.
+// TODO: verifiëren bij klant — adres, telefoonnummer, e-mailadres en
+// openingstijden hieronder zijn verzonnen placeholders en kloppen niet.
+// Vervang ze door de definitieve gegevens zodra de klant ze aanlevert.
 
 export interface Openingstijd {
   dagen: string;
@@ -13,6 +13,7 @@ export interface Vestiging {
   plaats: string;
   postcode: string;
   telefoon: string;
+  email: string;
   openingstijden: Openingstijd[];
 }
 
@@ -23,6 +24,7 @@ export const vestigingen: Vestiging[] = [
     postcode: "6975 AB",
     plaats: "Wehl",
     telefoon: "+31 314 64 1234",
+    email: "info@kapsalonwiggers.nl",
     openingstijden: [
       { dagen: "Di – Vr", tijden: "09:00 – 18:00" },
       { dagen: "Za", tijden: "08:30 – 16:00" },
@@ -37,6 +39,11 @@ export const payoff = "Al ruim 90 jaar geknipt voor het vak";
 // maar Kilder is geen huidige vestiging meer — de salon zit nu alleen in Wehl.
 export const historie =
   "Opgericht in 1932 in Kilder, tegenwoordig gevestigd in Wehl.";
+
+// Gestructureerde founding-gegevens voor de JSON-LD (HairSalon.foundingDate /
+// foundingLocation in BaseLayout).
+export const foundingYear = "1932";
+export const foundingLocation = "Kilder";
 
 export const reviews = {
   score: 4.8,

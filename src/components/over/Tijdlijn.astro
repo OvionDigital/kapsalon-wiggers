@@ -1,0 +1,99 @@
+---
+import { Image } from "astro:assets";
+import img1932 from "../../assets/tijdlijn-1932-placeholder.jpg";
+import img1981 from "../../assets/tijdlijn-1981-placeholder.jpg";
+import { geschiedenis } from "../../data/geschiedenis";
+
+const afbeeldingen = {
+  "1932": img1932,
+  "1981": img1981,
+} as const;
+---
+
+<section class="bg-sand">
+  <div class="container">
+    <h2 class="text-center">Van 1932 tot nu</h2>
+
+    <ol class="relative mt-16 flex flex-col gap-12 md:mt-20 md:gap-16">
+      <div
+        class="absolute inset-y-0 left-4 w-0.5 -translate-x-1/2 bg-burgundy md:left-1/2"
+        aria-hidden="true"
+      >
+      </div>
+
+      {
+        geschiedenis.map((gebeurtenis, index) => {
+          const afbeelding =
+            gebeurtenis.afbeelding &&
+            afbeeldingen[gebeurtenis.afbeelding as keyof typeof afbeeldingen];
+          const rechts = index % 2 === 0;
+
+          return (
+            <li
+              data-tijdlijn-item
+              class="relative translate-y-4 pl-12 opacity-0 transition-[opacity,transform] duration-(--duration-entrance) ease-out md:pl-0"
+            >
+              <span
+                class="absolute top-1 left-4 h-3 w-3 -translate-x-1/2 rounded-full bg-burgundy ring-4 ring-sand md:left-1/2"
+                aria-hidden="true"
+              />
+              <div class="md:grid md:grid-cols-2 md:gap-x-14">
+                <div
+                  class:list={[
+                    rechts
+                      ? "md:col-start-2 md:text-left"
+                      : "md:col-start-1 md:row-start-1 md:text-right",
+                  ]}
+                >
+                  <p class="font-heading text-h3 text-burgundy">
+                    {gebeurtenis.jaartal}
+                  </p>
+                  <h3 class="mt-1 text-h4">{gebeurtenis.titel}</h3>
+                  <p class="mt-2 text-small text-muted">{gebeurtenis.tekst}</p>
+                  {afbeelding && (
+                    <Image
+                      src={afbeelding}
+                      alt={`Sfeerbeeld bij "${gebeurtenis.titel}" (${gebeurtenis.jaartal})`}
+                      width={800}
+                      height={600}
+                      loading="lazy"
+                      class:list={[
+                        "mt-4 h-auto w-full max-w-sm rounded-md object-cover",
+                        rechts ? "md:ml-0" : "md:ml-auto",
+                      ]}
+                    />
+                  )}
+                </div>
+              </div>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </div>
+</section>
+
+<script>
+  const items = document.querySelectorAll<HTMLElement>("[data-tijdlijn-item]");
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+    items.forEach((item) => item.classList.remove("opacity-0", "translate-y-4"));
+  } else {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove("opacity-0", "translate-y-4");
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.2 },
+    );
+
+    items.forEach((item) => observer.observe(item));
+  }
+</script>

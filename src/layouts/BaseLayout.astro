@@ -4,19 +4,36 @@ import BreakpointIndicator from "../components/BreakpointIndicator.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import StickyBookingButton from "../components/StickyBookingButton.astro";
-import { payoff, vestigingen, reviews } from "../data/vestigingen";
+import AfspraakDialog from "../components/AfspraakDialog.astro";
+import {
+  payoff,
+  vestigingen,
+  reviews,
+  foundingYear,
+  foundingLocation,
+} from "../data/vestigingen";
 import { parseDagenEngels, parseTijden } from "../lib/openingstijden";
+import { getSalonId } from "../lib/salon";
 
 interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  /** Extra JSON-LD objecten (bv. een OfferCatalog) die aan de HairSalon
+   *  hieronder gekoppeld kunnen worden via SALON_ID. */
+  extraJsonLd?: object[];
+  /** Header start transparant met een grote logo boven een full-bleed hero,
+   *  en wordt pas na het scrollen compact en gevuld. Alleen voor pagina's met
+   *  zo'n hero (nu de homepage). */
+  transparentHeader?: boolean;
 }
 
 const {
   title,
   description = `Kapsalon Wiggers — ${payoff.toLowerCase()}. Dames- en herenkapsalon in Wehl.`,
   ogImage = "/og-image.jpg",
+  extraJsonLd = [],
+  transparentHeader = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -42,8 +59,14 @@ const openingHoursSpecification = vestiging.openingstijden
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "HairSalon",
+  "@id": getSalonId(Astro.site),
   name: "Kapsalon Wiggers",
   url: canonicalURL.toString(),
+  foundingDate: foundingYear,
+  foundingLocation: {
+    "@type": "Place",
+    name: foundingLocation,
+  },
   telephone: vestiging.telefoon.replace(/\s/g, ""),
   address: {
     "@type": "PostalAddress",
@@ -85,17 +108,23 @@ const structuredData = {
       set:html={JSON.stringify(structuredData)}
       is:inline
     />
+    {
+      extraJsonLd.map((data) => (
+        <script type="application/ld+json" set:html={JSON.stringify(data)} is:inline />
+      ))
+    }
 
     <title>{title}</title>
   </head>
   <body class="flex min-h-dvh flex-col">
     <a href="#main" class="skip-link">Ga direct naar de inhoud</a>
     <BreakpointIndicator />
-    <Header />
+    <Header transparentStart={transparentHeader} />
     <main id="main" class="flex-1">
       <slot />
     </main>
     <Footer />
     <StickyBookingButton />
+    <AfspraakDialog />
   </body>
 </html>

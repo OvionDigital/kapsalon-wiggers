@@ -1,0 +1,41 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  image: ImageMetadata;
+  imageAlt: string;
+}
+
+const { eyebrow, title, intro, image, imageAlt } = Astro.props;
+---
+
+<section
+  class="relative flex items-center overflow-hidden bg-burgundy py-14 md:min-h-[max(28vh,16rem)] md:py-0"
+>
+  <div class="absolute inset-0">
+    <Image
+      src={image}
+      alt={imageAlt}
+      widths={[640, 960, 1280, 1920, 2000]}
+      sizes="100vw"
+      format="avif"
+      loading="eager"
+      fetchpriority="high"
+      class="h-full w-full object-cover"
+    />
+    <div class="absolute inset-0 bg-gradient-to-b from-burgundy/75 to-burgundy-dark/90">
+    </div>
+  </div>
+
+  <div class="container relative z-10">
+    <div class="max-w-2xl text-left">
+      <p class="label text-sand">{eyebrow}</p>
+      <h1 class="mt-3 text-white">{title}</h1>
+      <p class="mt-4 text-(length:--text-body) text-sand">{intro}</p>
+    </div>
+  </div>
+</section>

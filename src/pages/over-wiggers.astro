@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import Verhaal from "../components/over/Verhaal.astro";
+import Tijdlijn from "../components/over/Tijdlijn.astro";
+import Team from "../components/over/Team.astro";
+import Sfeer from "../components/over/Sfeer.astro";
+import AfspraakCta from "../components/home/AfspraakCta.astro";
+import heroImage from "../assets/over-hero-placeholder.jpg";
+---
+
+<BaseLayout
+  title="Over Wiggers | Kapper in Wehl sinds 1932"
+  description="Kapsalon Wiggers, sinds 1932 dé vertrouwde kapper in Wehl. Lees ons verhaal, ontmoet het team en ontdek wat onze salon bijzonder maakt."
+>
+  <PageHero
+    eyebrow="Sinds 1932"
+    title="Over Wiggers"
+    intro="Drie generaties knippen, één en dezelfde persoonlijke aandacht."
+    image={heroImage}
+    imageAlt="Sfeerbeeld van het interieur van Kapsalon Wiggers"
+  />
+
+  <Verhaal />
+  <Tijdlijn />
+  <Team />
+  <Sfeer />
+  <AfspraakCta />
+</BaseLayout>
