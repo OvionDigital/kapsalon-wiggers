@@ -2,6 +2,7 @@
 import AfspraakButton from "../AfspraakButton.astro";
 import { vestigingen } from "../../data/vestigingen";
 import { cta } from "../../data/home";
+import { getTelHref } from "../../lib/salon";
 
 const vestiging = vestigingen[0];
 ---
@@ -14,7 +15,7 @@ const vestiging = vestigingen[0];
     <div class="flex flex-wrap items-center justify-center gap-4">
       <AfspraakButton kleur="inverted" size="lg" />
       <a
-        href={`tel:${vestiging.telefoon.replace(/\s/g, "")}`}
+        href={`tel:${getTelHref(vestiging.telefoon)}`}
         class="text-h4 font-semibold text-white no-underline hover:underline"
       >
         {vestiging.telefoon}

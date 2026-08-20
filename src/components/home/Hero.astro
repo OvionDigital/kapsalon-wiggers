@@ -1,13 +1,19 @@
 ---
 import { Image } from "astro:assets";
 import heroImage from "../../assets/Firefly_Photorealistic editorial photograph inside a warm, upscale hair salon. A female_hairs 624775.jpg";
-import AfspraakButton from "../AfspraakButton.astro";
+import HeroBoekingskaart from "./HeroBoekingskaart.astro";
 import { hero } from "../../data/hero";
 ---
 
+{
+  /* Geen overflow-hidden hier: de boekingskaart moet er op desktop net
+     overheen kunnen hangen. De achtergrondfoto en de gradient hebben 'm niet
+     nodig — die zijn zelf al object-cover/inset-0 en clippen daarmee al aan
+     hun eigen box. */
+}
 <section
   id="hero"
-  class="relative flex items-center overflow-hidden bg-burgundy py-16 md:min-h-[max(75vh,30rem)] md:py-0"
+  class="relative flex items-center bg-burgundy pt-(--header-height) pb-16 md:min-h-[max(75vh,36rem)] md:pb-0"
 >
   <div class="absolute inset-0">
     <Image
@@ -26,7 +32,7 @@ import { hero } from "../../data/hero";
     </div>
   </div>
 
-  <div class="container relative z-10">
+  <div class="container relative z-10 pt-8 md:pt-12">
     <div class="max-w-2xl text-left">
       <h1 class="hero-animate hero-animate-1 text-white">
         {
@@ -44,23 +50,38 @@ import { hero } from "../../data/hero";
       >
         {hero.intro}
       </p>
+    </div>
+  </div>
 
-      <div
-        class="hero-animate hero-animate-3 mt-8 flex flex-wrap items-center gap-4"
-      >
-        <AfspraakButton label={hero.primaryCta} kleur="sand" size="sm" />
-        <a
-          href={hero.secondaryCta.href}
-          class="btn btn-outline px-5 py-2.5 text-[18px]"
-        >
-          {hero.secondaryCta.label}
-        </a>
-      </div>
+  {
+    /* Positioneringslaag die de hele sectiehoogte beslaat (niet alleen de
+       tekstkolom, die veel korter is door de verticale centrering). Zo
+       raakt "bottom" ook echt de onderrand van de hero, en hangt de kaart
+       er met een kleine, vaste overlap (-bottom-10) overheen — verder blijft
+       hij dus grotendeels ín de hero, precies andersom dan de vorige versie. */
+  }
+  <div class="pointer-events-none absolute inset-0 z-20 hidden md:block">
+    <div class="container relative h-full">
+      <HeroBoekingskaart
+        class="hero-animate hero-animate-3 pointer-events-auto absolute right-0 -bottom-10 w-88"
+      />
     </div>
   </div>
 </section>
 
-<style>
+{
+  /* Mobiel: geen ruimte voor een overlay, dus gewoon een blok direct na de
+     hero — geen gat, want er is niets tussenin te overbruggen. */
+}
+<div class="container md:hidden">
+  <HeroBoekingskaart class="hero-animate hero-animate-3 -mt-8 mb-8" />
+</div>
+
+<style is:global>
+  /* is:global omdat hero-animate-3 hier wordt gedefinieerd maar toegepast op
+     een element in HeroBoekingskaart.astro — een ander bestand, dus met een
+     eigen Astro-scope. Zonder is:global zou de scoped CSS die klasse daar
+     nooit raken. */
   @keyframes hero-fade-up {
     from {
       opacity: 0;

@@ -1,6 +1,7 @@
 ---
 import Logo from "./Logo.astro";
 import { vestigingen, payoff, reviews } from "../data/vestigingen";
+import { getTelHref } from "../lib/salon";
 
 const currentYear = new Date().getFullYear();
 
@@ -25,7 +26,7 @@ const sterren = Array.from({ length: 5 });
              in plaats van de kortere text-body utility. */
         }
         <p class="mt-4 text-(length:--text-body) text-sand">
-          {payoff}. Dé vertrouwde kapsalon van Wehl — voor heren, dames en
+          {payoff}. Dé vertrouwde kapsalon van Wehl voor heren, dames en
           kinderen.
         </p>
 
@@ -94,7 +95,7 @@ const sterren = Array.from({ length: 5 });
               {vestiging.adres}, {vestiging.postcode} {vestiging.plaats}
               <br />
               <a
-                href={`tel:${vestiging.telefoon.replace(/\s/g, "")}`}
+                href={`tel:${getTelHref(vestiging.telefoon)}`}
                 class="text-sand no-underline transition-colors duration-(--transition-duration) hover:text-white"
               >
                 {vestiging.telefoon}

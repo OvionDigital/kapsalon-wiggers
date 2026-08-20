@@ -1,7 +1,3 @@
-// TODO: verifiëren bij klant — adres, telefoonnummer, e-mailadres en
-// openingstijden hieronder zijn verzonnen placeholders en kloppen niet.
-// Vervang ze door de definitieve gegevens zodra de klant ze aanlevert.
-
 export interface Openingstijd {
   dagen: string;
   tijden: string;
@@ -20,15 +16,17 @@ export interface Vestiging {
 export const vestigingen: Vestiging[] = [
   {
     naam: "Wehl",
-    adres: "Dorpsstraat 12",
-    postcode: "6975 AB",
+    adres: "Julianastraat 10",
+    postcode: "7031 ZX",
     plaats: "Wehl",
-    telefoon: "+31 314 64 1234",
+    telefoon: "0314 - 68 12 20",
     email: "info@kapsalonwiggers.nl",
     openingstijden: [
-      { dagen: "Di – Vr", tijden: "09:00 – 18:00" },
-      { dagen: "Za", tijden: "08:30 – 16:00" },
-      { dagen: "Ma & Zo", tijden: "Gesloten" },
+      { dagen: "Ma", tijden: "Gesloten" },
+      { dagen: "Di – Do", tijden: "08:00 – 18:00" },
+      { dagen: "Vr", tijden: "08:00 – 19:00" },
+      { dagen: "Za", tijden: "08:00 – 13:30" },
+      { dagen: "Zo", tijden: "Gesloten" },
     ],
   },
 ];

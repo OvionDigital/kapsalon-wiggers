@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import kaartImage from "../../assets/kaart-placeholder.jpg";
 import Openingstijden from "../Openingstijden.astro";
 import { vestigingen } from "../../data/vestigingen";
-import { getGoogleMapsHref } from "../../lib/salon";
+import { getGoogleMapsHref, getTelHref } from "../../lib/salon";
 
 const vestiging = vestigingen[0];
 const mapsHref = getGoogleMapsHref(
@@ -31,7 +31,7 @@ const mapsHref = getGoogleMapsHref(
           {vestiging.adres}, {vestiging.postcode} {vestiging.plaats}
           <br />
           <a
-            href={`tel:${vestiging.telefoon.replace(/\s/g, "")}`}
+            href={`tel:${getTelHref(vestiging.telefoon)}`}
             class="text-burgundy no-underline hover:underline"
           >
             {vestiging.telefoon}

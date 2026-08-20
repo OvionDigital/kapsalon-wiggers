@@ -2,6 +2,7 @@
 import Openingstijden from "../Openingstijden.astro";
 import { vestigingen } from "../../data/vestigingen";
 import { parkerenNotitie } from "../../data/contact";
+import { getTelHref } from "../../lib/salon";
 
 const vestiging = vestigingen[0];
 ---
@@ -13,7 +14,7 @@ const vestiging = vestigingen[0];
         <h2>Contactgegevens</h2>
 
         <a
-          href={`tel:${vestiging.telefoon.replace(/\s/g, "")}`}
+          href={`tel:${getTelHref(vestiging.telefoon)}`}
           class="mt-6 block text-h2 font-semibold text-burgundy no-underline hover:underline"
         >
           {vestiging.telefoon}

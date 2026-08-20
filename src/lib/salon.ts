@@ -16,3 +16,9 @@ export function getGoogleMapsHref(
   const query = encodeURIComponent(`${adres}, ${postcode} ${plaats}`);
   return `https://www.google.com/maps/search/?api=1&query=${query}`;
 }
+
+/** Zet een weergegeven telefoonnummer (spaties/koppeltekens) om naar een
+ *  geldige tel:-href. */
+export function getTelHref(telefoon: string): string {
+  return telefoon.replace(/[\s-]/g, "");
+}

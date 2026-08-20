@@ -2,18 +2,31 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import Intro from "../components/behandelingen/Intro.astro";
-import SnelNavigatie from "../components/behandelingen/SnelNavigatie.astro";
 import CategorieBlok from "../components/behandelingen/CategorieBlok.astro";
-import WerkFoto from "../components/behandelingen/WerkFoto.astro";
 import Producten from "../components/behandelingen/Producten.astro";
 import AfspraakCta from "../components/home/AfspraakCta.astro";
+import GalerijGrid from "../components/GalerijGrid.astro";
+import Lightbox from "../components/Lightbox.astro";
 import heroImage from "../assets/behandelingen-hero-placeholder.jpg";
 import werkFoto1 from "../assets/werk-foto-1-placeholder.jpg";
 import werkFoto2 from "../assets/werk-foto-2-placeholder.jpg";
+import werkFoto3 from "../assets/werk-foto-3-placeholder.jpg";
+import behandelingHeren from "../assets/behandeling-heren-placeholder.jpg";
+import behandelingDames from "../assets/behandeling-dames-placeholder.jpg";
+import behandelingKinderen from "../assets/behandeling-kinderen-placeholder.jpg";
 import { categorieen } from "../data/behandelingen";
 import { getSalonId } from "../lib/salon";
 
 const [heren, dames, kinderen, overig] = categorieen;
+
+const galerijItems = [
+  { src: werkFoto1, alt: "Sfeerbeeld van een knipbeurt in uitvoering" },
+  { src: behandelingHeren, alt: "Sfeerbeeld van een herenbehandeling" },
+  { src: werkFoto2, alt: "Sfeerbeeld van de salon tijdens een behandeling" },
+  { src: behandelingDames, alt: "Sfeerbeeld van een damesbehandeling" },
+  { src: behandelingKinderen, alt: "Sfeerbeeld van een kinderbehandeling" },
+  { src: werkFoto3, alt: "Sfeerbeeld van het vakwerk in de salon" },
+];
 
 // JSON-LD: OfferCatalog per categorie, gekoppeld aan de HairSalon uit
 // BaseLayout via provider.@id.
@@ -57,24 +70,13 @@ const offerCatalog = {
   />
 
   <Intro />
-  <SnelNavigatie />
 
   <CategorieBlok categorie={heren} achtergrond="sand" />
-  <WerkFoto
-    src={werkFoto1}
-    alt="Sfeerbeeld van een knipbeurt in uitvoering"
-    achtergrond="cream"
-  />
-  <CategorieBlok categorie={dames} achtergrond="sand" />
-  <CategorieBlok categorie={kinderen} achtergrond="cream" />
-  <WerkFoto
-    src={werkFoto2}
-    alt="Sfeerbeeld van de salon tijdens een behandeling"
-    achtergrond="sand"
-  />
+  <CategorieBlok categorie={dames} achtergrond="cream" />
+  <CategorieBlok categorie={kinderen} achtergrond="sand" />
   <CategorieBlok categorie={overig} achtergrond="cream" />
 
-  <div class="bg-cream py-8">
+  <div class="bg-sand py-8">
     <div class="container">
       <p class="text-center text-small text-muted">
         Prijzen zijn indicatief en kunnen afhankelijk van haarlengte en
@@ -84,6 +86,17 @@ const offerCatalog = {
     </div>
   </div>
 
+  <section class="bg-cream">
+    <div class="container">
+      <h2 class="text-center">Sfeer en vakwerk</h2>
+      <div class="mt-10">
+        <GalerijGrid items={galerijItems} />
+      </div>
+    </div>
+  </section>
+
   <Producten />
   <AfspraakCta />
+
+  <Lightbox />
 </BaseLayout>

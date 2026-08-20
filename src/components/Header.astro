@@ -18,11 +18,6 @@ const { transparentStart = false } = Astro.props;
   data-transparent-start={transparentStart}
   class:list={[
     "header-enter top-0 z-40 transition-[background-color,box-shadow] duration-(--transition-duration)",
-    // sticky blijft in de documentflow en duwt de content eronder omlaag —
-    // prima voor de gewone (altijd gevulde) header, maar daarmee kan een
-    // transparante header nooit over de hero heen "zweven". Op de homepage
-    // moet hij dus echt uit de flow (fixed), zodat de hero op y=0 begint en
-    // de header er transparant overheen ligt.
     transparentStart ? "fixed inset-x-0" : "sticky",
     transparentStart ? "bg-transparent" : "bg-burgundy",
   ]}

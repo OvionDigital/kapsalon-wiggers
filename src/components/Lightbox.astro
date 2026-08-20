@@ -1,0 +1,94 @@
+---
+/**
+ * Lightbox — één gedeelde dialoog per pagina, geopend door elk element met
+ * data-lightbox-trigger (zie GalerijGrid.astro). Pakt de al geladen
+ * thumbnail-<img> van de trigger zelf, dus geen aparte hi-res bron nodig.
+ */
+---
+
+<dialog
+  id="lightbox"
+  aria-label="Afbeelding uitvergroot"
+  class="fixed inset-0 z-50 m-0 h-full max-h-none w-full max-w-none border-0 bg-transparent p-0 backdrop:bg-ink/90"
+>
+  <div class="relative flex h-full w-full items-center justify-center p-4 sm:p-10">
+    <button
+      type="button"
+      id="lightbox-sluiten"
+      aria-label="Sluiten"
+      class="absolute top-4 right-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-cream/90 text-ink transition-colors duration-(--transition-duration) hover:bg-cream"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <img
+      id="lightbox-image"
+      src=""
+      alt=""
+      class="max-h-full max-w-full rounded-md object-contain"
+    />
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById("lightbox") as HTMLDialogElement | null;
+  const img = document.getElementById("lightbox-image") as HTMLImageElement | null;
+  const closeButton = document.getElementById("lightbox-sluiten");
+
+  function lockScroll() {
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+    document.documentElement.classList.add("no-scroll");
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+  }
+
+  function unlockScroll() {
+    document.documentElement.classList.remove("no-scroll");
+    document.body.style.paddingRight = "";
+  }
+
+  function openLightbox(src: string, alt: string) {
+    if (!dialog || !img || dialog.open) return;
+    img.src = src;
+    img.alt = alt;
+    dialog.showModal();
+    lockScroll();
+  }
+
+  function closeLightbox() {
+    dialog?.close();
+  }
+
+  dialog?.addEventListener("close", unlockScroll);
+
+  dialog?.addEventListener("click", (event) => {
+    if (event.target === dialog) closeLightbox();
+  });
+
+  closeButton?.addEventListener("click", closeLightbox);
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as Element | null;
+    const trigger = target?.closest<HTMLElement>("[data-lightbox-trigger]");
+    if (!trigger) return;
+
+    const thumb = trigger.querySelector("img");
+    if (!thumb) return;
+
+    openLightbox(thumb.currentSrc || thumb.src, thumb.alt);
+  });
+</script>

@@ -1,0 +1,56 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface GalerijItem {
+  src: ImageMetadata;
+  alt: string;
+  /** Optionele eigen span-klassen; anders het standaardpatroon hieronder. */
+  span?: string;
+}
+
+interface Props {
+  items: GalerijItem[];
+}
+
+const { items } = Astro.props;
+
+// Eén groot blok, de rest 1x1 of 1x2 — geen enkele col-span-2/row-span-1
+// combinatie, want dat gaf op auto-rows-40 juist die te brede, te platte
+// stroken. Herhaalt als er meer dan 6 items zijn.
+const defaultSpans = [
+  "md:col-span-2 md:row-span-2",
+  "md:col-span-1 md:row-span-1",
+  "md:col-span-1 md:row-span-2",
+  "md:col-span-1 md:row-span-1",
+  "md:col-span-1 md:row-span-1",
+  "md:col-span-1 md:row-span-1",
+];
+---
+
+<div
+  class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-flow-dense md:auto-rows-64 md:grid-cols-4 md:gap-4 md:overflow-visible md:pb-0"
+>
+  {
+    items.map((item, index) => (
+      <button
+        type="button"
+        data-lightbox-trigger
+        aria-label={`${item.alt} — klik om te vergroten`}
+        class:list={[
+          "group h-48 w-64 shrink-0 snap-start overflow-hidden rounded-md focus-visible:outline-2 focus-visible:outline-(--color-hover) focus-visible:outline-offset-2 md:h-auto md:w-auto md:shrink",
+          item.span ?? defaultSpans[index % defaultSpans.length],
+        ]}
+      >
+        <Image
+          src={item.src}
+          alt={item.alt}
+          width={800}
+          height={600}
+          loading="lazy"
+          class="h-full w-full object-cover transition-transform duration-(--transition-duration) group-hover:scale-105"
+        />
+      </button>
+    ))
+  }
+</div>

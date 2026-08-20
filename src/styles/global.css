@@ -23,6 +23,7 @@
      handmatig geverifieerd (WCAG 2.1 relative luminance), zie toelichting. */
   --color-cream: #faf7f2; /* achtergrond */
   --color-sand: #efe6d8; /* diepere zandtint voor afwisselende secties */
+  --color-gold: #e0a636; /* accentkleur */
   --color-olive: #6f6b45; /* gedempt, warm derde accent */
   --color-burgundy: #4a2f1f; /* afgestemd op het donkerbruin uit het logo */
   --color-burgundy-dark: #3b2619; /* hover-variant */
@@ -61,7 +62,7 @@
   --text-body--line-height: 1.6;
   --text-small: 0.875rem;
   --text-small--line-height: 1.5;
-  --text-label: 0.75rem;
+  --text-label: 1rem;
   --text-label--line-height: 1.4;
 
   /* Vorm */
@@ -156,9 +157,11 @@
     margin-top: var(--space-section);
   }
 
-  /* Uitzondering: een full-bleed hero (zoals op de homepage) moet direct
-     tegen de header aan sluiten tot één blok — geen extra ademruimte. */
-  main:has(> #hero) {
+  /* Uitzondering: een full-bleed hero (homepage) of pagina-hero (overige
+     pagina's) moet direct tegen de header aan sluiten tot één blok — geen
+     extra ademruimte. */
+  main:has(> #hero),
+  main:has(> #page-hero) {
     margin-top: 0;
   }
 
@@ -311,7 +314,7 @@
      extra contrast nodig is — bv. de hero-CTA, die zich anders te veel met de
      burgundy-overlay vermengde. */
   .btn-sand {
-    background-color: var(--color-sand);
+    background-color: var(--color-gold);
     color: var(--color-burgundy);
   }
 

@@ -13,7 +13,7 @@ import {
   foundingLocation,
 } from "../data/vestigingen";
 import { parseDagenEngels, parseTijden } from "../lib/openingstijden";
-import { getSalonId } from "../lib/salon";
+import { getSalonId, getTelHref } from "../lib/salon";
 
 interface Props {
   title: string;
@@ -67,7 +67,7 @@ const structuredData = {
     "@type": "Place",
     name: foundingLocation,
   },
-  telephone: vestiging.telefoon.replace(/\s/g, ""),
+  telephone: getTelHref(vestiging.telefoon),
   address: {
     "@type": "PostalAddress",
     streetAddress: vestiging.adres,
