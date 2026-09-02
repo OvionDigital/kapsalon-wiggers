@@ -2,6 +2,7 @@
 import Logo from "./Logo.astro";
 import Nav from "./Nav.astro";
 import AfspraakButton from "./AfspraakButton.astro";
+import TopBar from "./TopBar.astro";
 
 interface Props {
   /** Start transparant met een grote logo (bv. boven een full-bleed hero) en
@@ -17,23 +18,31 @@ const { transparentStart = false } = Astro.props;
   id="site-header"
   data-transparent-start={transparentStart}
   class:list={[
-    "header-enter top-0 z-40 transition-[background-color,box-shadow] duration-(--transition-duration)",
+    "header-enter top-0 z-40 transition-shadow duration-(--transition-duration)",
     transparentStart ? "fixed inset-x-0" : "sticky",
-    transparentStart ? "bg-transparent" : "bg-burgundy",
   ]}
 >
-  <div class="container flex items-center justify-between py-5 md:py-6">
+  <TopBar transparentStart={transparentStart} />
+
+  <div
+    id="nav-bar"
+    class:list={[
+      "transition-[background-color] duration-(--transition-duration)",
+      transparentStart ? "bg-transparent" : "bg-burgundy",
+    ]}
+  >
+    <div class="container flex items-center justify-between py-5">
     <Logo variant="light" size={transparentStart ? "large" : "compact"} />
 
     <div class="hidden items-center gap-6 md:flex">
       <Nav />
-      <AfspraakButton kleur="inverted" />
+      <AfspraakButton kleur="sand" />
     </div>
 
     <button
       type="button"
       id="menu-toggle"
-      class="inline-flex items-center justify-center rounded-sm p-2 text-cream md:hidden"
+      class="inline-flex items-center justify-center rounded-sm p-2 text-cream md:hidden" 
       aria-expanded="false"
       aria-controls="mobile-menu"
     >
@@ -71,6 +80,7 @@ const { transparentStart = false } = Astro.props;
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
+    </div>
   </div>
 
   <div
@@ -79,7 +89,7 @@ const { transparentStart = false } = Astro.props;
   >
     <Nav />
     <div class="px-4 pb-4">
-      <AfspraakButton kleur="inverted" class="w-full" />
+      <AfspraakButton kleur="sand" class="w-full" />
     </div>
   </div>
 </header>
@@ -109,6 +119,8 @@ const { transparentStart = false } = Astro.props;
   const iconOpen = document.getElementById("icon-open");
   const iconClose = document.getElementById("icon-close");
   const header = document.getElementById("site-header");
+  const navBar = document.getElementById("nav-bar");
+  const topBar = document.getElementById("top-bar");
   const logo = header?.querySelector<HTMLElement>("[data-logo]");
   const isTransparentStart = header?.dataset.transparentStart === "true";
 
@@ -146,18 +158,23 @@ const { transparentStart = false } = Astro.props;
   const updateScrollState = () => {
     const scrolled = window.scrollY > SCROLL_THRESHOLD;
 
+    header?.classList.toggle("shadow-lg", scrolled);
+
     if (isTransparentStart) {
-      header?.classList.toggle("bg-transparent", !scrolled);
-      header?.classList.toggle("bg-burgundy-dark", scrolled);
-      header?.classList.toggle("shadow-lg", scrolled);
+      // Transparant boven de hero, gevuld zodra je scrollt.
+      navBar?.classList.toggle("bg-transparent", !scrolled);
+      navBar?.classList.toggle("bg-burgundy", scrolled);
+      topBar?.classList.toggle("bg-transparent", !scrolled);
+      topBar?.classList.toggle("border-transparent", !scrolled);
+      topBar?.classList.toggle("bg-burgundy-dark", scrolled);
+      topBar?.classList.toggle("border-white/10", scrolled);
       // Zelfde twee klassen als Logo.astro zelf gebruikt voor
       // size="compact"/"large", zodat er geen tweede naam uit de pas loopt.
       logo?.classList.toggle("h-9", scrolled);
       logo?.classList.toggle("h-[3.375rem]", !scrolled);
     } else {
-      header?.classList.toggle("bg-burgundy-dark", scrolled);
-      header?.classList.toggle("shadow-lg", scrolled);
-      header?.classList.toggle("bg-burgundy", !scrolled);
+      navBar?.classList.toggle("bg-burgundy-dark", scrolled);
+      navBar?.classList.toggle("bg-burgundy", !scrolled);
     }
   };
 

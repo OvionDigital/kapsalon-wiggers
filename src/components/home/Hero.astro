@@ -13,7 +13,7 @@ import { hero } from "../../data/hero";
 }
 <section
   id="hero"
-  class="relative flex items-center bg-burgundy pt-(--header-height) pb-16 md:min-h-[max(75vh,36rem)] md:pb-0"
+  class="relative flex items-center bg-burgundy pt-(--header-height) pb-16 md:min-h-[max(82vh,40rem)] md:pb-0"
 >
   <div class="absolute inset-0">
     <Image
@@ -26,13 +26,19 @@ import { hero } from "../../data/hero";
       fetchpriority="high"
       class="h-full w-full object-cover"
     />
+    {
+      /* Twee lagen: een vrijwel neutrale donkere gradient voor het contrast,
+         plus een dunne burgundy-waas voor een heel klein beetje warmte. Zo is
+         de overlay donkergrijs/zwart in plaats van bruin. */
+    }
     <div
-      class="absolute inset-0 bg-gradient-to-b from-burgundy/70 via-burgundy/85 to-burgundy-dark/95"
+      class="absolute inset-0 bg-gradient-to-b from-overlay/55 via-overlay/72 to-overlay/90"
     >
     </div>
+    <div class="absolute inset-0 bg-burgundy/12 mix-blend-multiply"></div>
   </div>
 
-  <div class="container relative z-10 pt-8 md:pt-12">
+  <div class="container relative z-10 pt-8 md:pt-0 md:pb-0">
     <div class="max-w-2xl text-left">
       <h1 class="hero-animate hero-animate-1 text-white">
         {
@@ -63,7 +69,7 @@ import { hero } from "../../data/hero";
   <div class="pointer-events-none absolute inset-0 z-20 hidden md:block">
     <div class="container relative h-full">
       <HeroBoekingskaart
-        class="hero-animate hero-animate-3 pointer-events-auto absolute right-0 -bottom-10 w-88"
+        class="hero-animate hero-animate-3 pointer-events-auto absolute right-0 -bottom-10 w-80"
       />
     </div>
   </div>

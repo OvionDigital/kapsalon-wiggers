@@ -9,7 +9,7 @@
 interface Props {
   /** primair = gevuld (kleur bepaalt licht/donker), secundair = outline, zwevend = gevuld + schaduw voor de losse floating button. */
   variant?: "primair" | "secundair" | "zwevend";
-  /** Alleen relevant voor variant="primair"/"zwevend": solid = burgundy-op-licht, inverted = crème-op-donker, sand = sand-op-donker (extra contrast, bv. de hero). */
+  /** Alleen relevant voor variant="primair"/"zwevend": solid = burgundy-op-licht, inverted = crème-op-donker, sand = goud-op-donker (valt extra op, bv. de header). */
   kleur?: "solid" | "inverted" | "sand";
   size?: "default" | "lg" | "sm";
   label?: string;
@@ -46,7 +46,7 @@ const zwevendClass = variant === "zwevend" ? "shadow-lg shadow-black/20" : "";
 <a
   href="/contact#contactgegevens"
   data-afspraak-trigger
-  class={`btn ${variantClass} ${sizeClass} ${zwevendClass} hover:-translate-y-px ${className}`}
+  class={`btn ${variantClass} ${sizeClass} ${zwevendClass} ${className}`}
 >
   {label}
 </a>

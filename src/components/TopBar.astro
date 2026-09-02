@@ -1,0 +1,102 @@
+---
+/**
+ * TopBar — dunne balk boven de hoofdnavigatie met de kerngegevens voor het
+ * maken van een afspraak: telefoon en e-mail, plus de herinnering dat het
+ * alleen op afspraak is. Zit ín <header>, dus hij erft dezelfde
+ * achtergrond-states (transparant op de hero, burgundy na scrollen).
+ *
+ * Alleen vanaf md zichtbaar — op mobiel is er geen ruimte en staat dezelfde
+ * info in de boekingskaart en de footer.
+ */
+import { vestigingen } from "../data/vestigingen";
+import { getTelHref } from "../lib/salon";
+
+interface Props {
+  /** Boven een full-bleed hero start de balk transparant en wordt pas
+   *  donkerbruin zodra er gescrolld is (aangestuurd vanuit Header.astro). */
+  transparentStart?: boolean;
+}
+
+const { transparentStart = false } = Astro.props;
+const vestiging = vestigingen[0];
+---
+
+<div
+  id="top-bar"
+  class:list={[
+    "hidden border-b transition-[background-color,border-color] duration-(--transition-duration) md:block",
+    transparentStart ? "border-transparent bg-transparent" : "border-white/10 bg-burgundy-dark",
+  ]}
+>
+  <div
+    class="container flex items-center justify-between gap-4 py-2 text-small text-cream/90"
+  >
+    <span
+      class="inline-flex items-center gap-1.5 text-[0.7rem] font-semibold tracking-[0.12em] text-cream/75 uppercase"
+    >
+      <svg
+        width="13"
+        height="13"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+      Alleen op afspraak
+    </span>
+
+    <span class="flex items-center gap-6">
+      <a
+        href={`tel:${getTelHref(vestiging.telefoon)}`}
+        class="inline-flex items-center gap-1.5 font-semibold no-underline transition-colors duration-(--transition-duration) hover:text-white"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="shrink-0"
+          aria-hidden="true"
+        >
+          <path
+            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"
+          ></path>
+        </svg>
+        {vestiging.telefoon}
+      </a>
+      <a
+        href={`mailto:${vestiging.email}`}
+        class="inline-flex items-center gap-1.5 no-underline transition-colors duration-(--transition-duration) hover:text-white"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="shrink-0"
+          aria-hidden="true"
+        >
+          <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+        {vestiging.email}
+      </a>
+    </span>
+  </div>
+</div>

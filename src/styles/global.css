@@ -24,10 +24,13 @@
   --color-cream: #faf7f2; /* achtergrond */
   --color-sand: #efe6d8; /* diepere zandtint voor afwisselende secties */
   --color-gold: #e0a636; /* accentkleur */
+  --color-gold-dark: #c68a24; /* hover-variant van gold */
   --color-olive: #6f6b45; /* gedempt, warm derde accent */
   --color-burgundy: #4a2f1f; /* afgestemd op het donkerbruin uit het logo */
   --color-burgundy-dark: #3b2619; /* hover-variant */
   --color-ink: #241b14; /* koppen */
+  --color-overlay: #1a1714; /* donkergrijze, nauwelijks warme hero-overlay */
+  --color-charcoal: #2b2926; /* donkergrijs — topbar en tekst op de gouden knop */
   /* bodytekst — 9,9:1 op cream, 8,6:1 op sand. Let op: "body" botst met
      --text-body (font-size) onder dezelfde Tailwind text-* prefix. Gebruik
      hiervoor daarom altijd text-[var(--color-body)], nooit de kortere
@@ -99,7 +102,9 @@
   /* Spacing — sectie-ritme, vloeiend van ~4rem (mobiel) naar ~8rem (desktop) */
   --space-section: clamp(4rem, 2.5rem + 7vw, 8rem);
 
-  /* Header — vaste hoogte-aanname voor scroll-padding op anchors */
+  /* Header — vaste hoogte-aanname voor scroll-padding op anchors en de
+     bovenmarge van een full-bleed hero. Desktop is hoger door de TopBar
+     boven de navigatie (die op mobiel verborgen is). */
   --header-height: 6.5rem;
 
   /* Gedeelde transition-duration voor alle hover-/scroll-states */
@@ -107,6 +112,12 @@
 
   /* Duur van de entree-animatie (hero) */
   --duration-entrance: 700ms;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-height: 8.75rem;
+  }
 }
 
 /*
@@ -160,8 +171,8 @@
   /* Uitzondering: een full-bleed hero (homepage) of pagina-hero (overige
      pagina's) moet direct tegen de header aan sluiten tot één blok — geen
      extra ademruimte. */
-  main:has(> #hero),
-  main:has(> #page-hero) {
+  main:has(#hero),
+  main:has(#page-hero) {
     margin-top: 0;
   }
 
@@ -269,7 +280,18 @@
     transition:
       background-color var(--transition-duration) ease,
       color var(--transition-duration) ease,
+      box-shadow var(--transition-duration) ease,
       transform var(--transition-duration) ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -8px rgb(0 0 0 / 0.45);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+    box-shadow: none;
   }
 
   .btn:focus-visible {
@@ -310,16 +332,16 @@
     color: var(--color-burgundy);
   }
 
-  /* Gevulde variant voor gebruik op donkere/fotografische achtergronden waar
-     extra contrast nodig is — bv. de hero-CTA, die zich anders te veel met de
-     burgundy-overlay vermengde. */
+  /* Gouden variant voor gebruik op donkere achtergronden waar de knop juist
+     moet opvallen — bv. "Afspraak maken" in de header. */
   .btn-sand {
     background-color: var(--color-gold);
-    color: var(--color-burgundy);
+    color: var(--color-charcoal);
   }
 
   .btn-sand:hover {
-    background-color: var(--color-white);
+    background-color: var(--color-gold-dark);
+    color: var(--color-charcoal);
   }
 
   .label {

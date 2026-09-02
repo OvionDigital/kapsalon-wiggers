@@ -2,18 +2,28 @@
 import { vestigingen } from "../data/vestigingen";
 import { vandaagAfkorting, parseDagenNL } from "../lib/openingstijden";
 
+interface Props {
+  /** Strakkere regels (kleinere tekst, minder padding) — bv. de boekingskaart
+   *  in de hero, waar verticale ruimte schaars is. */
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
 const vestiging = vestigingen[0];
 const vandaag = vandaagAfkorting();
 ---
 
-<dl class="flex flex-col gap-1">
+<dl class:list={["flex flex-col", compact ? "gap-0.5" : "gap-1"]}>
   {
     vestiging.openingstijden.map((tijd) => {
       const isVandaag = parseDagenNL(tijd.dagen).includes(vandaag);
       return (
         <div
           class:list={[
-            "flex justify-between gap-4 rounded-sm px-3 py-2 text-(length:--text-body)",
+            "flex justify-between gap-4 rounded-sm",
+            compact
+              ? "px-2.5 py-1 text-small"
+              : "px-3 py-2 text-(length:--text-body)",
             isVandaag
               ? "bg-sand font-semibold text-ink"
               : "text-(--color-body)",

@@ -4,24 +4,32 @@ import introImage from "../../assets/intro-werkplek-echt.jpg";
 import { intro } from "../../data/home";
 ---
 
-<section class="relative overflow-hidden bg-linear-to-br from-sand/50 via-cream to-cream">
+{
+  /* isolate: zonder een eigen stacking-context zou de svg met -z-10 áchter de
+     eigen sectie-achtergrond vallen (en dus onzichtbaar zijn zodra het verloop
+     dekkend crème wordt — vandaar dat de lijn eerder halverwege "stopte"). */
+}
+<section class="relative isolate overflow-hidden bg-linear-to-br from-sand/50 via-cream to-cream">
   {
-    /* Dunne gebogen lijn als stille decoratie, echoot de bochten van de
-       blob-vorm hiernaast. preserveAspectRatio="none" laat 'm meestrekken
-       met de sectiebreedte; -z-10 + section:relative houdt 'm achter de
-       content. */
+    /* Gebogen lijn als stille decoratie, echoot de bochten van de blob-vorm
+       hiernaast. Vult de volle sectiebreedte (preserveAspectRatio="none") en
+       wordt van links naar rechts onthuld zodra de sectie in beeld komt — via
+       een clip-path op de svg, niet via een stroke-dash, zodat de volledige
+       lijn altijd de eindtoestand is. -z-10 + section:relative houdt 'm achter
+       de content. */
   }
   <svg
-    class="pointer-events-none absolute inset-0 -z-10 h-full w-full text-burgundy/15"
+    class="intro-lijn pointer-events-none absolute inset-0 -z-10 h-full w-full text-burgundy/45"
     viewBox="0 0 1200 300"
     preserveAspectRatio="none"
     aria-hidden="true"
   >
     <path
-      d="M-50,220 C 250,80 500,260 800,120 C 1000,20 1150,140 1300,80"
+      d="M-100,210 C 250,60 480,255 720,150 C 980,55 1120,200 1300,90"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
+      stroke-width="2.5"
+      stroke-linecap="round"
     ></path>
   </svg>
 
@@ -69,3 +77,44 @@ import { intro } from "../../data/home";
     </div>
   </div>
 </section>
+
+<style>
+  /* De onthul-animatie zit volledig in deze twee regels. Standaard (geen JS,
+     of prefers-reduced-motion) krijgt de svg geen clip-path en staat de lijn
+     dus meteen volledig in beeld. */
+  .intro-lijn.intro-lijn--animeer {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1.6s ease-out;
+  }
+
+  .intro-lijn.intro-lijn--animeer.is-visible {
+    clip-path: inset(0 0 0 0);
+  }
+</style>
+
+<script>
+  const svg = document.querySelector<SVGSVGElement>(".intro-lijn");
+  const wilAnimatie = window.matchMedia(
+    "(prefers-reduced-motion: no-preference)",
+  ).matches;
+
+  if (svg && wilAnimatie) {
+    // Verberg de lijn via een eigen frame, zodat de browser die begintoestand
+    // vastlegt vóór we 'm laten onthullen.
+    svg.classList.add("intro-lijn--animeer");
+
+    requestAnimationFrame(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            svg.classList.add("is-visible");
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.15 },
+      );
+      observer.observe(svg);
+    });
+  }
+</script>

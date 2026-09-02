@@ -7,26 +7,32 @@ export const intro = {
   ],
 };
 
+// Elke kaart licht één concrete behandeling per doelgroep uit, met de prijs uit
+// behandelingen.ts. De prijzen zijn de echte tarieven van de klant.
+// TODO: bij de klant checken of "Knippen" per doelgroep inderdaad de
+// populairste behandeling is die we hier willen tonen.
+// TODO: placeholder-foto's vervangen door echte portretten van een man, een
+// vrouw en een kind (afbeelding-sleutel = heren/dames/kinderen).
 export const behandelingen = [
   {
-    titel: "Heren",
-    beschrijving:
-      "Klassieke en moderne coupes, baardverzorging en een scheerbeurt zoals het hoort.",
-    vanafPrijs: 24,
+    doelgroep: "Heren",
+    behandeling: "Knippen",
+    prijs: "€ 28",
+    vanaf: true,
     afbeelding: "heren",
   },
   {
-    titel: "Dames",
-    beschrijving:
-      "Knippen, kleuren en stylen — persoonlijk advies voor een coupe die bij je past.",
-    vanafPrijs: 34,
+    doelgroep: "Dames",
+    behandeling: "Knippen",
+    prijs: "€ 31,50",
+    vanaf: true,
     afbeelding: "dames",
   },
   {
-    titel: "Kinderen",
-    beschrijving:
-      "Geduldig en ontspannen knippen, ook voor de allerkleinsten die voor het eerst komen.",
-    vanafPrijs: 18,
+    doelgroep: "Kinderen",
+    behandeling: "Knippen",
+    prijs: "€ 19",
+    vanaf: true,
     afbeelding: "kinderen",
   },
 ];

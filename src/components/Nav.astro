@@ -1,8 +1,8 @@
 ---
 const navItems = [
   { href: "/", label: "Home" },
-  { href: "/behandelingen-tarieven", label: "Behandelingen & Tarieven" },
-  { href: "/over-wiggers", label: "Over Wiggers" },
+  { href: "/behandelingen-tarieven", label: "Behandelingen" },
+  { href: "/over-wiggers", label: "Over ons" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -11,7 +11,7 @@ const currentPath = Astro.url.pathname;
 
 <nav aria-label="Hoofdmenu">
   <ul
-    class="flex flex-col gap-1 p-4 md:flex-row md:items-center md:gap-1 md:p-0"
+    class="flex flex-col gap-1 p-4 md:flex-row md:items-center md:gap-7 md:p-0"
   >
     {
       navItems.map((item) => {
@@ -25,10 +25,8 @@ const currentPath = Astro.url.pathname;
               href={item.href}
               aria-current={isActive ? "page" : undefined}
               class:list={[
-                "block rounded-full px-3 py-1.5 font-body text-label tracking-wide text-sand no-underline transition-colors duration-(--transition-duration) hover:bg-white/10 hover:text-white",
-                {
-                  "bg-white/15 font-semibold text-white": isActive,
-                },
+                "nav-link block rounded-full px-3 py-1.5 font-body text-label tracking-wide text-sand no-underline transition-colors duration-(--transition-duration) hover:text-white md:rounded-none md:px-1",
+                { "is-active text-white": isActive },
               ]}
             >
               {item.label}
@@ -39,3 +37,57 @@ const currentPath = Astro.url.pathname;
     }
   </ul>
 </nav>
+
+<style>
+  /* Desktop: geen pill-achtergrond meer, maar een fijne gouden lijn die vanuit
+     het midden opengroeit bij hover en blijft staan op de actieve pagina.
+     Rustig genoeg voor een kapperssite, net wat meer leven dan een platte rij
+     links. Mobiel houdt de simpele lijstweergave (media-query hieronder). */
+  @media (min-width: 768px) {
+    .nav-link {
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0.25rem;
+      right: 0.25rem;
+      bottom: 0.15rem;
+      height: 1.5px;
+      background-color: var(--color-gold);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform var(--transition-duration) ease;
+    }
+
+    .nav-link:hover::after,
+    .nav-link:focus-visible::after,
+    .nav-link.is-active::after {
+      transform: scaleX(1);
+    }
+
+    .nav-link.is-active {
+      font-weight: 600;
+    }
+  }
+
+  /* Mobiel: pill-achtergrond terug, want een onderlijn leest daar slecht in
+     een verticale lijst. */
+  @media (max-width: 767.98px) {
+    .nav-link:hover {
+      background-color: rgb(255 255 255 / 0.1);
+    }
+
+    .nav-link.is-active {
+      background-color: rgb(255 255 255 / 0.15);
+      font-weight: 600;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-link::after {
+      transition: none;
+    }
+  }
+</style>

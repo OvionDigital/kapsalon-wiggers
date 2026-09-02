@@ -25,17 +25,18 @@ import FacebookSectie from "../components/home/FacebookSectie.astro";
     <Intro />
 
     {
-      /* mix-blend-difference i.p.v. gewone opacity: het bestand is een
-         effen witte vorm, en wit-met-difference wordt op een donkere
-         achtergrond (de hero) juist licht, en op een lichte achtergrond
-         (Intro) donker — dus zichtbaar aan beide kanten van de grens, in
-         plaats van te verdwijnen zodra hij de cream sectie in loopt.
+      /* Lichte, witte vorm met mix-blend-soft-light: soft-light laat wit op de
+         donkere hero zachtjes oplichten tot een licht-grijze/witte afdruk die
+         met de foto meeademt in plaats van er als vlakke pleister overheen te
+         liggen. De subtiele drop-shadow geeft net genoeg reliëf
+         om de contouren leesbaar te houden. Op de lichte Intro-sectie zakt
+         de vorm vanzelf weg, wat hier prima is — hij hoort bij de hero.
          pointer-events-none zodat de knoppen eronder gewoon klikbaar
          blijven, ook waar de vorm eroverheen valt. Verborgen op mobiel: op
          een smal scherm zou zo'n groot element de tekst te veel verdringen. */
     }
     <svg
-      class="pointer-events-none absolute top-8 -left-24 z-20 hidden h-184 w-auto -rotate-6 text-white opacity-50 mix-blend-difference sm:block md:-left-36 md:h-216 lg:-left-44"
+      class="pointer-events-none absolute top-8 -left-24 z-20 hidden h-184 w-auto -rotate-6 text-white opacity-40 mix-blend-soft-light drop-shadow-[0_2px_16px_rgba(0,0,0,0.2)] sm:block md:-left-36 md:h-216 lg:-left-44"
       viewBox="0 0 512 512"
       fill="none"
       aria-hidden="true"
