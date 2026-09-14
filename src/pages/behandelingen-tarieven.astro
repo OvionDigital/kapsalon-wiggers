@@ -8,25 +8,37 @@ import AfspraakCta from "../components/home/AfspraakCta.astro";
 import GalerijGrid from "../components/GalerijGrid.astro";
 import Lightbox from "../components/Lightbox.astro";
 import heroImage from "../assets/behandelingen-hero-placeholder.jpg";
-import werkFoto1 from "../assets/werk-foto-1-placeholder.jpg";
-import werkFoto2 from "../assets/werk-foto-2-placeholder.jpg";
-import werkFoto3 from "../assets/werk-foto-3-placeholder.jpg";
-import behandelingHeren from "../assets/behandeling-heren-placeholder.jpg";
-import behandelingDames from "../assets/behandeling-dames-placeholder.jpg";
-import behandelingKinderen from "../assets/behandeling-kinderen-placeholder.jpg";
+import galerij1 from "../assets/zoe-applbaum-j0143fogXSg-unsplash.jpg";
+import galerij2 from "../assets/nate-johnston-tgPrIYnW3g4-unsplash.jpg";
+import galerij3 from "../assets/lindsay-cash-Md_DhaFsnCQ-unsplash.jpg";
+import galerij4 from "../assets/jason-leung-2seUdPQNy_I-unsplash.jpg";
+import galerij5 from "../assets/ionela-mat-lps3FolQ6Ro-unsplash.jpg";
+import galerij6 from "../assets/giorgio-trovato-wSpkThmoZQc-unsplash.jpg";
+import galerij7 from "../assets/farhad-ibrahimzade-V2HDOQTJh3o-unsplash.jpg";
+import galerij8 from "../assets/agustin-fernandez-Znyjl9pbaUs-unsplash.jpg";
+import galerij9 from "../assets/adam-winger-fI-TKWjKYls-unsplash.jpg";
 import { categorieen } from "../data/behandelingen";
+import { galerij } from "../data/home";
 import { getSalonId } from "../lib/salon";
 
 const [heren, dames, kinderen, overig] = categorieen;
 
-const galerijItems = [
-  { src: werkFoto1, alt: "Sfeerbeeld van een knipbeurt in uitvoering" },
-  { src: behandelingHeren, alt: "Sfeerbeeld van een herenbehandeling" },
-  { src: werkFoto2, alt: "Sfeerbeeld van de salon tijdens een behandeling" },
-  { src: behandelingDames, alt: "Sfeerbeeld van een damesbehandeling" },
-  { src: behandelingKinderen, alt: "Sfeerbeeld van een kinderbehandeling" },
-  { src: werkFoto3, alt: "Sfeerbeeld van het vakwerk in de salon" },
-];
+const galerijAfbeeldingen = {
+  "galerij-1": galerij1,
+  "galerij-2": galerij2,
+  "galerij-3": galerij3,
+  "galerij-4": galerij4,
+  "galerij-5": galerij5,
+  "galerij-6": galerij6,
+  "galerij-7": galerij7,
+  "galerij-8": galerij8,
+  "galerij-9": galerij9,
+} as const;
+
+const galerijItems = galerij.map((item) => ({
+  src: galerijAfbeeldingen[item.bestand as keyof typeof galerijAfbeeldingen],
+  alt: item.alt,
+}));
 
 // JSON-LD: OfferCatalog per categorie, gekoppeld aan de HairSalon uit
 // BaseLayout via provider.@id.
@@ -62,7 +74,6 @@ const offerCatalog = {
   extraJsonLd={[offerCatalog]}
 >
   <PageHero
-    eyebrow="Tarieven"
     title="Behandelingen & Tarieven"
     intro="Duidelijke prijzen voor heren, dames en kinderen — met altijd tijd voor advies vooraf."
     image={heroImage}

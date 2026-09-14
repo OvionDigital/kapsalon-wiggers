@@ -1,15 +1,11 @@
 @import "tailwindcss";
 @import "./grid.css";
 
-/* Lokaal gebundelde webfonts (fontsource) — geen Google Fonts CDN, geen
-   cookies of trackers van derden. Newsreader is een variabele font (gewichten
-   200–800 in één bestand) en sluit qua karakter aan bij de Times New Roman
-   uit het bestaande logo, maar is getekend voor schermgebruik. */
+/* Newsreader Variable blijft als fallback in --font-heading achter Benton
+   Modern Display (zie BaseLayout.astro voor de Adobe Fonts-link). */
 @import "@fontsource-variable/newsreader/standard.css";
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
+/* Bodyfont — lokaal aangeleverde woff/woff2 (src/fonts/), geen externe CDN. */
+@import "../fonts/switzer.css";
 
 /*
  * Design tokens — huisstijl van Kapsalon Wiggers.
@@ -21,7 +17,7 @@
 @theme {
   /* Colors — warme, ambachtelijke barbierspalet. Contrastwaarden zijn
      handmatig geverifieerd (WCAG 2.1 relative luminance), zie toelichting. */
-  --color-cream: #faf7f2; /* achtergrond */
+  --color-cream: #eeebe4; /* achtergrond — ook de navbar-achtergrond */
   --color-sand: #efe6d8; /* diepere zandtint voor afwisselende secties */
   --color-gold: #e0a636; /* accentkleur */
   --color-gold-dark: #c68a24; /* hover-variant van gold */
@@ -31,21 +27,21 @@
   --color-ink: #241b14; /* koppen */
   --color-overlay: #1a1714; /* donkergrijze, nauwelijks warme hero-overlay */
   --color-charcoal: #2b2926; /* donkergrijs — topbar en tekst op de gouden knop */
-  /* bodytekst — 9,9:1 op cream, 8,6:1 op sand. Let op: "body" botst met
+  /* bodytekst — 8,9:1 op cream, 8,6:1 op sand. Let op: "body" botst met
      --text-body (font-size) onder dezelfde Tailwind text-* prefix. Gebruik
      hiervoor daarom altijd text-[var(--color-body)], nooit de kortere
      text-body utility (die verwijst naar de font-size-token). */
   --color-body: #4a3c2e;
-  --color-muted: #6b5d4c; /* secundaire tekst — 6,0:1 op cream, 5,2:1 op sand */
+  --color-muted: #6b5d4c; /* secundaire tekst — 5,3:1 op cream, 5,2:1 op sand */
   --color-white: #ffffff;
   --color-border: #ddd3c0;
   --color-hover: var(--color-burgundy); /* focus-ring kleur */
 
   /* Fonts — lokaal gebundeld via @fontsource */
-  --font-heading: "Newsreader Variable", Georgia, "Times New Roman", serif;
+  --font-heading: "benton-modern-display", "Newsreader Variable", Georgia, "Times New Roman", serif;
   --font-body:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
+    "Switzer", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
 
   /* Typeschaal — grote sprong tussen koppen en body, vloeiend via clamp() */
   --text-display: clamp(2.75rem, 2rem + 3.75vw, 5.5rem);
@@ -193,7 +189,9 @@
   h5,
   h6 {
     margin: 0;
-    font-weight: 500;
+    /* Benton Modern Display levert alleen Regular (400) en Bold (700) — geen
+       aparte Light. 400 is hier de "lichte" variant. */
+    font-weight: 400;
     letter-spacing: -0.01em;
     font-family: var(--font-heading);
     color: var(--color-ink);

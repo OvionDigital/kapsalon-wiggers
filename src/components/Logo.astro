@@ -10,19 +10,11 @@ import path from "node:path";
 
 interface Props {
   variant?: "dark" | "light";
-  /** large = 150% van compact (3.375rem i.p.v. 2.25rem) — voor de header
-   *  boven een full-bleed hero, die groot start en compact wordt na scrollen. */
-  size?: "compact" | "large";
   class?: string;
 }
 
-const {
-  variant = "dark",
-  size = "compact",
-  class: className = "",
-} = Astro.props;
+const { variant = "dark", class: className = "" } = Astro.props;
 const wordmarkColor = variant === "light" ? "text-white" : "text-ink";
-const sizeClass = size === "large" ? "h-[3.375rem]" : "h-9";
 
 const logoSvg = fs.readFileSync(
   path.join(process.cwd(), "public/images/Logo-Kapsalon-Wiggers.svg"),
@@ -37,7 +29,7 @@ const logoSvg = fs.readFileSync(
 >
   <span
     data-logo
-    class={`w-auto origin-left transition-[height] duration-(--transition-duration) ease-out [&>svg]:h-full [&>svg]:w-auto ${sizeClass}`}
+    class="h-9 w-auto [&>svg]:h-full [&>svg]:w-auto"
     aria-hidden="true"
     set:html={logoSvg}
   />

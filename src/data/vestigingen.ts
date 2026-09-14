@@ -46,4 +46,8 @@ export const foundingLocation = "Kilder";
 export const reviews = {
   score: 4.8,
   aantal: 86,
+  // TODO: link naar het Google-bedrijfsprofiel invullen (bv.
+  // https://g.page/r/...), dan verschijnt de "Bekijk alle reviews op
+  // Google"-link vanzelf onder de reviews-sectie.
+  googleUrl: "",
 };

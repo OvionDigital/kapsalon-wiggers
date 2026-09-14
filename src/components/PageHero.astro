@@ -3,14 +3,13 @@ import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 
 interface Props {
-  eyebrow: string;
   title: string;
   intro: string;
   image: ImageMetadata;
   imageAlt: string;
 }
 
-const { eyebrow, title, intro, image, imageAlt } = Astro.props;
+const { title, intro, image, imageAlt } = Astro.props;
 ---
 
 <section
@@ -34,8 +33,7 @@ const { eyebrow, title, intro, image, imageAlt } = Astro.props;
 
   <div class="container relative z-10">
     <div class="max-w-2xl text-left">
-      <p class="label text-sand">{eyebrow}</p>
-      <h1 class="mt-3 text-white">{title}</h1>
+      <h1 class="text-white">{title}</h1>
       <p class="mt-4 text-(length:--text-body) text-sand">{intro}</p>
     </div>
   </div>

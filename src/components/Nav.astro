@@ -25,8 +25,8 @@ const currentPath = Astro.url.pathname;
               href={item.href}
               aria-current={isActive ? "page" : undefined}
               class:list={[
-                "nav-link block rounded-full px-3 py-1.5 font-body text-label tracking-wide text-sand no-underline transition-colors duration-(--transition-duration) hover:text-white md:rounded-none md:px-1",
-                { "is-active text-white": isActive },
+                "nav-link block rounded-full px-3 py-1.5 font-body text-label tracking-wide text-(--color-body) no-underline transition-colors duration-(--transition-duration) hover:text-ink md:rounded-none md:px-1",
+                { "is-active text-ink": isActive },
               ]}
             >
               {item.label}
@@ -76,11 +76,11 @@ const currentPath = Astro.url.pathname;
      een verticale lijst. */
   @media (max-width: 767.98px) {
     .nav-link:hover {
-      background-color: rgb(255 255 255 / 0.1);
+      background-color: rgb(0 0 0 / 0.05);
     }
 
     .nav-link.is-active {
-      background-color: rgb(255 255 255 / 0.15);
+      background-color: rgb(0 0 0 / 0.08);
       font-weight: 600;
     }
   }

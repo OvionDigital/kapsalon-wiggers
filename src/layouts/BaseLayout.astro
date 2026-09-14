@@ -22,10 +22,6 @@ interface Props {
   /** Extra JSON-LD objecten (bv. een OfferCatalog) die aan de HairSalon
    *  hieronder gekoppeld kunnen worden via SALON_ID. */
   extraJsonLd?: object[];
-  /** Header start transparant met een grote logo boven een full-bleed hero,
-   *  en wordt pas na het scrollen compact en gevuld. Alleen voor pagina's met
-   *  zo'n hero (nu de homepage). */
-  transparentHeader?: boolean;
 }
 
 const {
@@ -33,7 +29,6 @@ const {
   description = `Kapsalon Wiggers — ${payoff.toLowerCase()}. Dames- en herenkapsalon in Wehl.`,
   ogImage = "/og-image.jpg",
   extraJsonLd = [],
-  transparentHeader = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -92,6 +87,16 @@ const structuredData = {
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
+    {
+      /* Kopfont via Adobe Fonts (Typekit) — bewuste uitzondering op de
+         trackervrij-eis uit CLAUDE.md, akkoord met de klant/Simon op
+         2026-09-14. De licentie staat zelf hosten niet toe, dus dit moet via
+         hun CDN; daarmee is de site niet meer volledig scriptvrij en hoort er
+         eigenlijk weer een cookie-melding bij. CLAUDE.md is hier nog niet op
+         bijgewerkt. */
+    }
+    <link rel="preconnect" href="https://use.typekit.net" crossorigin />
+    <link rel="stylesheet" href="https://use.typekit.net/mlv3wzp.css" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Open Graph -->
@@ -119,7 +124,7 @@ const structuredData = {
   <body class="flex min-h-dvh flex-col">
     <a href="#main" class="skip-link">Ga direct naar de inhoud</a>
     <BreakpointIndicator />
-    <Header transparentStart={transparentHeader} />
+    <Header />
     <main id="main" class="flex-1">
       <slot />
     </main>

@@ -3,89 +3,70 @@ import Logo from "./Logo.astro";
 import Nav from "./Nav.astro";
 import AfspraakButton from "./AfspraakButton.astro";
 import TopBar from "./TopBar.astro";
-
-interface Props {
-  /** Start transparant met een grote logo (bv. boven een full-bleed hero) en
-   *  wordt pas na het scrollen compact en gevuld. Standaard uit: overige
-   *  pagina's tonen de header meteen in de normale, compacte staat. */
-  transparentStart?: boolean;
-}
-
-const { transparentStart = false } = Astro.props;
 ---
 
 <header
   id="site-header"
-  data-transparent-start={transparentStart}
-  class:list={[
-    "header-enter top-0 z-40 transition-shadow duration-(--transition-duration)",
-    transparentStart ? "fixed inset-x-0" : "sticky",
-  ]}
+  class="header-enter sticky top-0 z-40 bg-cream transition-shadow duration-(--transition-duration)"
 >
-  <TopBar transparentStart={transparentStart} />
+  <TopBar />
 
-  <div
-    id="nav-bar"
-    class:list={[
-      "transition-[background-color] duration-(--transition-duration)",
-      transparentStart ? "bg-transparent" : "bg-burgundy",
-    ]}
-  >
+  <div id="nav-bar" class="border-b border-border bg-cream">
     <div class="container flex items-center justify-between py-5">
-    <Logo variant="light" size={transparentStart ? "large" : "compact"} />
+      <Logo variant="dark" />
 
-    <div class="hidden items-center gap-6 md:flex">
-      <Nav />
-      <AfspraakButton kleur="sand" />
-    </div>
+      <div class="hidden items-center gap-6 md:flex">
+        <Nav />
+        <AfspraakButton kleur="sand" />
+      </div>
 
-    <button
-      type="button"
-      id="menu-toggle"
-      class="inline-flex items-center justify-center rounded-sm p-2 text-cream md:hidden" 
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-    >
-      <span class="sr-only">Menu openen</span>
-      <svg
-        id="icon-open"
-        xmlns="http://www.w3.org/2000/svg"
-        width="28"
-        height="28"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        aria-hidden="true"
+      <button
+        type="button"
+        id="menu-toggle"
+        class="inline-flex items-center justify-center rounded-sm p-2 text-ink md:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
       >
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <line x1="3" y1="12" x2="21" y2="12"></line>
-        <line x1="3" y1="18" x2="21" y2="18"></line>
-      </svg>
-      <svg
-        id="icon-close"
-        xmlns="http://www.w3.org/2000/svg"
-        width="28"
-        height="28"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        class="hidden"
-        aria-hidden="true"
-      >
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
+        <span class="sr-only">Menu openen</span>
+        <svg
+          id="icon-open"
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <svg
+          id="icon-close"
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          class="hidden"
+          aria-hidden="true"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
   </div>
 
   <div
     id="mobile-menu"
-    class="hidden border-t border-white/15 bg-burgundy-dark md:hidden"
+    class="hidden border-t border-border bg-cream md:hidden"
   >
     <Nav />
     <div class="px-4 pb-4">
@@ -110,7 +91,6 @@ const { transparentStart = false } = Astro.props;
   .header-enter {
     animation: header-fade-in var(--duration-entrance) ease-out both;
   }
-
 </style>
 
 <script>
@@ -119,10 +99,7 @@ const { transparentStart = false } = Astro.props;
   const iconOpen = document.getElementById("icon-open");
   const iconClose = document.getElementById("icon-close");
   const header = document.getElementById("site-header");
-  const navBar = document.getElementById("nav-bar");
   const topBar = document.getElementById("top-bar");
-  const logo = header?.querySelector<HTMLElement>("[data-logo]");
-  const isTransparentStart = header?.dataset.transparentStart === "true";
 
   const closeMenu = () => {
     toggle?.setAttribute("aria-expanded", "false");
@@ -153,29 +130,31 @@ const { transparentStart = false } = Astro.props;
     if (link) closeMenu();
   });
 
-  const SCROLL_THRESHOLD = 100;
+  // Topbar schuift weg zodra je naar beneden scrolt, en komt terug zodra je
+  // omhoog scrolt — de hoofdnav (logo + menu) blijft altijd zichtbaar.
+  // Vlak bovenaan de pagina staat de topbar sowieso altijd open, zodat hij
+  // niet knippert bij de eerste paar pixels scroll.
+  const SHADOW_THRESHOLD = 20;
+  const TOPBAR_THRESHOLD = 80;
+  let lastY = window.scrollY;
 
   const updateScrollState = () => {
-    const scrolled = window.scrollY > SCROLL_THRESHOLD;
+    const y = window.scrollY;
 
-    header?.classList.toggle("shadow-lg", scrolled);
+    header?.classList.toggle("shadow-lg", y > SHADOW_THRESHOLD);
 
-    if (isTransparentStart) {
-      // Transparant boven de hero, gevuld zodra je scrollt.
-      navBar?.classList.toggle("bg-transparent", !scrolled);
-      navBar?.classList.toggle("bg-burgundy", scrolled);
-      topBar?.classList.toggle("bg-transparent", !scrolled);
-      topBar?.classList.toggle("border-transparent", !scrolled);
-      topBar?.classList.toggle("bg-burgundy-dark", scrolled);
-      topBar?.classList.toggle("border-white/10", scrolled);
-      // Zelfde twee klassen als Logo.astro zelf gebruikt voor
-      // size="compact"/"large", zodat er geen tweede naam uit de pas loopt.
-      logo?.classList.toggle("h-9", scrolled);
-      logo?.classList.toggle("h-[3.375rem]", !scrolled);
-    } else {
-      navBar?.classList.toggle("bg-burgundy-dark", scrolled);
-      navBar?.classList.toggle("bg-burgundy", !scrolled);
+    if (topBar) {
+      const scrollingDown = y > lastY;
+      if (y <= TOPBAR_THRESHOLD) {
+        topBar.classList.remove("top-bar--hidden");
+      } else if (scrollingDown) {
+        topBar.classList.add("top-bar--hidden");
+      } else {
+        topBar.classList.remove("top-bar--hidden");
+      }
     }
+
+    lastY = y;
   };
 
   updateScrollState();

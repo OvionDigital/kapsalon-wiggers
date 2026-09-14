@@ -1,6 +1,9 @@
 ---
 import HeroBoekingskaart from "./home/HeroBoekingskaart.astro";
 import { afspraak } from "../data/afspraak";
+import { vestigingen } from "../data/vestigingen";
+
+const vestiging = vestigingen[0];
 ---
 
 <dialog
@@ -32,8 +35,7 @@ import { afspraak } from "../data/afspraak";
 
     <h2 id="afspraak-titel" class="pr-10 text-h3">Maak een afspraak</h2>
     <p class="mt-2 text-small text-muted">
-      We werken nog niet met online boeken, een afspraak maken gaat
-      telefonisch of via de mail.
+      We werken alleen op afspraak, bel of mail ons om een afspraak te maken.
     </p>
 
     {
@@ -61,15 +63,15 @@ import { afspraak } from "../data/afspraak";
       /* Zelfde kaart als in de hero — bare, want de padding/achtergrond
          komen hier al van de dialoog zelf. */
     }
-    <HeroBoekingskaart bare class="mt-6" />
+    <HeroBoekingskaart bare metBadge={false} compacteTijden={false} class="mt-6" />
 
     <p class="mt-6 border-t border-border pt-6 text-small text-muted">
-      Liever mailen?{" "}
+      Liever mailen? Stuur een mail naar{" "}
       <a
-        href="/contact#contactgegevens"
+        href={`mailto:${vestiging.email}`}
         class="font-semibold text-burgundy hover:underline"
       >
-        Ga naar het contactformulier
+        {vestiging.email}
       </a>
     </p>
   </div>

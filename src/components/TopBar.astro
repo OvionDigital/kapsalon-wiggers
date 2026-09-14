@@ -1,9 +1,9 @@
 ---
 /**
  * TopBar — dunne balk boven de hoofdnavigatie met de kerngegevens voor het
- * maken van een afspraak: telefoon en e-mail, plus de herinnering dat het
- * alleen op afspraak is. Zit ín <header>, dus hij erft dezelfde
- * achtergrond-states (transparant op de hero, burgundy na scrollen).
+ * maken van een afspraak: telefoon en e-mail. Schuift dicht bij het scrollen
+ * naar beneden en komt terug bij scrollen naar boven (zie Header.astro), via
+ * een max-height/opacity-overgang op deze wrapper.
  *
  * Alleen vanaf md zichtbaar — op mobiel is er geen ruimte en staat dezelfde
  * info in de boekingskaart en de footer.
@@ -11,28 +11,18 @@
 import { vestigingen } from "../data/vestigingen";
 import { getTelHref } from "../lib/salon";
 
-interface Props {
-  /** Boven een full-bleed hero start de balk transparant en wordt pas
-   *  donkerbruin zodra er gescrolld is (aangestuurd vanuit Header.astro). */
-  transparentStart?: boolean;
-}
-
-const { transparentStart = false } = Astro.props;
 const vestiging = vestigingen[0];
 ---
 
 <div
   id="top-bar"
-  class:list={[
-    "hidden border-b transition-[background-color,border-color] duration-(--transition-duration) md:block",
-    transparentStart ? "border-transparent bg-transparent" : "border-white/10 bg-burgundy-dark",
-  ]}
+  class="top-bar hidden border-b border-border bg-cream md:block"
 >
   <div
-    class="container flex items-center justify-between gap-4 py-2 text-small text-cream/90"
+    class="container flex items-center justify-between gap-4 py-2 text-small text-muted"
   >
     <span
-      class="inline-flex items-center gap-1.5 text-[0.7rem] font-semibold tracking-[0.12em] text-cream/75 uppercase"
+      class="inline-flex items-center gap-1.5 text-[0.7rem] font-semibold tracking-[0.12em] uppercase"
     >
       <svg
         width="13"
@@ -56,7 +46,7 @@ const vestiging = vestigingen[0];
     <span class="flex items-center gap-6">
       <a
         href={`tel:${getTelHref(vestiging.telefoon)}`}
-        class="inline-flex items-center gap-1.5 font-semibold no-underline transition-colors duration-(--transition-duration) hover:text-white"
+        class="inline-flex items-center gap-1.5 font-semibold no-underline transition-colors duration-(--transition-duration) hover:text-ink"
       >
         <svg
           width="14"
@@ -78,7 +68,7 @@ const vestiging = vestigingen[0];
       </a>
       <a
         href={`mailto:${vestiging.email}`}
-        class="inline-flex items-center gap-1.5 no-underline transition-colors duration-(--transition-duration) hover:text-white"
+        class="inline-flex items-center gap-1.5 no-underline transition-colors duration-(--transition-duration) hover:text-ink"
       >
         <svg
           width="14"
@@ -100,3 +90,27 @@ const vestiging = vestigingen[0];
     </span>
   </div>
 </div>
+
+<style>
+  .top-bar {
+    max-height: 3rem;
+    overflow: hidden;
+    opacity: 1;
+    transition:
+      max-height var(--transition-duration) ease,
+      opacity var(--transition-duration) ease,
+      border-color var(--transition-duration) ease;
+  }
+
+  .top-bar.top-bar--hidden {
+    max-height: 0;
+    opacity: 0;
+    border-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .top-bar {
+      transition: none;
+    }
+  }
+</style>

@@ -1,12 +1,15 @@
 ---
 import GalerijGrid from "../GalerijGrid.astro";
 import Lightbox from "../Lightbox.astro";
-import galerij1 from "../../assets/galerij-1-placeholder.jpg";
-import galerij2 from "../../assets/galerij-2-placeholder.jpg";
-import galerij3 from "../../assets/galerij-3-placeholder.jpg";
-import galerij4 from "../../assets/galerij-4-placeholder.jpg";
-import galerij5 from "../../assets/galerij-5-placeholder.jpg";
-import galerij6 from "../../assets/galerij-6-placeholder.jpg";
+import galerij1 from "../../assets/zoe-applbaum-j0143fogXSg-unsplash.jpg";
+import galerij2 from "../../assets/nate-johnston-tgPrIYnW3g4-unsplash.jpg";
+import galerij3 from "../../assets/lindsay-cash-Md_DhaFsnCQ-unsplash.jpg";
+import galerij4 from "../../assets/jason-leung-2seUdPQNy_I-unsplash.jpg";
+import galerij5 from "../../assets/ionela-mat-lps3FolQ6Ro-unsplash.jpg";
+import galerij6 from "../../assets/giorgio-trovato-wSpkThmoZQc-unsplash.jpg";
+import galerij7 from "../../assets/farhad-ibrahimzade-V2HDOQTJh3o-unsplash.jpg";
+import galerij8 from "../../assets/agustin-fernandez-Znyjl9pbaUs-unsplash.jpg";
+import galerij9 from "../../assets/adam-winger-fI-TKWjKYls-unsplash.jpg";
 import { galerij } from "../../data/home";
 
 const afbeeldingen = {
@@ -16,6 +19,9 @@ const afbeeldingen = {
   "galerij-4": galerij4,
   "galerij-5": galerij5,
   "galerij-6": galerij6,
+  "galerij-7": galerij7,
+  "galerij-8": galerij8,
+  "galerij-9": galerij9,
 } as const;
 
 const items = galerij.map((item) => ({
