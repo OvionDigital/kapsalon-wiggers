@@ -1,6 +1,6 @@
 ---
 import { reviews } from "../../data/vestigingen";
-import { uitgelichteReviews } from "../../data/home";
+import { uitgelichteReviews, reviewsSectie } from "../../data/home";
 
 // Kleurcirkel-avatar i.p.v. een (verzonnen) profielfoto — zie de TODO bij
 // uitgelichteReviews. Rouleert over een klein palet uit de bestaande tokens.
@@ -16,199 +16,308 @@ function initialen(naam: string) {
 }
 ---
 
-<section class="bg-cream">
+<section class="bg-cream overflow-x-hidden">
   <div class="container">
-    <div class="flex flex-col items-center text-center">
-      {
-        /* Google-"G" als herkenningspunt — lokale inline svg, geen externe
-           afbeelding of script, dus blijft trackervrij. */
-      }
-      <svg width="32" height="32" viewBox="0 0 48 48" aria-hidden="true">
-        <path
-          fill="#4285F4"
-          d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"
-        ></path>
-        <path
-          fill="#34A853"
-          d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"
-        ></path>
-        <path
-          fill="#FBBC05"
-          d="M11.69 28.18A13.98 13.98 0 0 1 10.93 24c0-1.45.25-2.87.76-4.18v-5.7H4.34A21.99 21.99 0 0 0 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"
-        ></path>
-        <path
-          fill="#EA4335"
-          d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"
-        ></path>
-      </svg>
-
-      <span class="mt-3 text-display font-heading font-semibold text-ink">
-        {reviews.score}
-      </span>
-      <span class="flex items-center gap-1" aria-hidden="true">
+    <div class="grid gap-10 md:grid-cols-12 md:items-center md:gap-14">
+      <div class="md:col-span-4">
         {
-          Array.from({ length: 5 }).map(() => (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-gold">
-              <path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6 2.9-6.6z" />
-            </svg>
-          ))
+          /* Google-"G" als herkenningspunt — lokale inline svg, geen externe
+             afbeelding of script, dus blijft trackervrij. */
         }
-      </span>
-      <p class="text-small text-muted">uit {reviews.aantal} Google-reviews</p>
-      {
-        reviews.googleUrl && (
-          <a
-            href={reviews.googleUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-3 text-small font-semibold text-burgundy hover:underline"
-          >
-            Bekijk alle reviews op Google
-          </a>
-        )
-      }
-    </div>
-
-    <div class="relative mt-12">
-      <div
-        id="review-track"
-        class="flex cursor-grab snap-x snap-mandatory gap-6 overflow-x-auto pb-2 select-none active:cursor-grabbing"
-      >
-        {
-          uitgelichteReviews.map((review, i) => (
-            <blockquote class="relative w-[82%] shrink-0 snap-start overflow-hidden rounded-md bg-sand p-6 text-left sm:w-[46%] lg:w-[31%]">
-              <svg
-                width="40"
-                height="40"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="absolute top-4 right-4 text-burgundy/10"
-                aria-hidden="true"
-              >
-                <path d="M9.5 7C6.46 7 4 9.46 4 12.5S6.46 18 9.5 18c.34 0 .67-.03 1-.09-.53 1.6-2.03 2.84-3.85 3.05a.5.5 0 0 0 .07 1c3.3-.38 5.78-3.2 5.78-6.6V12.5C12.5 9.46 12.54 7 9.5 7Zm9 0C15.46 7 13 9.46 13 12.5S15.46 18 18.5 18c.34 0 .67-.03 1-.09-.53 1.6-2.03 2.84-3.85 3.05a.5.5 0 0 0 .07 1c3.3-.38 5.78-3.2 5.78-6.6V12.5C21.5 9.46 21.54 7 18.5 7Z" />
-              </svg>
-
-              <div class="flex items-center gap-3">
-                <span
-                  class:list={[
-                    "flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-small font-semibold text-white",
-                    avatarKleuren[i % avatarKleuren.length],
-                  ]}
-                  aria-hidden="true"
-                >
-                  {initialen(review.naam)}
-                </span>
-                <div>
-                  <cite class="block text-small font-semibold text-ink not-italic">
-                    {review.naam}
-                  </cite>
-                  <span class="text-small text-muted">{review.datum}</span>
-                </div>
-              </div>
-
-              <span class="mt-4 flex items-center gap-0.5" aria-hidden="true">
-                {Array.from({ length: 5 }).map((_, si) => (
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    class:list={[
-                      si < review.sterren ? "text-gold" : "text-border",
-                    ]}
-                  >
-                    <path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6 2.9-6.6z" />
-                  </svg>
-                ))}
+        <div class="flex items-center gap-3">
+          <svg width="28" height="28" viewBox="0 0 48 48" aria-hidden="true" class="shrink-0">
+            <path
+              fill="#4285F4"
+              d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"
+            ></path>
+            <path
+              fill="#34A853"
+              d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"
+            ></path>
+            <path
+              fill="#FBBC05"
+              d="M11.69 28.18A13.98 13.98 0 0 1 10.93 24c0-1.45.25-2.87.76-4.18v-5.7H4.34A21.99 21.99 0 0 0 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"
+            ></path>
+            <path
+              fill="#EA4335"
+              d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"
+            ></path>
+          </svg>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-h4 font-heading font-semibold text-burgundy">
+                {reviews.score}
               </span>
-              <p class="mt-3 text-(length:--text-body) text-(--color-body)">
-                {review.tekst}
-              </p>
-            </blockquote>
-          ))
+              <span class="flex items-center gap-0.5" aria-hidden="true">
+                {
+                  Array.from({ length: 5 }).map(() => (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-gold">
+                      <path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6 2.9-6.6z" />
+                    </svg>
+                  ))
+                }
+              </span>
+            </div>
+            <p class="text-small text-muted">uit {reviews.aantal} Google-reviews</p>
+          </div>
+        </div>
+        {
+          reviews.googleUrl && (
+            <a
+              href={reviews.googleUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-2 inline-block text-small font-semibold text-burgundy hover:underline"
+            >
+              Bekijk alle reviews op Google
+            </a>
+          )
         }
+
+        <span
+          class="mt-8 flex w-fit items-center gap-2 rounded-full bg-gold px-4 py-2 text-small font-semibold text-charcoal"
+        >
+          <span class="h-1 w-1 rounded-full bg-charcoal" aria-hidden="true"
+          ></span>{reviewsSectie.eyebrow}
+        </span>
+        <h2 class="mt-3">
+          {reviewsSectie.headingPrefix}<em class="text-gold italic"
+            >{reviewsSectie.headingAccent}</em
+          >
+        </h2>
+        <p class="mt-4 text-(length:--text-body) text-(--color-body)">
+          {reviewsSectie.paragraaf}
+        </p>
       </div>
 
-      <button
-        type="button"
-        id="review-vorige"
-        aria-label="Vorige reviews"
-        class="absolute top-1/2 left-0 hidden h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-cream text-ink shadow-md ring-1 ring-border transition-colors duration-(--transition-duration) hover:bg-sand md:inline-flex"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-      </button>
-      <button
-        type="button"
-        id="review-volgende"
-        aria-label="Volgende reviews"
-        class="absolute top-1/2 right-0 hidden h-11 w-11 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-cream text-ink shadow-md ring-1 ring-border transition-colors duration-(--transition-duration) hover:bg-sand md:inline-flex"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </button>
+      <div class="md:col-span-8">
+        {
+          /* Voor een echte oneindige loop staan hier drie identieke kopieën
+             van de reeks achter elkaar (zie het script): de rij begint
+             gescrold naar het begin van de middelste kopie, en zodra je
+             door slepen/scrollen/autoplay bij de naad met een buurkopie
+             komt, springt scrollLeft ongemerkt (zonder animatie) een hele
+             kopie-breedte terug — omdat de content identiek is, valt die
+             sprong niet op en lijkt het net of de rij nooit stopt. Alleen
+             de middelste, "echte" kopie is voor screenreaders te zien;
+             de andere twee zijn puur visueel en daarom aria-hidden. */
+        }
+        <div
+          id="review-track"
+          class="flex cursor-grab gap-6 overflow-x-auto select-none active:cursor-grabbing"
+        >
+          {
+            [0, 1, 2].map((kopieIndex) => (
+              <div
+                class="flex shrink-0 gap-6"
+                data-review-kopie
+                aria-hidden={kopieIndex === 1 ? undefined : "true"}
+              >
+                {uitgelichteReviews.map((review, i) => (
+                  <blockquote class="relative w-72 shrink-0 overflow-hidden rounded-md bg-white p-6 text-left sm:w-96">
+                    <svg
+                      width="40"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="absolute top-4 right-4 text-burgundy/10"
+                      aria-hidden="true"
+                    >
+                      <path d="M9.5 7C6.46 7 4 9.46 4 12.5S6.46 18 9.5 18c.34 0 .67-.03 1-.09-.53 1.6-2.03 2.84-3.85 3.05a.5.5 0 0 0 .07 1c3.3-.38 5.78-3.2 5.78-6.6V12.5C12.5 9.46 12.54 7 9.5 7Zm9 0C15.46 7 13 9.46 13 12.5S15.46 18 18.5 18c.34 0 .67-.03 1-.09-.53 1.6-2.03 2.84-3.85 3.05a.5.5 0 0 0 .07 1c3.3-.38 5.78-3.2 5.78-6.6V12.5C21.5 9.46 21.54 7 18.5 7Z" />
+                    </svg>
+
+                    <div class="flex items-center gap-3">
+                      <span
+                        class:list={[
+                          "flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-small font-semibold text-white",
+                          avatarKleuren[i % avatarKleuren.length],
+                        ]}
+                        aria-hidden="true"
+                      >
+                        {initialen(review.naam)}
+                      </span>
+                      <div>
+                        <cite class="block text-small font-semibold text-ink not-italic">
+                          {review.naam}
+                        </cite>
+                        <span class="text-small text-muted">{review.datum}</span>
+                      </div>
+                    </div>
+
+                    <span class="mt-4 flex items-center gap-0.5" aria-hidden="true">
+                      {Array.from({ length: 5 }).map((_, si) => (
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          class:list={[
+                            si < review.sterren ? "text-gold" : "text-border",
+                          ]}
+                        >
+                          <path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6 2.9-6.6z" />
+                        </svg>
+                      ))}
+                    </span>
+                    <p class="mt-3 text-(length:--text-body) text-(--color-body)">
+                      {review.tekst}
+                    </p>
+                  </blockquote>
+                ))}
+              </div>
+            ))
+          }
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
+<style>
+  /* Scrollbar verbergen maar wel scrollbaar houden — Firefox, oude Edge/IE
+     en Chrome/Safari/nieuwe Edge hebben elk hun eigen manier. */
+  #review-track {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  #review-track::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
 <script>
   const track = document.getElementById("review-track") as HTMLElement | null;
-  const vorige = document.getElementById("review-vorige");
-  const volgende = document.getElementById("review-volgende");
 
   if (track) {
+    // De kaartenrij moet buiten de (gecentreerde, beperkt brede) .container
+    // uitsteken tot bijna de vensterrand — met dezelfde marge als de
+    // container zelf rechts zou hebben gehad. Puur CSS (zoals
+    // margin-right: calc(50% - 50vw)) resolvet hier tegen de smalle
+    // grid-kolom in plaats van tegen .container, want grid-/flex-items
+    // krijgen hun eigen track als containing block voor percentages, niet
+    // de bredere .container-ouder. Vandaar deze meting: gewoon de breedte
+    // zetten die nodig is, ongeacht welke ouders daartussen zitten.
+    function updateBleed() {
+      const containerEl = track!.closest<HTMLElement>(".container");
+      const rechterRand = containerEl
+        ? parseFloat(getComputedStyle(containerEl).paddingRight)
+        : 0;
+      const rect = track!.getBoundingClientRect();
+      const viewportWidth = document.documentElement.clientWidth;
+      const breedte = viewportWidth - rect.left - rechterRand;
+      track!.style.width = breedte > 0 ? `${breedte}px` : "";
+    }
+
+    updateBleed();
+    window.addEventListener("resize", updateBleed, { passive: true });
+
     function scrollStap() {
       const kaart = track!.querySelector("blockquote");
       return kaart ? kaart.getBoundingClientRect().width + 24 : 300;
     }
 
-    function isAanHetEinde() {
-      return (
-        track!.scrollLeft + track!.clientWidth >= track!.scrollWidth - 4
-      );
+    // Oneindige loop: drie identieke kopieën van de reeks (zie de markup),
+    // waarbij deze functie scrollLeft ongemerkt een kopie-breedte
+    // terugzet zodra je voorbij de middelste kopie scrolt/sleept — in
+    // beide richtingen, zodat zowel vooruit als achteruit eindeloos
+    // doorgaat. Wordt bij elke "scroll" aangeroepen, dus dekt drag,
+    // autoplay, native swipe/wheel én de snap-animatie in één keer.
+    const kopieën = Array.from(
+      track!.querySelectorAll<HTMLElement>("[data-review-kopie]"),
+    );
+    const middenKopie = kopieën[1];
+    const laatsteKopie = kopieën[2];
+
+    function meetKopieBreedte() {
+      return laatsteKopie && middenKopie
+        ? laatsteKopie.offsetLeft - middenKopie.offsetLeft
+        : 0;
     }
 
-    vorige?.addEventListener("click", () => {
-      track!.scrollBy({ left: -scrollStap(), behavior: "smooth" });
-    });
-
-    volgende?.addEventListener("click", () => {
-      if (isAanHetEinde()) {
-        track!.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        track!.scrollBy({ left: scrollStap(), behavior: "smooth" });
+    function wrapIndienNodig() {
+      const kopieBreedte = meetKopieBreedte();
+      if (kopieBreedte <= 0 || !middenKopie) return;
+      const ondergrens = middenKopie.offsetLeft;
+      const bovengrens = ondergrens + kopieBreedte;
+      if (track!.scrollLeft >= bovengrens) {
+        track!.scrollLeft -= kopieBreedte;
+      } else if (track!.scrollLeft < ondergrens) {
+        track!.scrollLeft += kopieBreedte;
       }
-    });
+    }
+
+    track.addEventListener("scroll", wrapIndienNodig, { passive: true });
+
+    // Start gescrold naar het begin van de middelste kopie, zodat er in
+    // beide richtingen meteen een buurkopie klaarstaat om naar te
+    // scrollen/slepen.
+    if (middenKopie) track.scrollLeft = middenKopie.offsetLeft;
 
     // Slepen met de muis — touch/trackpad werkt al via native scroll-snap.
+    // move/up-listeners staan op window i.p.v. op track zelf (en er wordt
+    // niet met setPointerCapture gewerkt): zo blijft het slepen ook
+    // werken als de cursor tijdens het slepen even buiten de kaartenrij
+    // komt, zonder afhankelijk te zijn van pointer capture-ondersteuning.
+    // Tijdens het slepen volgt de rij 1-op-1 de cursor (geen vertraging,
+    // zoals bij elke drag), maar bij loslaten wordt geanimeerd naar de
+    // dichtstbijzijnde kaart gesnapt — inclusief een lichte "worp" in de
+    // richting van de laatste beweging.
     let sleept = false;
     let startX = 0;
     let startScroll = 0;
     let versleept = false;
+    let laatsteX = 0;
+    let laatsteTijd = 0;
+    let snelheid = 0;
 
     track.addEventListener("pointerdown", (event) => {
-      if (event.pointerType === "touch") return;
+      if (event.pointerType === "touch" || event.button !== 0) return;
+      event.preventDefault();
       sleept = true;
       versleept = false;
       startX = event.clientX;
-      startScroll = track.scrollLeft;
-      track.setPointerCapture(event.pointerId);
+      startScroll = track!.scrollLeft;
+      laatsteX = event.clientX;
+      laatsteTijd = event.timeStamp;
+      snelheid = 0;
     });
 
-    track.addEventListener("pointermove", (event) => {
+    window.addEventListener("pointermove", (event) => {
       if (!sleept) return;
+
       const delta = event.clientX - startX;
       if (Math.abs(delta) > 3) versleept = true;
-      track.scrollLeft = startScroll - delta;
+      track!.scrollLeft = startScroll - delta;
+
+      const tijdsverschil = event.timeStamp - laatsteTijd;
+      if (tijdsverschil > 0) {
+        snelheid = (event.clientX - laatsteX) / tijdsverschil;
+      }
+      laatsteX = event.clientX;
+      laatsteTijd = event.timeStamp;
     });
 
+    function snapNaarDichtstbijzijndeKaart() {
+      const stap = scrollStap();
+      if (stap <= 0) return;
+      // Geen boven-/ondergrens meer op het doel: bij de oneindige loop mag
+      // dit gerust net over de naad met een buurkopie heen wijzen, want
+      // wrapIndienNodig() (via de "scroll"-listener) trekt het tijdens de
+      // animatie vanzelf weer terug naar een equivalente positie in de
+      // middelste kopie.
+      const geprojecteerd = track!.scrollLeft - snelheid * 120;
+      const index = Math.round(geprojecteerd / stap);
+      track!.scrollTo({ left: index * stap, behavior: "smooth" });
+    }
+
     const stopSlepen = () => {
+      if (!sleept) return;
       sleept = false;
+      if (versleept) snapNaarDichtstbijzijndeKaart();
     };
-    track.addEventListener("pointerup", stopSlepen);
-    track.addEventListener("pointercancel", stopSlepen);
+    window.addEventListener("pointerup", stopSlepen);
+    window.addEventListener("pointercancel", stopSlepen);
 
     // Voorkom dat een klik na het slepen per ongeluk iets in de kaart
     // activeert (nu geen links in de kaart, maar toekomstbestendig).
@@ -232,11 +341,9 @@ function initialen(naam: string) {
 
       const tick = () => {
         if (gepauzeerd || sleept) return;
-        if (isAanHetEinde()) {
-          track.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          track.scrollBy({ left: scrollStap(), behavior: "smooth" });
-        }
+        // Altijd gewoon een kaart verder — de oneindige loop (zie
+        // wrapIndienNodig hierboven) zorgt dat dit nooit vastloopt.
+        track.scrollBy({ left: scrollStap(), behavior: "smooth" });
       };
 
       setInterval(tick, 5000);
@@ -248,10 +355,6 @@ function initialen(naam: string) {
       track.addEventListener("pointerleave", hervat);
       track.addEventListener("focusin", pauzeer);
       track.addEventListener("focusout", hervat);
-      vorige?.addEventListener("pointerenter", pauzeer);
-      vorige?.addEventListener("pointerleave", hervat);
-      volgende?.addEventListener("pointerenter", pauzeer);
-      volgende?.addEventListener("pointerleave", hervat);
     }
   }
 </script>

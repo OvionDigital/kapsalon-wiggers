@@ -2,8 +2,9 @@
 /**
  * TopBar — dunne balk boven de hoofdnavigatie met de kerngegevens voor het
  * maken van een afspraak: telefoon en e-mail. Schuift dicht bij het scrollen
- * naar beneden en komt terug bij scrollen naar boven (zie Header.astro), via
- * een max-height/opacity-overgang op deze wrapper.
+ * naar beneden en komt terug bij scrollen naar boven — dat gebeurt in
+ * Header.astro, door het hele header-element te verschuiven met
+ * transform: translateY(), niet door deze balk zelf in te klappen.
  *
  * Alleen vanaf md zichtbaar — op mobiel is er geen ruimte en staat dezelfde
  * info in de boekingskaart en de footer.
@@ -14,13 +15,13 @@ import { getTelHref } from "../lib/salon";
 const vestiging = vestigingen[0];
 ---
 
-<div
-  id="top-bar"
-  class="top-bar hidden border-b border-border bg-cream md:block"
->
+<div id="top-bar" class="hidden bg-cream md:block">
   <div
-    class="container flex items-center justify-between gap-4 py-2 text-small text-muted"
+    class="container relative flex items-center justify-between gap-4 py-3 text-small text-muted"
   >
+    <div class="absolute bottom-0 left-0 px-3 w-full">
+      <hr class="border-b border-border w-full" />
+    </div>
     <span
       class="inline-flex items-center gap-1.5 text-[0.7rem] font-semibold tracking-[0.12em] uppercase"
     >
@@ -90,27 +91,3 @@ const vestiging = vestigingen[0];
     </span>
   </div>
 </div>
-
-<style>
-  .top-bar {
-    max-height: 3rem;
-    overflow: hidden;
-    opacity: 1;
-    transition:
-      max-height var(--transition-duration) ease,
-      opacity var(--transition-duration) ease,
-      border-color var(--transition-duration) ease;
-  }
-
-  .top-bar.top-bar--hidden {
-    max-height: 0;
-    opacity: 0;
-    border-color: transparent;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .top-bar {
-      transition: none;
-    }
-  }
-</style>

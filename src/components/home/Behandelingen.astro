@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import herenImage from "../../assets/man-haircut.jpg";
 import damesImage from "../../assets/woman-haircut.jpg";
 import kinderenImage from "../../assets/Kids-Haircut.webp";
-import { behandelingen } from "../../data/home";
+import { behandelingen, behandelingenSectie } from "../../data/home";
 
 const afbeeldingen = {
   heren: herenImage,
@@ -14,12 +14,17 @@ const afbeeldingen = {
 
 <section class="bg-sand">
   <div class="container">
-    <h2 class="text-center">Uitgelichte behandelingen</h2>
+    <span
+      class="mx-auto flex w-fit items-center gap-2 rounded-full bg-gold px-4 py-2 text-small font-semibold text-charcoal"
+      ><span class="h-1 w-1 rounded-full bg-charcoal" aria-hidden="true"
+      ></span>{behandelingenSectie.eyebrow}</span
+    >
+    <h2 class="text-center mt-6">Uitgelichte behandelingen</h2>
 
     <div class="behandeling-kaarten mt-12 grid gap-6 md:grid-cols-3 md:gap-8">
       {
         behandelingen.map((item) => (
-          <article class="group relative isolate flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-sm shadow-lg shadow-ink/20 ring-1 ring-white/10 transition-shadow duration-(--transition-duration) hover:shadow-xl">
+          <article class="group relative isolate flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-md shadow-lg shadow-ink/20 ring-1 ring-white/10 transition-shadow duration-(--transition-duration) hover:shadow-xl">
             <Image
               src={afbeeldingen[item.afbeelding as keyof typeof afbeeldingen]}
               alt={`Portret — ${item.doelgroep.toLowerCase()}`}

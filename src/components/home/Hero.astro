@@ -13,7 +13,7 @@ import { hero } from "../../data/hero";
 }
 <section
   id="hero"
-  class="relative bg-linear-to-br from-sand/50 via-cream to-cream pt-16 pb-16 md:pt-24 md:pb-24"
+  class="relative bg-linear-to-br from-sand/50 via-cream to-cream pb-0"
 >
   {
     /* Decoratieve scharen-vorm, bleedt links de sectie uit. Simpele witte
@@ -39,9 +39,11 @@ import { hero } from "../../data/hero";
 
   <div class="container relative">
     <div class="grid gap-10 md:grid-cols-12 md:items-center md:gap-14">
-      <div class="relative z-10 md:col-span-7">
-        <h1 class="hero-animate hero-animate-1 text-display text-ink">
-          {hero.headingPrefix}<em class="text-gold italic">{hero.headingAccent}</em>
+      <div class="relative z-10 md:col-span-6">
+        <h1 class="hero-animate hero-animate-1 text-display">
+          {hero.headingPrefix}<em class="text-gold italic"
+            >{hero.headingAccent}</em
+          >
           <br />
           {hero.headingSuffix}
         </h1>
@@ -53,15 +55,15 @@ import { hero } from "../../data/hero";
         </p>
       </div>
 
-      <div class="hero-animate hero-animate-3 relative md:col-span-5">
+      <div class="hero-animate hero-animate-3 relative md:col-span-6">
         <Image
           src={heroImage}
           alt="Sfeerbeeld van het interieur van Kapsalon Wiggers"
           widths={[480, 640, 900, 1200]}
-          sizes="(min-width: 768px) 40vw, 90vw"
+          sizes="(min-width: 768px) 34vw, 77vw"
           loading="eager"
           fetchpriority="high"
-          class="h-auto w-full rounded-t-[9999px] object-cover"
+          class="mx-auto aspect-square w-full max-w-[85%] rounded-t-full object-cover object-right"
         />
 
         <div class="mt-6 md:hidden">
@@ -80,7 +82,7 @@ import { hero } from "../../data/hero";
   <div class="pointer-events-none absolute inset-0 z-20 hidden md:block">
     <div class="container relative h-full">
       <HeroBoekingskaart
-        class="hero-animate hero-animate-3 pointer-events-auto absolute right-0 -bottom-14 w-80"
+        class="hero-animate hero-animate-3 pointer-events-auto absolute right-3 -bottom-30 w-80 border border-border"
       />
     </div>
   </div>

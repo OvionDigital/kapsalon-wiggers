@@ -1,0 +1,27 @@
+---
+/**
+ * SmoothScroll — Lenis, voor het vloeiende "locomotive scroll"-gevoel.
+ * Lenis stuurt gewoon de echte window-scrollpositie aan (geen eigen
+ * transform-gebaseerde scrollcontainer), dus position:sticky, ankerlinks en
+ * de scroll-listener in Header.astro blijven allemaal gewoon werken.
+ *
+ * Uit bij een voorkeur voor verminderde beweging — vloeiende
+ * scroll-vertraging is precies het soort beweging waar mensen met
+ * bewegingsgevoeligheid last van kunnen hebben (WCAG 2.3.3).
+ */
+---
+
+<script>
+  import Lenis from "lenis";
+  import "lenis/dist/lenis.css";
+
+  const wilAnimatie = window.matchMedia(
+    "(prefers-reduced-motion: no-preference)",
+  ).matches;
+
+  if (wilAnimatie) {
+    new Lenis({
+      autoRaf: true,
+    });
+  }
+</script>

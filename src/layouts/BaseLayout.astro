@@ -5,6 +5,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import StickyBookingButton from "../components/StickyBookingButton.astro";
 import AfspraakDialog from "../components/AfspraakDialog.astro";
+import SmoothScroll from "../components/SmoothScroll.astro";
 import {
   payoff,
   vestigingen,
@@ -122,6 +123,7 @@ const structuredData = {
     <title>{title}</title>
   </head>
   <body class="flex min-h-dvh flex-col">
+    <SmoothScroll />
     <a href="#main" class="skip-link">Ga direct naar de inhoud</a>
     <BreakpointIndicator />
     <Header />

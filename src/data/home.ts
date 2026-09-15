@@ -9,6 +9,10 @@ export const intro = {
   ],
 };
 
+export const behandelingenSectie = {
+  eyebrow: "Voor iedereen",
+};
+
 // Elke kaart licht één concrete behandeling per doelgroep uit, met de prijs uit
 // behandelingen.ts. De prijzen zijn de echte tarieven van de klant.
 // TODO: bij de klant checken of "Knippen" per doelgroep inderdaad de
@@ -38,6 +42,15 @@ export const behandelingen = [
     afbeelding: "kinderen",
   },
 ];
+
+export const reviewsSectie = {
+  eyebrow: "Wat klanten zeggen",
+  // headingAccent wordt cursief en in het accentgoud gezet.
+  headingPrefix: "Reviews die voor zich ",
+  headingAccent: "spreken",
+  paragraaf:
+    "Bijna een eeuw kappen doe je niet zonder tevreden klanten. Dit is wat ze over ons zeggen.",
+};
 
 // TODO: vervangen door de automatische koppeling met Google Reviews, zodra
 // die na oplevering wordt gebouwd. Tot die tijd zijn dit placeholder-teksten

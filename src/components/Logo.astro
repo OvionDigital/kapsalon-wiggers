@@ -14,7 +14,7 @@ interface Props {
 }
 
 const { variant = "dark", class: className = "" } = Astro.props;
-const wordmarkColor = variant === "light" ? "text-white" : "text-ink";
+const wordmarkColor = variant === "light" ? "text-white" : "text-burgundy";
 
 const logoSvg = fs.readFileSync(
   path.join(process.cwd(), "public/images/Logo-Kapsalon-Wiggers.svg"),

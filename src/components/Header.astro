@@ -7,11 +7,11 @@ import TopBar from "./TopBar.astro";
 
 <header
   id="site-header"
-  class="header-enter sticky top-0 z-40 bg-cream transition-shadow duration-(--transition-duration)"
+  class="header-enter sticky top-0 z-40 bg-cream transition-[box-shadow,transform] duration-(--transition-duration-long)"
 >
   <TopBar />
 
-  <div id="nav-bar" class="border-b border-border bg-cream">
+  <div id="nav-bar" class="bg-cream border-b border-border">
     <div class="container flex items-center justify-between py-5">
       <Logo variant="dark" />
 
@@ -77,14 +77,19 @@ import TopBar from "./TopBar.astro";
 
 <style>
   /* Laadanimatie: de header valt kort na het laden zachtjes op zijn plek. */
+  /* Alleen opacity, geen transform: het scroll-script hierbeneden zet zijn
+     eigen transform: translateY() op dit element om de topbar te
+     verbergen/tonen. Een animation met "both" fill-mode wint via de
+     CSS-cascade altijd van een inline style.transform (zichtbaar in
+     devtools als "Overridden by animation styles") — dus zodra de
+     animatie ook transform zou animeren, blijft translateY(0) permanent
+     vastzitten en negeert de pagina alle latere scroll-updates. */
   @keyframes header-fade-in {
     from {
       opacity: 0;
-      transform: translateY(-0.5rem);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
     }
   }
 
@@ -131,27 +136,35 @@ import TopBar from "./TopBar.astro";
   });
 
   // Topbar schuift weg zodra je naar beneden scrolt, en komt terug zodra je
-  // omhoog scrolt — de hoofdnav (logo + menu) blijft altijd zichtbaar.
-  // Vlak bovenaan de pagina staat de topbar sowieso altijd open, zodat hij
-  // niet knippert bij de eerste paar pixels scroll.
-  const SHADOW_THRESHOLD = 20;
+  // omhoog scrolt — de hoofdnav (logo + menu) blijft altijd zichtbaar. In
+  // plaats van de topbar zelf in te klappen (max-height) verschuiven we het
+  // hele header-element met transform: translateY. Een max-height-overgang
+  // verandert de layout-hoogte van de sticky header, en omdat de pagina
+  // daaronder dan meeschuift, zag de scroll-listener halverwege de overgang
+  // een vervalste scrollY-waarde — dat gaf het stotterende/knipperende
+  // effect. transform raakt de document-flow niet aan, dus dat probleem is
+  // er niet.
   const TOPBAR_THRESHOLD = 80;
   let lastY = window.scrollY;
+  let topBarHeight = topBar?.offsetHeight ?? 0;
+
+  window.addEventListener(
+    "resize",
+    () => {
+      topBarHeight = topBar?.offsetHeight ?? 0;
+    },
+    { passive: true },
+  );
 
   const updateScrollState = () => {
     const y = window.scrollY;
 
-    header?.classList.toggle("shadow-lg", y > SHADOW_THRESHOLD);
-
-    if (topBar) {
+    if (topBar && header) {
       const scrollingDown = y > lastY;
-      if (y <= TOPBAR_THRESHOLD) {
-        topBar.classList.remove("top-bar--hidden");
-      } else if (scrollingDown) {
-        topBar.classList.add("top-bar--hidden");
-      } else {
-        topBar.classList.remove("top-bar--hidden");
-      }
+      const verbergen = y > TOPBAR_THRESHOLD && scrollingDown;
+      header.style.transform = verbergen
+        ? `translateY(-${topBarHeight}px)`
+        : "translateY(0)";
     }
 
     lastY = y;
