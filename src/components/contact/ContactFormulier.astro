@@ -2,23 +2,25 @@
 import { privacyRegel } from "../../data/contact";
 
 const inputClass =
-  "mt-2 w-full rounded-sm border border-border bg-white px-4 py-3 text-(length:--text-body) text-ink placeholder:text-muted";
+  "mt-2 w-full rounded-md border border-border bg-cream px-5 py-3.5 text-(length:--text-body) text-ink placeholder:text-muted focus-visible:bg-white";
 ---
 
 <section class="bg-cream">
   <div class="container">
-    <div class="max-w-[var(--container-prose)]">
+    <div class="mx-auto max-w-[var(--container-prose)] text-center">
       <h2>Stuur ons een bericht</h2>
       <p class="mt-3 text-(length:--text-body) text-(--color-body)">
-        Liever niet bellen? Vul het formulier in en we reageren zo snel
-        mogelijk.
+        Liever mailen? Vul het formulier in en we reageren zo snel mogelijk.
       </p>
+    </div>
 
+    <div class="mx-auto mt-8 max-w-md">
+      <div class="rounded-3xl bg-white p-6 shadow-sm sm:p-10" data-reveal>
       <form
         id="contact-form"
         method="POST"
         action="/api/contact"
-        class="mt-8 flex flex-col gap-6"
+        class="flex flex-col gap-6 text-left"
       >
         <div>
           <label for="naam" class="block text-small font-semibold text-ink">
@@ -33,7 +35,7 @@ const inputClass =
             aria-describedby="naam-fout"
             class={inputClass}
           />
-          <p id="naam-fout" class="mt-1 text-small text-burgundy" hidden></p>
+          <p id="naam-fout" class="mt-1 text-small text-(--color-error)" hidden></p>
         </div>
 
         <div>
@@ -49,7 +51,23 @@ const inputClass =
             aria-describedby="email-fout"
             class={inputClass}
           />
-          <p id="email-fout" class="mt-1 text-small text-burgundy" hidden></p>
+          <p id="email-fout" class="mt-1 text-small text-(--color-error)" hidden></p>
+        </div>
+
+        <div>
+          <label
+            for="telefoon"
+            class="block text-small font-semibold text-ink"
+          >
+            Telefoonnummer <span class="font-normal text-muted">(optioneel)</span>
+          </label>
+          <input
+            type="tel"
+            id="telefoon"
+            name="telefoon"
+            autocomplete="tel"
+            class={inputClass}
+          />
         </div>
 
         <div>
@@ -67,7 +85,7 @@ const inputClass =
             aria-describedby="bericht-fout"
             class={inputClass}
           ></textarea>
-          <p id="bericht-fout" class="mt-1 text-small text-burgundy" hidden>
+          <p id="bericht-fout" class="mt-1 text-small text-(--color-error)" hidden>
           </p>
         </div>
 
@@ -91,7 +109,7 @@ const inputClass =
         <button
           type="submit"
           id="contact-submit"
-          class="btn btn-primary self-start px-6 py-3 text-small"
+          class="btn btn-primary self-start px-8 py-3.5 text-small"
         >
           <span data-submit-label>Versturen</span>
         </button>
@@ -104,13 +122,18 @@ const inputClass =
         >
         </p>
       </form>
+      </div>
 
-      <p class="mt-6 text-small text-muted">{privacyRegel}</p>
+      <p class="mt-6 text-center text-small text-muted">{privacyRegel}</p>
     </div>
   </div>
 </section>
 
 <script>
+  // In astro:page-load gewrapt voor View Transitions (ClientRouter in
+  // BaseLayout.astro): dit <script> draait als module maar één keer per
+  // sessie, terwijl #contact-form bij elk bezoek een nieuwe DOM-node is.
+  document.addEventListener("astro:page-load", () => {
   const form = document.getElementById("contact-form") as HTMLFormElement | null;
   const statusEl = document.getElementById("contact-status");
   const submitButton = document.getElementById(
@@ -127,6 +150,10 @@ const inputClass =
     if (tsField) tsField.value = String(Date.now());
 
     const velden = ["naam", "email", "bericht"] as const;
+    // Pas na een eerste (mislukte) verstuurpoging live valideren op blur —
+    // daarvoor zou een foutmelding al verschijnen zodra je simpelweg een
+    // veld aanklikt en weer verlaat, nog voor je iets fout kon doen.
+    let heeftGepoogdVersturen = false;
 
     const setError = (naam: string, message: string) => {
       const input = document.getElementById(naam) as
@@ -167,17 +194,18 @@ const inputClass =
     };
 
     velden.forEach((naam) => {
-      document
-        .getElementById(naam)
-        ?.addEventListener("blur", () => valideerVeld(naam));
+      document.getElementById(naam)?.addEventListener("blur", () => {
+        if (heeftGepoogdVersturen) valideerVeld(naam);
+      });
     });
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      heeftGepoogdVersturen = true;
 
       const isGeldig = velden.map(valideerVeld).every(Boolean);
       if (!isGeldig) {
-        statusEl.textContent = "Controleer de gemarkeerde velden hieronder.";
+        statusEl.textContent = "Controleer de gemarkeerde velden hierboven.";
         return;
       }
 
@@ -216,4 +244,5 @@ const inputClass =
       }
     });
   }
+  });
 </script>

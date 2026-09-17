@@ -22,8 +22,7 @@ export const categorieen: Categorie[] = [
   {
     id: "heren",
     naam: "Heren",
-    omschrijving:
-      "Klassiek of modern, met oog voor de details die een coupe afmaken.",
+    omschrijving: "",
     behandelingen: [
       { naam: "Knippen", prijs: 28 },
       { naam: "Knippen senior", prijs: 27 },
@@ -39,8 +38,7 @@ export const categorieen: Categorie[] = [
   {
     id: "dames",
     naam: "Dames",
-    omschrijving:
-      "Van een frisse knip tot een complete kleurbehandeling, altijd met persoonlijk advies vooraf.",
+    omschrijving: "",
     behandelingen: [
       { naam: "Knippen", prijs: 31.5 },
       { naam: "Wassen en Watergolven", prijs: 29 },
@@ -57,8 +55,7 @@ export const categorieen: Categorie[] = [
   {
     id: "kinderen",
     naam: "Kinderen",
-    omschrijving:
-      "Rustig en geduldig, ook als het de allereerste knipbeurt is. Tot 12 jaar.",
+    omschrijving: "",
     behandelingen: [
       { naam: "Knippen 0 tot 3 jaar", prijs: 19 },
       { naam: "Knippen van 4 tot en met 11", prijs: 23 },
@@ -70,7 +67,7 @@ export const categorieen: Categorie[] = [
   {
     id: "overig",
     naam: "Overig",
-    omschrijving: "Voor een speciale gelegenheid of net dat beetje extra.",
+    omschrijving: "",
     behandelingen: [
       { naam: "Stylen voor gelegenheid", prijs: "Vanaf € 25,-" },
       { naam: "Kleuradvies", prijs: "Gratis" },
@@ -79,17 +76,6 @@ export const categorieen: Categorie[] = [
   },
 ];
 
-export const producten = [
-  {
-    naam: "L'ANZA",
-    omschrijving:
-      "Amerikaans haarverzorgingsmerk met natuurlijke ingrediënten. We werken ermee in de salon en verkopen het ook los.",
-    afbeelding: "lanza",
-  },
-  {
-    naam: "Gladjakkers",
-    omschrijving:
-      "Nederlands stylingmerk, gemaakt om thuis makkelijk hetzelfde resultaat als bij de kapper te krijgen.",
-    afbeelding: "gladjakkers",
-  },
-];
+// Merken die in de marquee onderaan elke pagina (MerkenMarquee.astro,
+// gerenderd via Footer.astro) voorbijkomen.
+export const merken = ["L'ANZA", "Gladjakkers"];

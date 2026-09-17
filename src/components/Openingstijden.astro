@@ -20,17 +20,29 @@ const vandaag = vandaagAfkorting();
       return (
         <div
           class:list={[
-            "flex justify-between gap-4 rounded-sm",
+            "flex items-baseline justify-between gap-4",
             compact
-              ? "px-2.5 py-1 text-small"
-              : "px-3 py-2 text-(length:--text-body)",
-            isVandaag
-              ? "bg-sand font-semibold text-ink"
-              : "text-(--color-body)",
+              ? "rounded-md px-2.5 py-1"
+              : "rounded-lg px-3 py-2 text-(length:--text-body)",
+            isVandaag && "bg-sand",
           ]}
         >
-          <dt>{tijd.dagen}</dt>
-          <dd class="m-0">{tijd.tijden}</dd>
+          <dt
+            class:list={[
+              "font-medium",
+              isVandaag ? "text-ink" : "text-(--color-body)",
+            ]}
+          >
+            {tijd.dagen}
+          </dt>
+          <dd
+            class:list={[
+              "m-0",
+              isVandaag ? "font-semibold text-ink" : "text-(--color-body)",
+            ]}
+          >
+            {tijd.tijden}
+          </dd>
         </div>
       );
     })

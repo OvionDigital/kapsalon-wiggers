@@ -1,5 +1,4 @@
 ---
-import AfspraakButton from "../AfspraakButton.astro";
 import { vestigingen } from "../../data/vestigingen";
 import { cta } from "../../data/home";
 import { getTelHref } from "../../lib/salon";
@@ -7,18 +6,53 @@ import { getTelHref } from "../../lib/salon";
 const vestiging = vestigingen[0];
 ---
 
-<section class="bg-burgundy">
+<section class="bg-burgundy pb-0!">
   <div class="container flex flex-col items-center gap-6 text-center">
-    <h2 class="text-white">{cta.heading}</h2>
+    <h2 class="text-h1 text-white">{cta.heading}</h2>
     <p class="text-(length:--text-body) text-sand">{cta.tekst}</p>
 
-    <div class="flex flex-wrap items-center justify-center gap-4">
-      <AfspraakButton kleur="inverted" size="lg" />
+    <div class="flex flex-col items-center gap-5">
       <a
         href={`tel:${getTelHref(vestiging.telefoon)}`}
-        class="text-h4 font-semibold text-white no-underline hover:underline"
+        class="btn btn-inverted inline-flex items-center gap-2 px-6 py-3.5"
       >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"
+          ></path>
+        </svg>
         {vestiging.telefoon}
+      </a>
+
+      <a
+        href={`mailto:${vestiging.email}`}
+        class="inline-flex items-center gap-2 text-small font-medium text-sand no-underline transition-colors duration-(--transition-duration) hover:text-white hover:underline"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+        </svg>
+        {vestiging.email}
       </a>
     </div>
   </div>

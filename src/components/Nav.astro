@@ -91,3 +91,33 @@ const currentPath = Astro.url.pathname;
     }
   }
 </style>
+
+<script>
+  // Header.astro (en dus dit menu) staat op transition:persist: bij een
+  // paginanavigatie via de ClientRouter (BaseLayout.astro) blijft dezelfde
+  // DOM-node gewoon staan i.p.v. te verversen, dus de server-gerenderde
+  // "actieve link" (op basis van Astro.url.pathname tijdens de build) klopt
+  // na de eerste navigatie niet meer. astro:page-load vuurt na het laden
+  // én na elke swap, dus hiermee blijft de actieve link altijd kloppen.
+  function syncActieveNavLink() {
+    const currentPath = window.location.pathname;
+
+    document
+      .querySelectorAll<HTMLAnchorElement>(".nav-link")
+      .forEach((link) => {
+        const href = new URL(link.href).pathname;
+        const isActive =
+          href === "/" ? currentPath === "/" : currentPath.startsWith(href);
+
+        link.classList.toggle("is-active", isActive);
+        link.classList.toggle("text-ink", isActive);
+        if (isActive) {
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+  }
+
+  document.addEventListener("astro:page-load", syncActieveNavLink);
+</script>

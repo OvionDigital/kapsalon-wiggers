@@ -6,8 +6,7 @@ export function getSalonId(site: URL | undefined): string {
   return new URL("/#salon", site).toString();
 }
 
-/** Google Maps-zoeklink op basis van een adres — geen ingesloten iframe, dus
- *  geen cookies of tracking van Google op de pagina zelf. */
+/** Google Maps-zoeklink op basis van een adres, voor "Open in Google Maps". */
 export function getGoogleMapsHref(
   adres: string,
   postcode: string,
@@ -15,6 +14,18 @@ export function getGoogleMapsHref(
 ): string {
   const query = encodeURIComponent(`${adres}, ${postcode} ${plaats}`);
   return `https://www.google.com/maps/search/?api=1&query=${query}`;
+}
+
+/** Src voor een ingesloten Google Maps-kaart op basis van een adres. Bewuste
+ *  uitzondering op "geen embeds/cookies" (klantwens), alleen voor deze
+ *  kaart. */
+export function getGoogleMapsEmbedSrc(
+  adres: string,
+  postcode: string,
+  plaats: string,
+): string {
+  const query = encodeURIComponent(`${adres}, ${postcode} ${plaats}`);
+  return `https://www.google.com/maps?q=${query}&output=embed`;
 }
 
 /** Zet een weergegeven telefoonnummer (spaties/koppeltekens) om naar een

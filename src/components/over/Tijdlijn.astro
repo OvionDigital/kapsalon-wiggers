@@ -14,9 +14,19 @@ const afbeeldingen = {
   <div class="container">
     <h2 class="text-center">Van 1932 tot nu</h2>
 
-    <ol class="relative mt-16 flex flex-col gap-12 md:mt-20 md:gap-16">
+    <ol
+      id="tijdlijn-lijst"
+      class="relative mt-16 flex flex-col gap-12 md:mt-20 md:gap-16"
+    >
       <div
-        class="absolute inset-y-0 left-4 w-0.5 -translate-x-1/2 bg-burgundy md:left-1/2"
+        class="absolute inset-y-0 left-4 w-0.5 -translate-x-1/2 bg-border md:left-1/2"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        id="tijdlijn-lijn-vulling"
+        class="absolute top-0 left-4 w-0.5 -translate-x-1/2 bg-burgundy transition-[height] duration-300 ease-out md:left-1/2"
+        style="height: 0;"
         aria-hidden="true"
       >
       </div>
@@ -34,7 +44,8 @@ const afbeeldingen = {
               class="relative translate-y-4 pl-12 opacity-0 transition-[opacity,transform] duration-(--duration-entrance) ease-out md:pl-0"
             >
               <span
-                class="absolute top-1 left-4 h-3 w-3 -translate-x-1/2 rounded-full bg-burgundy ring-4 ring-sand md:left-1/2"
+                data-tijdlijn-dot
+                class="absolute top-1 left-4 h-3 w-3 -translate-x-1/2 rounded-full bg-border ring-4 ring-sand transition-colors duration-300 md:left-1/2"
                 aria-hidden="true"
               />
               <div class="md:grid md:grid-cols-2 md:gap-x-14">
@@ -45,7 +56,10 @@ const afbeeldingen = {
                       : "md:col-start-1 md:row-start-1 md:text-right",
                   ]}
                 >
-                  <p class="font-heading text-h3 text-burgundy">
+                  <p
+                    data-tijdlijn-jaartal
+                    class="font-heading text-h3 text-muted transition-colors duration-300"
+                  >
                     {gebeurtenis.jaartal}
                   </p>
                   <h3 class="mt-1 text-h4">{gebeurtenis.titel}</h3>
@@ -74,19 +88,42 @@ const afbeeldingen = {
 </section>
 
 <script>
+  // In een astro:page-load gewrapt: met View Transitions (ClientRouter in
+  // BaseLayout.astro) draait dit <script> als module maar één keer per
+  // sessie, terwijl de tijdlijn-items bij elk bezoek nieuwe DOM-nodes zijn.
+  // Zonder deze listener zou de tijdlijn na een eerste bezoek blijvend op
+  // opacity-0 blijven staan bij een volgend bezoek aan deze pagina.
+  document.addEventListener("astro:page-load", () => {
+  const lijst = document.getElementById("tijdlijn-lijst");
   const items = document.querySelectorAll<HTMLElement>("[data-tijdlijn-item]");
+  const lijnVulling = document.getElementById("tijdlijn-lijn-vulling");
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
 
+  function zetActief(item: HTMLElement) {
+    item.dataset.tijdlijnActief = "true";
+    item
+      .querySelector<HTMLElement>("[data-tijdlijn-dot]")
+      ?.classList.replace("bg-border", "bg-burgundy");
+    item
+      .querySelector<HTMLElement>("[data-tijdlijn-jaartal]")
+      ?.classList.replace("text-muted", "text-burgundy");
+  }
+
   if (prefersReducedMotion || !("IntersectionObserver" in window)) {
-    items.forEach((item) => item.classList.remove("opacity-0", "translate-y-4"));
+    items.forEach((item) => {
+      item.classList.remove("opacity-0", "translate-y-4");
+      zetActief(item);
+    });
+    if (lijnVulling) lijnVulling.style.height = "100%";
   } else {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
             entry.target.classList.remove("opacity-0", "translate-y-4");
+            zetActief(entry.target as HTMLElement);
             observer.unobserve(entry.target);
           }
         }
@@ -95,5 +132,56 @@ const afbeeldingen = {
     );
 
     items.forEach((item) => observer.observe(item));
+
+    // De lijn vult mee met de scrollvoortgang door de tijdlijn: 0% zodra de
+    // lijst van onderen in beeld komt, 100% zodra het laatste punt het
+    // midden van het scherm passeert. Zelfde scroll-gekoppelde aanpak als
+    // de parallax elders op de site (Verhaal.astro, GalerijGrid.astro).
+    if (lijst && lijnVulling) {
+      let opgehangen = false;
+
+      function bijwerken() {
+        const rect = lijst!.getBoundingClientRect();
+        const middenScherm = window.innerHeight / 2;
+        const voortgang = Math.min(
+          Math.max((middenScherm - rect.top) / rect.height, 0),
+          1,
+        );
+        lijnVulling!.style.height = `${(voortgang * 100).toFixed(1)}%`;
+      }
+
+      function opVolgendeFrame() {
+        opgehangen = false;
+        bijwerken();
+      }
+
+      function planBijwerken() {
+        if (opgehangen) return;
+        opgehangen = true;
+        requestAnimationFrame(opVolgendeFrame);
+      }
+
+      // AbortController i.p.v. losse removeEventListener-calls: window
+      // overleeft paginanavigaties zelf, dus zonder opruimen zou elk
+      // hernieuwd bezoek aan deze pagina een extra scroll/resize-listener
+      // stapelen. astro:before-swap (ééns, vlak vóór de volgende overgang)
+      // ruimt precies deze twee op.
+      const controller = new AbortController();
+      window.addEventListener("scroll", planBijwerken, {
+        passive: true,
+        signal: controller.signal,
+      });
+      window.addEventListener("resize", planBijwerken, {
+        passive: true,
+        signal: controller.signal,
+      });
+      document.addEventListener(
+        "astro:before-swap",
+        () => controller.abort(),
+        { once: true },
+      );
+      bijwerken();
+    }
   }
+  });
 </script>

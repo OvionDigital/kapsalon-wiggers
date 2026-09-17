@@ -1,0 +1,52 @@
+---
+/**
+ * ScrollReveal — zet [data-reveal] elementen zichtbaar zodra ze in beeld
+ * scrollen (fade + lichte translateY, zie global.css). Eén generieke,
+ * site-brede voorziening i.p.v. losse scroll-scripts per sectie: gewoon
+ * data-reveal op een element zetten (en optioneel style="--reveal-delay: 80"
+ * per item in een groep, voor een staggered reveal) is genoeg.
+ *
+ * Uit bij een voorkeur voor verminderde beweging — dan meteen alles tonen.
+ */
+---
+
+<script>
+  function initScrollReveal() {
+    const elementen = document.querySelectorAll<HTMLElement>(
+      "[data-reveal]:not(.is-revealed), [data-reveal-fade]:not(.is-revealed)",
+    );
+    if (!elementen.length) return;
+
+    const wilAnimatie = window.matchMedia(
+      "(prefers-reduced-motion: no-preference)",
+    ).matches;
+
+    if (!wilAnimatie || !("IntersectionObserver" in window)) {
+      elementen.forEach((el) => el.classList.add("is-revealed"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      // Pas tonen als een element al een stuk in beeld staat, niet meteen
+      // bij de allereerste pixel over de onderrand — anders reveal je
+      // eigenlijk al voor de bezoeker het bewust ziet scrollen.
+      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
+    );
+
+    elementen.forEach((el) => observer.observe(el));
+  }
+
+  // In astro:page-load gewrapt voor View Transitions (ClientRouter in
+  // BaseLayout.astro): dit <script> draait als module maar één keer per
+  // sessie, terwijl [data-reveal]-elementen bij elk bezoek nieuwe DOM-nodes
+  // zijn.
+  document.addEventListener("astro:page-load", initScrollReveal);
+</script>

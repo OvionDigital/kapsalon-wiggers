@@ -1,0 +1,76 @@
+---
+import { merken } from "../data/behandelingen";
+
+// Eén "reeks" (alle merken, ruim herhaald) om op elk schermformaat — ook
+// heel brede monitors — altijd meer dan de volledige breedte te vullen.
+// Die hele reeks staat er daarna twee keer achter elkaar (i.p.v. één keer):
+// de animatie schuift precies 50% van de trackbreedte naar links, wat dan
+// exact één reeks is — zo sluit de loop naadloos aan zonder sprong of gat.
+const reeks = Array.from({ length: 10 }, () => merken).flat();
+const items = [...reeks, ...reeks];
+---
+
+<div
+  class="marquee-wrapper overflow-hidden py-6"
+  transition:persist="merken-marquee"
+  role="img"
+  aria-label={`Merken die we gebruiken en verkopen: ${merken.join(" en ")}`}
+>
+  <div class="marquee-track" aria-hidden="true">
+    {
+      items.map((merk) => (
+        <span class="marquee-item">
+          {merk}
+          <span class="marquee-star">✦</span>
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee-wrapper {
+    display: flex;
+    background-color: var(--color-burgundy-dark);
+  }
+
+  .marquee-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: marquee-scroll 60s linear infinite;
+  }
+
+  .marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 2.5rem;
+    padding-inline-end: 2.5rem;
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+    line-height: 1;
+    color: var(--color-cream);
+    white-space: nowrap;
+  }
+
+  .marquee-star {
+    color: var(--color-gold);
+    font-size: 0.4em;
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+</style>

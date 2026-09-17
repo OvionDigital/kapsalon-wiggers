@@ -60,7 +60,7 @@ export const reviewsSectie = {
 // van een niet-bestaand persoon.
 export const uitgelichteReviews = [
   {
-    naam: "Marieke B.",
+    naam: "Food & Place Testers",
     sterren: 5,
     datum: "2 weken geleden",
     tekst:
@@ -131,6 +131,10 @@ export const uitgelichteReviews = [
   },
 ];
 
+export const galerijSectie = {
+  eyebrow: "Achter de schermen",
+};
+
 export const galerij = [
   {
     bestand: "galerij-1",
@@ -149,12 +153,14 @@ export const galerij = [
   { bestand: "galerij-9", alt: "Drie kappers met een schaar en borstels" },
 ];
 
+export const openingstijdenSectie = {
+  eyebrow: "Praktische info",
+  // headingAccent wordt cursief en in het accentgoud gezet.
+  headingPrefix: "Makkelijk te vinden, ",
+  headingAccent: "altijd welkom",
+};
+
 export const cta = {
   heading: "Klaar voor een frisse knipbeurt?",
   tekst: "Bel ons even, dan plannen we een moment dat jou uitkomt.",
-};
-
-export const facebook = {
-  tekst: "Volg ons op Facebook voor nieuws en sfeerbeelden uit de salon.",
-  href: "#",
 };

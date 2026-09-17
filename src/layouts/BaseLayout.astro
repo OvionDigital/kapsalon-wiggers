@@ -1,11 +1,16 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 import BreakpointIndicator from "../components/BreakpointIndicator.astro";
 import Header from "../components/Header.astro";
+import MerkenMarquee from "../components/MerkenMarquee.astro";
+import AfspraakCta from "../components/home/AfspraakCta.astro";
 import Footer from "../components/Footer.astro";
 import StickyBookingButton from "../components/StickyBookingButton.astro";
 import AfspraakDialog from "../components/AfspraakDialog.astro";
 import SmoothScroll from "../components/SmoothScroll.astro";
+import ScrollReveal from "../components/ScrollReveal.astro";
+import PageTransition from "../components/PageTransition.astro";
 import {
   payoff,
   vestigingen,
@@ -100,6 +105,18 @@ const structuredData = {
     <link rel="stylesheet" href="https://use.typekit.net/mlv3wzp.css" />
     <meta name="generator" content={Astro.generator} />
 
+    {
+      /* ClientRouter regelt de eigenlijke SPA-achtige navigatie (fetch +
+         DOM-swap zonder volledige page reload); de zichtbare overgang zelf
+         is een rustige cross-fade op maat (PageTransition.astro, puur CSS op
+         ::view-transition-old/new). Elementen die niet opnieuw hoeven te
+         laden of hun eigen state/listeners hebben (header, boekingsdialoog,
+         sticky knop, footer) krijgen hieronder transition:persist zodat ze
+         de overgang overleven i.p.v. te verdwijnen en terug te komen. */
+    }
+    <ClientRouter />
+    <PageTransition />
+
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
@@ -122,16 +139,99 @@ const structuredData = {
 
     <title>{title}</title>
   </head>
-  <body class="flex min-h-dvh flex-col">
+  <body class="min-h-dvh">
     <SmoothScroll />
+    <ScrollReveal />
     <a href="#main" class="skip-link">Ga direct naar de inhoud</a>
     <BreakpointIndicator />
     <Header />
-    <main id="main" class="flex-1">
+    <main id="main" class="relative z-10">
       <slot />
     </main>
-    <Footer />
+    <MerkenMarquee />
+
+    {
+      /* "Reveal"-effect: #reveal-panel (CTA + footer) schuift bij het
+         scrollen in beeld met een lichte vertraging t.o.v. de rest van de
+         pagina — het begint met een verticale offset (translateY) en
+         "zakt" daarna naar zijn normale positie terwijl het in beeld komt,
+         zodat het net lijkt of het van onder de pagina vandaan komt i.p.v.
+         gewoon 1-op-1 mee te scrollen. Puur JS/transform (geen
+         position:sticky, dat bleek in de praktijk niet betrouwbaar genoeg),
+         via scroll + rAF-throttling, zelfde patroon als de kolom-parallax
+         in GalerijGrid.astro. De buitenste wrapper (relative + overflow-
+         hidden, en dezelfde bg-burgundy als het paneel zelf) knipt het
+         stukje paneel dat door die transform tijdelijk boven zijn eigen
+         doos uitsteekt weg — dát knipmasker is wat het "van onderen
+         tevoorschijn komen"-effect echt verkoopt, i.p.v. een paneel dat
+         gewoon zichtbaar verschuift. */
+    }
+    <div class="relative overflow-hidden bg-burgundy" transition:persist="reveal-panel">
+      <div id="reveal-panel" class="relative">
+        <AfspraakCta />
+        <Footer />
+        <div
+          id="footer-overlay"
+          class="pointer-events-none absolute inset-0 opacity-0"
+          style="background-color: #201d1d;"
+        >
+        </div>
+      </div>
+    </div>
     <StickyBookingButton />
     <AfspraakDialog />
+
+    <script>
+      const panel = document.getElementById("reveal-panel");
+      const overlay = document.getElementById("footer-overlay");
+
+      if (panel) {
+        const wilAnimatie = window.matchMedia(
+          "(prefers-reduced-motion: no-preference)",
+        ).matches;
+
+        if (wilAnimatie) {
+          const startOffset = -25; // %, startpositie: translate(0%, -25%)
+          const startOverlayOpacity = 1;
+          // Versnelt de overgang zodat 0% al ruim voor het einde van de
+          // pagina bereikt is, i.p.v. pas op de allerlaatste pixel — een
+          // vermenigvuldiging van de (al vloeiende) voortgang i.p.v. een
+          // harde knip, dus geen sprongetje halverwege.
+          const versnelling = 1.6;
+          let opgehangen = false;
+
+          function bijwerken() {
+            opgehangen = false;
+            const rect = panel!.getBoundingClientRect();
+            const viewportHoogte = window.innerHeight;
+            // 0 zodra het panel nog net onder de onderrand van het beeld
+            // staat, 1 zodra de bovenkant de bovenrand van het beeld
+            // bereikt (versneld, dus eerder dan dat er letterlijk gebeurt).
+            const voortgang = Math.min(
+              Math.max(
+                ((viewportHoogte - rect.top) / viewportHoogte) * versnelling,
+                0,
+              ),
+              1,
+            );
+            const offset = (1 - voortgang) * startOffset;
+            panel!.style.transform = `translate(0%, ${offset}%)`;
+            if (overlay) {
+              overlay.style.opacity = String((1 - voortgang) * startOverlayOpacity);
+            }
+          }
+
+          function planBijwerken() {
+            if (opgehangen) return;
+            opgehangen = true;
+            requestAnimationFrame(bijwerken);
+          }
+
+          window.addEventListener("scroll", planBijwerken, { passive: true });
+          window.addEventListener("resize", planBijwerken, { passive: true });
+          bijwerken();
+        }
+      }
+    </script>
   </body>
 </html>

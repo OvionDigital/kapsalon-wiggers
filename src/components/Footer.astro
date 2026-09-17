@@ -2,8 +2,10 @@
 import Logo from "./Logo.astro";
 import { vestigingen, payoff, reviews } from "../data/vestigingen";
 import { getTelHref } from "../lib/salon";
+import { vandaagAfkorting, parseDagenNL } from "../lib/openingstijden";
 
 const currentYear = new Date().getFullYear();
+const vandaag = vandaagAfkorting();
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -15,9 +17,16 @@ const navItems = [
 const sterren = Array.from({ length: 5 });
 ---
 
-<footer class="mt-auto bg-burgundy">
-  <div class="container py-16">
-    <div class="g-grid-12 gap-y-10">
+<footer class="bg-burgundy">
+  {
+    /* Zelfde bg-burgundy als AfspraakCta.astro erboven, zonder tussenruimte
+       (die section heeft pb-0!) — zo lijkt het één doorlopend donker vlak.
+       De footer-inhoud zelf zit in een lichter, afgerond kaartje op
+       containerbreedte, zoals op klantverzoek. */
+  }
+  <div class="container pt-10 pb-16 md:pt-14">
+    <div class="rounded-md bg-white/5 p-8 md:p-12">
+      <div class="g-grid-12 gap-y-10">
       <div class="g-col-12 g-col-md-5">
         <Logo variant="light" />
         {
@@ -101,34 +110,57 @@ const sterren = Array.from({ length: 5 });
                 {vestiging.telefoon}
               </a>
             </address>
-            <dl class="mt-4 flex flex-col gap-1 text-small text-sand">
-              {vestiging.openingstijden.map((tijd) => (
-                <div class="flex gap-3">
-                  <dt class="w-20 shrink-0">{tijd.dagen}</dt>
-                  <dd class="m-0">{tijd.tijden}</dd>
-                </div>
-              ))}
+            <dl class="mt-4 flex flex-col gap-1 text-small">
+              {vestiging.openingstijden.map((tijd) => {
+                const isVandaag = parseDagenNL(tijd.dagen).includes(vandaag);
+                return (
+                  <div
+                    class:list={[
+                      "flex items-baseline gap-3 rounded-md px-2 py-1",
+                      isVandaag && "bg-white/10",
+                    ]}
+                  >
+                    <dt
+                      class:list={[
+                        "w-20 shrink-0 font-medium",
+                        isVandaag ? "text-white" : "text-sand",
+                      ]}
+                    >
+                      {tijd.dagen}
+                    </dt>
+                    <dd
+                      class:list={[
+                        "m-0",
+                        isVandaag ? "font-semibold text-white" : "text-sand",
+                      ]}
+                    >
+                      {tijd.tijden}
+                    </dd>
+                  </div>
+                );
+              })}
             </dl>
           </div>
         ))
       }
-    </div>
+      </div>
 
-    <div
-      class="mt-12 flex flex-col gap-4 border-t border-white/15 pt-6 text-label text-sand sm:flex-row sm:items-center sm:justify-between"
-    >
-      <p>&copy; {currentYear} Kapsalon Wiggers. Alle rechten voorbehouden.</p>
-      <p>
-        Website door{" "}
-        <a
-          href="https://oviondigital.nl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="font-medium text-sand no-underline transition-colors duration-(--transition-duration) hover:text-white"
-        >
-          Ovion Digital
-        </a>
-      </p>
+      <div
+        class="mt-8 flex flex-col gap-4 border-t border-white/15 pt-6 text-label text-sand sm:flex-row sm:items-center sm:justify-between"
+      >
+        <p>&copy; {currentYear} Kapsalon Wiggers. Alle rechten voorbehouden.</p>
+        <p>
+          Website door{" "}
+          <a
+            href="https://oviondigital.nl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-medium text-sand no-underline transition-colors duration-(--transition-duration) hover:text-white"
+          >
+            Ovion Digital
+          </a>
+        </p>
+      </div>
     </div>
   </div>
 </footer>

@@ -1,44 +1,31 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
-import Intro from "../components/behandelingen/Intro.astro";
 import CategorieBlok from "../components/behandelingen/CategorieBlok.astro";
-import Producten from "../components/behandelingen/Producten.astro";
-import AfspraakCta from "../components/home/AfspraakCta.astro";
-import GalerijGrid from "../components/GalerijGrid.astro";
-import Lightbox from "../components/Lightbox.astro";
-import heroImage from "../assets/behandelingen-hero-placeholder.jpg";
-import galerij1 from "../assets/zoe-applbaum-j0143fogXSg-unsplash.jpg";
-import galerij2 from "../assets/nate-johnston-tgPrIYnW3g4-unsplash.jpg";
-import galerij3 from "../assets/lindsay-cash-Md_DhaFsnCQ-unsplash.jpg";
-import galerij4 from "../assets/jason-leung-2seUdPQNy_I-unsplash.jpg";
-import galerij5 from "../assets/ionela-mat-lps3FolQ6Ro-unsplash.jpg";
-import galerij6 from "../assets/giorgio-trovato-wSpkThmoZQc-unsplash.jpg";
-import galerij7 from "../assets/farhad-ibrahimzade-V2HDOQTJh3o-unsplash.jpg";
-import galerij8 from "../assets/agustin-fernandez-Znyjl9pbaUs-unsplash.jpg";
-import galerij9 from "../assets/adam-winger-fI-TKWjKYls-unsplash.jpg";
+import Galerij from "../components/home/Galerij.astro";
+import herenImage from "../assets/man-haircut.jpg";
+import damesImage from "../assets/woman-haircut.jpg";
+import kinderenImage from "../assets/Kids-Haircut.webp";
+import overigImage from "../assets/agustin-fernandez-Znyjl9pbaUs-unsplash.jpg";
 import { categorieen } from "../data/behandelingen";
-import { galerij } from "../data/home";
 import { getSalonId } from "../lib/salon";
 
 const [heren, dames, kinderen, overig] = categorieen;
 
-const galerijAfbeeldingen = {
-  "galerij-1": galerij1,
-  "galerij-2": galerij2,
-  "galerij-3": galerij3,
-  "galerij-4": galerij4,
-  "galerij-5": galerij5,
-  "galerij-6": galerij6,
-  "galerij-7": galerij7,
-  "galerij-8": galerij8,
-  "galerij-9": galerij9,
-} as const;
-
-const galerijItems = galerij.map((item) => ({
-  src: galerijAfbeeldingen[item.bestand as keyof typeof galerijAfbeeldingen],
-  alt: item.alt,
-}));
+const categorieItems = [
+  { categorie: heren, image: herenImage, imageAlt: "Kapper knipt een heer" },
+  { categorie: dames, image: damesImage, imageAlt: "Kapper stylet een dame" },
+  {
+    categorie: kinderen,
+    image: kinderenImage,
+    imageAlt: "Kapper knipt een kind",
+  },
+  {
+    categorie: overig,
+    image: overigImage,
+    imageAlt: "Gereedschap van de kapsalon",
+  },
+];
 
 // JSON-LD: OfferCatalog per categorie, gekoppeld aan de HairSalon uit
 // BaseLayout via provider.@id.
@@ -75,39 +62,30 @@ const offerCatalog = {
 >
   <PageHero
     title="Behandelingen & Tarieven"
-    intro="Duidelijke prijzen voor heren, dames en kinderen — met altijd tijd voor advies vooraf."
-    image={heroImage}
-    imageAlt="Sfeerbeeld van behandelingen bij Kapsalon Wiggers"
+    intro="Prijzen zijn indicatief en kunnen afhankelijk van haarlengte en gewenste behandeling afwijken. We geven je vooraf altijd een duidelijke indicatie."
+    lijnVariant={2}
   />
 
-  <Intro />
+  {
+    categorieItems.map((item, i) => (
+      <CategorieBlok
+        categorie={item.categorie}
+        image={item.image}
+        imageAlt={item.imageAlt}
+        omgekeerd={i % 2 === 1}
+      />
+    ))
+  }
 
-  <CategorieBlok categorie={heren} achtergrond="sand" />
-  <CategorieBlok categorie={dames} achtergrond="cream" />
-  <CategorieBlok categorie={kinderen} achtergrond="sand" />
-  <CategorieBlok categorie={overig} achtergrond="cream" />
-
-  <div class="bg-sand py-8">
-    <div class="container">
-      <p class="text-center text-small text-muted">
-        Prijzen zijn indicatief en kunnen afhankelijk van haarlengte en
-        gewenste behandeling afwijken — we geven je vooraf altijd een
-        duidelijke indicatie.
-      </p>
-    </div>
-  </div>
-
-  <section class="bg-cream">
-    <div class="container">
-      <h2 class="text-center">Sfeer en vakwerk</h2>
-      <div class="mt-10">
-        <GalerijGrid items={galerijItems} />
+    <!-- <div class="bg-sand py-8">
+      <div class="container">
+        <p class="text-center text-small text-muted">
+          Prijzen zijn indicatief en kunnen afhankelijk van haarlengte en gewenste
+          behandeling afwijken — we geven je vooraf altijd een duidelijke
+          indicatie.
+        </p>
       </div>
-    </div>
-  </section>
+    </div> -->
 
-  <Producten />
-  <AfspraakCta />
-
-  <Lightbox />
+  <Galerij />
 </BaseLayout>

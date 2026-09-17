@@ -1,0 +1,90 @@
+---
+import { vestigingen } from "../../data/vestigingen";
+import { getTelHref } from "../../lib/salon";
+
+const vestiging = vestigingen[0];
+
+const blokClass =
+  "flex items-center gap-3 rounded-2xl bg-white p-5 shadow-sm transition-transform duration-(--transition-duration) hover:scale-[1.02]";
+const iconWrapperClass =
+  "flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold-light text-charcoal";
+---
+
+<section class="bg-cream pt-0 pb-16">
+  <div class="container">
+    <div class="mx-auto grid max-w-md gap-4 sm:grid-cols-2">
+      <a
+        href={`tel:${getTelHref(vestiging.telefoon)}`}
+        class={blokClass}
+        data-reveal
+      >
+        <span class={iconWrapperClass} aria-hidden="true">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
+            ></path>
+          </svg>
+        </span>
+        <div>
+          <p class="text-small text-muted">Bel ons</p>
+          <p class="font-semibold text-ink">{vestiging.telefoon}</p>
+        </div>
+      </a>
+
+      <a
+        href={`mailto:${vestiging.email}`}
+        class={blokClass}
+        data-reveal
+        style="--reveal-delay: 90"
+      >
+        <span class={iconWrapperClass} aria-hidden="true">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </svg>
+        </span>
+        <div class="min-w-0">
+          <p class="text-small text-muted">Mail ons</p>
+          <p class="truncate font-semibold text-ink">{vestiging.email}</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Zelfde fix als Behandelingen.astro: de kaart heeft zowel de Tailwind-
+     utility transition-transform (voor de hover-scale) als [data-reveal]
+     (global.css, @layer base) nodig — Tailwind's utilities-laag wint anders
+     altijd van onze @layer base voor transition-property/-duration, en dan
+     blijft alleen een (te snelle) transform-transition over terwijl opacity
+     instant springt. Deze ongelaagde scoped style wint van beide lagen. */
+  [data-reveal] {
+    transition:
+      opacity var(--duration-entrance) ease-out,
+      transform var(--duration-entrance) ease-out;
+    transition-delay: calc(var(--reveal-delay, 0) * 1ms);
+  }
+
+  [data-reveal]:hover {
+    transition: transform var(--transition-duration) ease;
+  }
+</style>

@@ -1,0 +1,44 @@
+---
+/**
+ * PageTransition — een rustige cross-fade tussen pagina's, gebouwd op
+ * Astro's native ClientRouter/View Transitions (BaseLayout.astro) i.p.v. een
+ * eigen overlay-element.
+ *
+ * Bewust géén los <div>+JS meer (zoals de eerdere overlay-wipe-poging):
+ * Astro's native view-transition-overgang rendert in de browser's eigen
+ * "top layer", bóven alle gewone content — inclusief position:fixed
+ * elementen. Een eigen fixed overlay die daarmee moest samenwerken werd
+ * daardoor grillig (zichtbaar "snappen" i.p.v. vloeiend bewegen). Puur CSS
+ * op ::view-transition-old/new(root) blijft wél binnen dat mechanisme —
+ * geen race, geen laag-conflict, dus stabiel.
+ */
+---
+
+<style is:global>
+  @keyframes page-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes page-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  ::view-transition-old(root) {
+    animation: page-fade-out var(--transition-duration-long) ease-out both;
+  }
+
+  ::view-transition-new(root) {
+    animation: page-fade-in var(--transition-duration-long) ease-in both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+    }
+  }
+</style>

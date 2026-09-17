@@ -15,16 +15,20 @@ const afbeeldingen = {
 <section class="bg-sand">
   <div class="container">
     <span
-      class="mx-auto flex w-fit items-center gap-2 rounded-full bg-gold px-4 py-2 text-small font-semibold text-charcoal"
+      class="mx-auto flex w-fit items-center gap-2 rounded-full bg-gold-light px-4 py-2 text-small font-semibold text-charcoal"
       ><span class="h-1 w-1 rounded-full bg-charcoal" aria-hidden="true"
       ></span>{behandelingenSectie.eyebrow}</span
     >
     <h2 class="text-center mt-6">Uitgelichte behandelingen</h2>
 
-    <div class="behandeling-kaarten mt-12 grid gap-6 md:grid-cols-3 md:gap-8">
+    <div class="behandeling-kaarten mt-16 grid gap-6 md:grid-cols-3 md:gap-8">
       {
-        behandelingen.map((item) => (
-          <article class="group relative isolate flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-md shadow-lg shadow-ink/20 ring-1 ring-white/10 transition-shadow duration-(--transition-duration) hover:shadow-xl">
+        behandelingen.map((item, i) => (
+          <article
+            class="group relative isolate flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-md shadow-lg shadow-ink/20 ring-1 ring-white/10 transition-shadow duration-(--transition-duration) hover:shadow-xl"
+            data-reveal
+            style={`--reveal-delay: ${i * 90}`}
+          >
             <Image
               src={afbeeldingen[item.afbeelding as keyof typeof afbeeldingen]}
               alt={`Portret — ${item.doelgroep.toLowerCase()}`}
@@ -61,10 +65,32 @@ const afbeeldingen = {
       }
     </div>
 
-    <div class="mt-12 text-center">
+    <div class="mt-16 text-center">
       <a href="/behandelingen-tarieven" class="btn btn-primary px-6 py-3">
         Bekijk alle behandelingen &amp; tarieven
       </a>
     </div>
   </div>
 </section>
+
+<style>
+  /* De kaart heeft zowel de Tailwind-utility transition-shadow (voor de
+     hover-schaduw) als [data-reveal] (global.css, @layer base) nodig — beide
+     zetten transition-property/-duration, en Tailwind's utilities-laag wint
+     altijd van onze @layer base, ongeacht bronvolgorde. Zonder deze
+     override bleef er alleen een box-shadow-transition over en sprongen
+     opacity/transform instant in plaats van te animeren (enkel de
+     stagger-delay was nog zichtbaar). Deze scoped style is ongelaagd en
+     wint dus van beide lagen — hier bewust wél opacity/transform én
+     box-shadow samen, met eigen delay per property. */
+  [data-reveal] {
+    transition:
+      opacity var(--duration-entrance) ease-out,
+      transform var(--duration-entrance) ease-out,
+      box-shadow var(--transition-duration) ease;
+    transition-delay:
+      calc(var(--reveal-delay, 0) * 1ms),
+      calc(var(--reveal-delay, 0) * 1ms),
+      0s;
+  }
+</style>

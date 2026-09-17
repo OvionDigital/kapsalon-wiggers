@@ -2,7 +2,7 @@
 
 Website voor Kapsalon Wiggers, een dames- en herenkapsalon in Wehl (NL),
 opgericht in 1932 in Kilder. Ruim 90 jaar oud. Voor heren, dames en kinderen.
-Google-score 4,8 uit 86 reviews. Domein wordt kapsalonwiggers.nl.
+Google-score 4,8 uit 87 reviews. Domein wordt kapsalonwiggers.nl.
 
 Gebouwd door Simon Overbeek onder de naam Ovion Digital (oviondigital.nl).
 Contactpersoon bij de klant is John.

@@ -14,7 +14,7 @@ const { titel, tekst, image, alt, beeldZijde = "links" } = Astro.props;
 const beeldRechts = beeldZijde === "rechts";
 ---
 
-<div class="grid gap-8 md:grid-cols-2 md:items-center md:gap-14">
+<div class="grid gap-8 md:grid-cols-2 md:items-center md:gap-14" data-reveal>
   <div class:list={[beeldRechts && "md:order-2"]}>
     <Image
       src={image}

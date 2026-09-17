@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
 
 interface GalerijItem {
@@ -12,6 +12,16 @@ interface Props {
 }
 
 const { items } = Astro.props;
+
+// De grid toont een 600px thumbnail (vierkant bijgesneden), maar de
+// lightbox moet groot en scherp kunnen tonen — dezelfde bron dus ook op
+// een veel groter formaat genereren, i.p.v. de thumbnail zelf uit te
+// rekken (dat oogt wazig/te klein).
+const volledigeAfbeeldingen = await Promise.all(
+  items.map((item) =>
+    getImage({ src: item.src, width: 1800, height: 1800, format: "webp" }),
+  ),
+);
 ---
 
 {
@@ -22,15 +32,20 @@ const { items } = Astro.props;
      rechthoek, ongeacht het aantal foto's. */
 }
 <div
+  id="galerij-grid"
   class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:pb-0"
 >
   {
-    items.map((item) => (
+    items.map((item, i) => (
       <button
         type="button"
         data-lightbox-trigger
+        data-lightbox-full={volledigeAfbeeldingen[i].src}
+        data-parallax-col={i % 3}
+        data-reveal-fade
+        style={`--reveal-delay: ${(i % 6) * 70}`}
         aria-label={`${item.alt} — klik om te vergroten`}
-        class="group relative aspect-square w-64 shrink-0 snap-start cursor-pointer overflow-hidden rounded-md focus-visible:outline-2 focus-visible:outline-(--color-hover) focus-visible:outline-offset-2 md:w-auto md:shrink"
+        class="parallax-tile group relative aspect-square w-64 shrink-0 snap-start cursor-pointer overflow-hidden rounded-md focus-visible:outline-2 focus-visible:outline-(--color-hover) focus-visible:outline-offset-2 md:w-auto md:shrink"
       >
         <Image
           src={item.src}
@@ -65,3 +80,111 @@ const { items } = Astro.props;
     ))
   }
 </div>
+
+<style>
+  /* Parallax per kolom, alleen op het 3-koloms grid (md+): kolom 1 blijft de
+     "normale" baseline, kolom 2 begint iets lager en schuift iets sneller,
+     kolom 3 begint nog lager en schuift nog sneller. De vaste starthoogte
+     (--parallax-base) én de scroll-gekoppelde verschuiving (--parallax-scroll,
+     via het script hieronder) tellen op in transform — beide puur visueel
+     (translateY raakt de grid-layout zelf niet aan, dus geen scheve rijen). */
+  @media (min-width: 768px) {
+    .parallax-tile {
+      transform: translateY(
+        calc(var(--parallax-base, 0px) + var(--parallax-scroll, 0px))
+      );
+    }
+
+    .parallax-tile[data-parallax-col="1"] {
+      --parallax-base: 2rem;
+    }
+
+    .parallax-tile[data-parallax-col="2"] {
+      --parallax-base: 4rem;
+    }
+  }
+</style>
+
+<script>
+  // Verticale parallax tussen de drie kolommen: hoe verder de sectie
+  // gescrold is t.o.v. het beeldscherm, hoe meer de snellere kolommen
+  // omhoog schuiven t.o.v. de trage (eerste) kolom. Werkt gewoon mee met
+  // Lenis (SmoothScroll.astro): die stuurt de échte window-scrollpositie
+  // aan, dus normale scroll-events volstaan hier.
+  //
+  // In astro:page-load gewrapt voor View Transitions (ClientRouter in
+  // BaseLayout.astro): dit <script> draait als module maar één keer per
+  // sessie, terwijl #galerij-grid bij elk bezoek een nieuwe DOM-node is.
+  document.addEventListener("astro:page-load", () => {
+    const grid = document.getElementById("galerij-grid");
+
+    if (grid) {
+      const wilAnimatie = window.matchMedia(
+        "(prefers-reduced-motion: no-preference)",
+      ).matches;
+
+      if (wilAnimatie) {
+        // Index = kolom (0 = traagste/baseline), waarde = relatieve snelheid.
+        const snelheidPerKolom = [0, 0.15, 0.3];
+        const tegels = Array.from(
+          grid.querySelectorAll<HTMLElement>("[data-parallax-col]"),
+        );
+
+        let opgehangen = false;
+
+        function bijwerken() {
+          const rect = grid!.getBoundingClientRect();
+          const viewportHoogte = window.innerHeight;
+          const totaal = rect.height + viewportHoogte;
+          // 0 zodra de grid van onderen in beeld komt, 1 zodra hij bovenaan
+          // weer verdwijnt — halverwege (0,5) staat alles op zijn "rustpunt".
+          const voortgang = Math.min(
+            Math.max((viewportHoogte - rect.top) / totaal, 0),
+            1,
+          );
+          const midden = (voortgang - 0.5) * rect.height;
+
+          for (const tegel of tegels) {
+            const kolom = Number(tegel.dataset.parallaxCol ?? 0);
+            const snelheid = snelheidPerKolom[kolom] ?? 0;
+            tegel.style.setProperty(
+              "--parallax-scroll",
+              `${(-midden * snelheid).toFixed(1)}px`,
+            );
+          }
+        }
+
+        function opVolgendeFrame() {
+          opgehangen = false;
+          bijwerken();
+        }
+
+        function planBijwerken() {
+          if (opgehangen) return;
+          opgehangen = true;
+          requestAnimationFrame(opVolgendeFrame);
+        }
+
+        // AbortController: window overleeft paginanavigaties zelf, dus
+        // zonder opruimen zou elk hernieuwd bezoek een extra listener
+        // stapelen. astro:before-swap ruimt 'm op vlak vóór de volgende
+        // overgang.
+        const controller = new AbortController();
+        window.addEventListener("scroll", planBijwerken, {
+          passive: true,
+          signal: controller.signal,
+        });
+        window.addEventListener("resize", planBijwerken, {
+          passive: true,
+          signal: controller.signal,
+        });
+        document.addEventListener(
+          "astro:before-swap",
+          () => controller.abort(),
+          { once: true },
+        );
+        bijwerken();
+      }
+    }
+  });
+</script>

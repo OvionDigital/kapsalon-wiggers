@@ -1,51 +1,144 @@
 ---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import type { Categorie } from "../../data/behandelingen";
 import { formatPrijs } from "../../lib/prijzen";
 
 interface Props {
   categorie: Categorie;
-  achtergrond: "cream" | "sand";
+  image: ImageMetadata;
+  imageAlt: string;
+  /** true = afbeelding links, tekst rechts (voor het om-en-om-effect). */
+  omgekeerd?: boolean;
 }
 
-const { categorie, achtergrond } = Astro.props;
+const { categorie, image, imageAlt, omgekeerd = false } = Astro.props;
 ---
 
-<section
-  id={categorie.id}
-  class:list={[
-    "scroll-mt-(--header-height)",
-    achtergrond === "sand" ? "bg-sand" : "bg-cream",
-  ]}
->
+<section id={categorie.id} class="scroll-mt-(--header-height) pt-0">
   <div class="container">
-    <div class="mx-auto max-w-[var(--container-prose)]">
-      <h2>{categorie.naam}</h2>
-      <p class="mt-3 text-(length:--text-body) text-(--color-body)">
-        {categorie.omschrijving}
-      </p>
+    <div class="grid gap-10 md:grid-cols-12 md:items-center md:gap-14 lg:gap-30">
+      <div class:list={["md:col-span-6", omgekeerd && "md:order-2"]}>
+        <h2>{categorie.naam}</h2>
+        <p class="mt-3 text-(length:--text-body) text-(--color-body)">
+          {categorie.omschrijving}
+        </p>
 
-      <table class="mt-6 w-full border-collapse text-left">
-        <caption class="sr-only">Tarieven {categorie.naam}</caption>
-        <tbody>
-          {
-            categorie.behandelingen.map((behandeling) => (
-              <tr class="border-b border-border">
-                <td class="py-2 pr-4 align-top text-ink">
-                  {behandeling.naam}
-                  {behandeling.toelichting && (
-                    <span class="block text-small text-muted">
-                      {behandeling.toelichting}
-                    </span>
-                  )}
-                </td>
-                <td class="py-2 text-right font-semibold whitespace-nowrap align-top text-ink">
-                  {formatPrijs(behandeling.prijs)}
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
+        <div class="mt-6 max-w-md overflow-hidden rounded-2xl border border-border">
+          <table class="w-full border-collapse text-left">
+            <caption class="sr-only">Tarieven {categorie.naam}</caption>
+            <tbody>
+              {
+                categorie.behandelingen.map((behandeling, i) => (
+                  <tr
+                    class:list={[i % 2 === 1 && "bg-sand/60"]}
+                    data-reveal-fade
+                    style={`--reveal-delay: ${i * 60}`}
+                  >
+                    <td class="py-3 pr-4 pl-4 align-top text-ink">
+                      {behandeling.naam}
+                      {behandeling.toelichting && (
+                        <span class="block text-small text-muted">
+                          {behandeling.toelichting}
+                        </span>
+                      )}
+                    </td>
+                    <td class="py-3 pr-4 text-right font-semibold whitespace-nowrap align-top text-ink">
+                      {formatPrijs(behandeling.prijs)}
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {
+        /* Parallax: hier schuift het hele omkaderde blok (rand + foto
+           samen) verticaal mee met de scrollpositie, niet de foto
+           binnen een vaste mask — data-parallax op het blok zelf, zie
+           script. */
+      }
+      <div
+        class:list={[
+          "relative aspect-[4/5] overflow-hidden rounded-full md:col-span-6 md:mx-auto md:w-4/5",
+          omgekeerd && "md:order-1",
+        ]}
+        data-parallax
+        data-reveal-fade
+      >
+        <Image
+          src={image}
+          alt={imageAlt}
+          widths={[480, 640, 960, 1200]}
+          sizes="(min-width: 768px) 45vw, 100vw"
+          loading="lazy"
+          class="h-full w-full object-cover"
+        />
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+  // In astro:page-load gewrapt voor View Transitions (ClientRouter in
+  // BaseLayout.astro): dit <script> draait als module maar één keer per
+  // sessie, terwijl de [data-parallax]-blokken bij elk bezoek nieuwe
+  // DOM-nodes zijn.
+  document.addEventListener("astro:page-load", () => {
+    const blokken = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-parallax]"),
+    );
+
+    if (blokken.length) {
+      const wilAnimatie = window.matchMedia(
+        "(prefers-reduced-motion: no-preference)",
+      ).matches;
+
+      if (wilAnimatie) {
+        const maxVerschuiving = 60; // px, hoe ver het hele blok drijft
+        let opgehangen = false;
+
+        function bijwerken() {
+          opgehangen = false;
+          const viewportHoogte = window.innerHeight;
+
+          for (const blok of blokken) {
+            const rect = blok.getBoundingClientRect();
+            const midden = rect.top + rect.height / 2 - viewportHoogte / 2;
+            // -1 (nog onder in beeld) .. 0 (in het midden) .. 1 (al voorbij boven)
+            const voortgang = Math.max(Math.min(midden / viewportHoogte, 1), -1);
+            blok.style.transform = `translateY(${voortgang * -maxVerschuiving}px)`;
+          }
+        }
+
+        function planBijwerken() {
+          if (opgehangen) return;
+          opgehangen = true;
+          requestAnimationFrame(bijwerken);
+        }
+
+        // AbortController: window overleeft paginanavigaties zelf, dus
+        // zonder opruimen zou elk hernieuwd bezoek een extra listener
+        // stapelen. astro:before-swap ruimt 'm op vlak vóór de volgende
+        // overgang.
+        const controller = new AbortController();
+        window.addEventListener("scroll", planBijwerken, {
+          passive: true,
+          signal: controller.signal,
+        });
+        window.addEventListener("resize", planBijwerken, {
+          passive: true,
+          signal: controller.signal,
+        });
+        document.addEventListener(
+          "astro:before-swap",
+          () => controller.abort(),
+          { once: true },
+        );
+        bijwerken();
+      }
+    }
+  });
+</script>

@@ -10,6 +10,7 @@
   id="lightbox"
   aria-label="Afbeelding uitvergroot"
   class="fixed inset-0 z-50 m-0 h-full max-h-none w-full max-w-none border-0 bg-transparent p-0 backdrop:bg-ink/90"
+  transition:persist="lightbox"
 >
   <div class="relative flex h-full w-full items-center justify-center p-4 sm:p-10">
     <button
@@ -79,7 +80,7 @@
       id="lightbox-image"
       src=""
       alt=""
-      class="max-h-full max-w-full rounded-md object-contain"
+      class="h-full w-full rounded-md object-contain"
     />
   </div>
 </dialog>
@@ -113,9 +114,12 @@
   function toon(index: number) {
     if (!img || triggers.length === 0) return;
     huidigeIndex = (index + triggers.length) % triggers.length;
-    const thumb = triggers[huidigeIndex].querySelector("img");
+    const trigger = triggers[huidigeIndex];
+    const thumb = trigger.querySelector("img");
     if (!thumb) return;
-    img.src = thumb.currentSrc || thumb.src;
+    // Grotere, scherpere bron voor de lightbox i.p.v. de kleine
+    // grid-thumbnail uitgerekt (zie data-lightbox-full in GalerijGrid.astro).
+    img.src = trigger.dataset.lightboxFull || thumb.currentSrc || thumb.src;
     img.alt = thumb.alt;
   }
 

@@ -40,7 +40,7 @@ import { hero } from "../../data/hero";
   <div class="container relative">
     <div class="grid gap-10 md:grid-cols-12 md:items-center md:gap-14">
       <div class="relative z-10 md:col-span-6">
-        <h1 class="hero-animate hero-animate-1 text-display">
+        <h1 class="text-display">
           {hero.headingPrefix}<em class="text-gold italic"
             >{hero.headingAccent}</em
           >
@@ -49,7 +49,7 @@ import { hero } from "../../data/hero";
         </h1>
 
         <p
-          class="hero-animate hero-animate-2 mt-6 max-w-[var(--container-prose)] text-(length:--text-body) text-(--color-body)"
+          class="hero-animate hero-animate-2 mt-12 max-w-[var(--container-prose)] text-(length:--text-body) text-(--color-body)"
         >
           {hero.intro}
         </p>
@@ -104,9 +104,6 @@ import { hero } from "../../data/hero";
     animation: hero-fade-up var(--duration-entrance) ease-out both;
   }
 
-  .hero-animate-1 {
-    animation-delay: 0ms;
-  }
   .hero-animate-2 {
     animation-delay: 90ms;
   }

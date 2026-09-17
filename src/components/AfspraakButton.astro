@@ -5,6 +5,12 @@
  * Opent altijd hetzelfde AfspraakDialog-paneel (gemount in BaseLayout) via
  * data-afspraak-trigger. Zonder JavaScript blijft het gewoon een link naar
  * het contactblok op /contact, dus nooit een dode knop.
+ *
+ * data-astro-reload: sluit deze link uit van Astro's ClientRouter
+ * (BaseLayout.astro). Zonder dat attribuut onderschept de router de klik
+ * zelf als paginanavigatie — vóórdat AfspraakDialog.astro's eigen
+ * click-listener kan ingrijpen — en ging deze knop dus altijd naar
+ * /contact in plaats van de overlay te openen.
  */
 interface Props {
   /** primair = gevuld (kleur bepaalt licht/donker), secundair = outline, zwevend = gevuld + schaduw voor de losse floating button. */
@@ -46,6 +52,7 @@ const zwevendClass = variant === "zwevend" ? "shadow-lg shadow-black/20" : "";
 <a
   href="/contact#contactgegevens"
   data-afspraak-trigger
+  data-astro-reload
   class={`btn ${variantClass} ${sizeClass} ${zwevendClass} ${className}`}
 >
   {label}

@@ -20,8 +20,19 @@
   ).matches;
 
   if (wilAnimatie) {
-    new Lenis({
+    const lenis = new Lenis({
       autoRaf: true,
+    });
+
+    // Lenis houdt zijn eigen "virtuele" scrollpositie bij (los van de echte
+    // window-scroll) om te kunnen vertragen — daardoor merkt Lenis een
+    // paginawissel via de ClientRouter (BaseLayout.astro) niet vanzelf op en
+    // blijft hij op de oude positie staan, ook al toont de pagina nu andere
+    // inhoud. astro:after-swap (ná elke navigatie) forceert 'm terug naar
+    // boven, met immediate: true zodat het geen zichtbare scroll-animatie
+    // is maar meteen klopt.
+    document.addEventListener("astro:after-swap", () => {
+      lenis.scrollTo(0, { immediate: true });
     });
   }
 </script>

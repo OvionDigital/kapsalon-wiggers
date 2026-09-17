@@ -1,11 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
-import ContactGegevens from "../components/contact/ContactGegevens.astro";
-import Kaart from "../components/contact/Kaart.astro";
+import OpeningstijdenLocatie from "../components/home/OpeningstijdenLocatie.astro";
 import ContactFormulier from "../components/contact/ContactFormulier.astro";
-import AfspraakCta from "../components/home/AfspraakCta.astro";
-import heroImage from "../assets/contact-hero-placeholder.jpg";
+import SnelContact from "../components/contact/SnelContact.astro";
 import { getSalonId } from "../lib/salon";
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -26,12 +24,10 @@ const contactPageJsonLd = {
   <PageHero
     title="Contact"
     intro="Bel ons voor een afspraak, of stuur een bericht via het formulier."
-    image={heroImage}
-    imageAlt="Sfeerbeeld van de gevel van Kapsalon Wiggers in Wehl"
+    lijnVariant={4}
   />
 
-  <ContactGegevens />
-  <Kaart />
+  <SnelContact />
+  <OpeningstijdenLocatie toonParkerenNotitie />
   <ContactFormulier />
-  <AfspraakCta />
 </BaseLayout>

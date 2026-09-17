@@ -11,27 +11,27 @@ export interface TeamLid {
 
 export const team: TeamLid[] = [
   {
-    naam: "Peter Wiggers",
-    functie: "Eigenaar & kapper",
-    omschrijving: "Al meer dan 25 jaar achter de schaar, gespecialiseerd in klassieke herenkapsels.",
+    naam: "",
+    functie: "",
+    omschrijving: "",
     foto: "team-1",
   },
   {
-    naam: "Marloes Hendriks",
-    functie: "Kapster",
-    omschrijving: "Houdt van een goed gesprek en geeft altijd eerlijk kleuradvies.",
+    naam: "",
+    functie: "",
+    omschrijving: "",
     foto: "team-2",
   },
   {
-    naam: "Bas Willemsen",
-    functie: "Kapper",
-    omschrijving: "Gespecialiseerd in kinderen — geduldig en altijd een grapje paraat.",
+    naam: "",
+    functie: "",
+    omschrijving: "",
     foto: "team-3",
   },
   {
-    naam: "Anouk ten Berge",
-    functie: "Kapster",
-    omschrijving: "Van bruidskapsels tot dagelijkse stylings, Anouk kan het allemaal.",
+    naam: "",
+    functie: "",
+    omschrijving: "",
     foto: "team-4",
   },
 ];

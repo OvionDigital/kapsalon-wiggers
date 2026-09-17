@@ -10,7 +10,7 @@ import galerij6 from "../../assets/giorgio-trovato-wSpkThmoZQc-unsplash.jpg";
 import galerij7 from "../../assets/farhad-ibrahimzade-V2HDOQTJh3o-unsplash.jpg";
 import galerij8 from "../../assets/agustin-fernandez-Znyjl9pbaUs-unsplash.jpg";
 import galerij9 from "../../assets/adam-winger-fI-TKWjKYls-unsplash.jpg";
-import { galerij } from "../../data/home";
+import { galerij, galerijSectie } from "../../data/home";
 
 const afbeeldingen = {
   "galerij-1": galerij1,
@@ -32,9 +32,14 @@ const items = galerij.map((item) => ({
 
 <section class="bg-sand">
   <div class="container">
-    <h2 class="text-center">Sfeer en vakwerk</h2>
+    <span
+      class="mx-auto flex w-fit items-center gap-2 rounded-full bg-gold-light  px-4 py-2 text-small font-semibold text-charcoal"
+      ><span class="h-1 w-1 rounded-full bg-charcoal" aria-hidden="true"
+      ></span>{galerijSectie.eyebrow}</span
+    >
+    <h2 class="mt-3 text-center">Sfeer en vakwerk</h2>
 
-    <div class="mt-10">
+    <div class="mt-16">
       <GalerijGrid items={items} />
     </div>
   </div>

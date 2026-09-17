@@ -32,8 +32,8 @@ const portretten = {
       class="mt-10 grid grid-cols-2 gap-6 sm:gap-8 md:[grid-template-columns:repeat(auto-fit,minmax(12rem,1fr))]"
     >
       {
-        team.map((lid) => (
-          <div class="text-center">
+        team.map((lid, i) => (
+          <div class="text-center" data-reveal style={`--reveal-delay: ${i * 90}`}>
             <Image
               src={portretten[lid.foto as keyof typeof portretten]}
               alt={`Portret van ${lid.naam}`}
