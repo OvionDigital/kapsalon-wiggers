@@ -102,6 +102,7 @@ const inputClass =
             name="website"
             tabindex="-1"
             autocomplete="off"
+            class="w-px"
           />
         </div>
         <input type="hidden" id="ts" name="ts" value="" />
@@ -186,7 +187,9 @@ const inputClass =
           sitekey: widget.dataset.sitekey,
           language: "nl",
           theme: "light",
-          size: "flexible",
+          // "flexible" is minimaal 300px breed; op heel smalle schermen (320px)
+          // past dat niet in het formulier, dan de compacte variant.
+          size: widget.offsetWidth < 300 ? "compact" : "flexible",
         });
       })
       .catch((error) => console.error(error));
