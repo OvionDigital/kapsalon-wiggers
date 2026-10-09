@@ -9,7 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "audit": "node \"../ovion-site-tools/src/audit.mjs\"",
+    "browsers": "node \"../ovion-site-tools/src/browsers.mjs\""
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

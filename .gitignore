@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # lokale cache van wrangler pages dev
 .wrangler/
+
+# rapporten van ovion-site-tools (npm run audit / browsers)
+rapporten/
