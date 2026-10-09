@@ -22,6 +22,7 @@
   --color-gold: #e0a636; /* accentkleur */
   --color-gold-dark: #c68a24; /* hover-variant van gold */
   --color-gold-light: #f2c96b; /* hover-variant van gold op donkere achtergronden */
+  --color-gold-deep: #a87216; /* goud voor tekst (accentwoorden in koppen) op lichte achtergronden — haalt WCAG AA voor grote tekst (≥3:1 op cream, sand en wit) */
   --color-olive: #6f6b45; /* gedempt, warm derde accent */
   --color-burgundy: #4a2f1f; /* afgestemd op het donkerbruin uit het logo */
   --color-burgundy-dark: #3b2619; /* hover-variant */

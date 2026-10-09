@@ -24,7 +24,6 @@ const logoSvg = fs.readFileSync(
 
 <a
   href="/"
-  aria-label="Kapsalon Wiggers - Naar de homepage"
   class={`inline-flex items-center no-underline ${wordmarkColor} ${className}`}
 >
   <span
@@ -33,4 +32,7 @@ const logoSvg = fs.readFileSync(
     aria-hidden="true"
     set:html={logoSvg}
   />
+  {/* Echte (visueel verborgen) linktekst i.p.v. aria-label: telt ook als
+     ankertekst voor zoekmachines en crawlers. */}
+  <span class="sr-only">Kapsalon Wiggers, naar de homepage</span>
 </a>

@@ -14,6 +14,9 @@ export const kaartMelding = {
 };
 
 export const cookieverklaring = {
+  // Kop boven de cookielijst van CookieFirst. Die lijst gebruikt zelf H3's,
+  // dus zonder deze H2 zou de kopvolgorde van H1 naar H3 springen.
+  lijstTitel: "Overzicht van de cookies",
   intro:
     "Op deze pagina lees je welke cookies onze website gebruikt en waarvoor. Je toestemming beheer je via de cookiemelding.",
   paragrafen: [

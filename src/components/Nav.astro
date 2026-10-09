@@ -1,12 +1,15 @@
 ---
 const navItems = [
   { href: "/", label: "Home" },
-  { href: "/behandelingen-tarieven", label: "Behandelingen" },
-  { href: "/over-wiggers", label: "Over ons" },
-  { href: "/contact", label: "Contact" },
+  { href: "/behandelingen-tarieven/", label: "Behandelingen" },
+  { href: "/over-wiggers/", label: "Over ons" },
+  { href: "/contact/", label: "Contact" },
 ];
 
-const currentPath = Astro.url.pathname;
+// Zonder slash aan het eind vergelijken: links eindigen op "/", de URL
+// tijdens build of dev soms niet.
+const zonderSlash = (pad: string) => pad.replace(/\/$/, "") || "/";
+const currentPath = zonderSlash(Astro.url.pathname);
 ---
 
 <nav aria-label="Hoofdmenu">
@@ -18,7 +21,7 @@ const currentPath = Astro.url.pathname;
         const isActive =
           item.href === "/"
             ? currentPath === "/"
-            : currentPath.startsWith(item.href);
+            : currentPath.startsWith(zonderSlash(item.href));
         return (
           <li>
             <a
@@ -100,12 +103,13 @@ const currentPath = Astro.url.pathname;
   // na de eerste navigatie niet meer. astro:page-load vuurt na het laden
   // én na elke swap, dus hiermee blijft de actieve link altijd kloppen.
   function syncActieveNavLink() {
-    const currentPath = window.location.pathname;
+    const zonderSlash = (pad: string) => pad.replace(/\/$/, "") || "/";
+    const currentPath = zonderSlash(window.location.pathname);
 
     document
       .querySelectorAll<HTMLAnchorElement>(".nav-link")
       .forEach((link) => {
-        const href = new URL(link.href).pathname;
+        const href = zonderSlash(new URL(link.href).pathname);
         const isActive =
           href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 

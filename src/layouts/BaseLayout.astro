@@ -115,11 +115,6 @@ const structuredData = {
       });
     </script>
     <script is:inline src={cookieFirstScript}></script>
-    <script
-      is:inline
-      async
-      src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
-    ></script>
     <script is:inline define:vars={{ googleAnalyticsId }}>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
@@ -127,6 +122,23 @@ const structuredData = {
       }
       gtag("js", new Date());
       gtag("config", googleAnalyticsId);
+      // Het gtag-script zelf pas laden nadat de pagina klaar is en de browser
+      // even niets te doen heeft. Het blokkeerde anders ±0,7 s de pagina.
+      // De opdrachten hierboven wachten in dataLayer tot het script er is.
+      function laadGtag() {
+        var script = document.createElement("script");
+        script.async = true;
+        script.src =
+          "https://www.googletagmanager.com/gtag/js?id=" + googleAnalyticsId;
+        document.head.appendChild(script);
+      }
+      window.addEventListener("load", function () {
+        if ("requestIdleCallback" in window) {
+          requestIdleCallback(laadGtag, { timeout: 3000 });
+        } else {
+          setTimeout(laadGtag, 1500);
+        }
+      });
     </script>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />

@@ -106,7 +106,7 @@ function initialen(naam: string) {
             ></span>{reviewsSectie.eyebrow}
           </span>
           <h2 class="mt-3">
-            {reviewsSectie.headingPrefix}<em class="text-gold italic"
+            {reviewsSectie.headingPrefix}<em class="text-gold-deep italic"
               >{reviewsSectie.headingAccent}</em
             >
           </h2>
@@ -253,10 +253,27 @@ function initialen(naam: string) {
           },
         });
 
-        // De svg's zijn aria-hidden, dus de knoppen hebben zelf een naam
-        // nodig voor schermlezers.
-        $carousel.find(".owl-prev").attr("aria-label", "Vorige reviews");
-        $carousel.find(".owl-next").attr("aria-label", "Volgende reviews");
+        // Toegankelijkheid: Owl zet role="presentation" op de pijlknoppen
+        // (verbiedt een aria-label) en geeft de bolletjes geen naam. De svg's
+        // zijn aria-hidden, dus de knoppen krijgen hier zelf een naam. Owl
+        // bouwt de bolletjes opnieuw op bij een resize, vandaar de events.
+        function labelKnoppen() {
+          $carousel
+            .find(".owl-prev")
+            .removeAttr("role")
+            .attr("aria-label", "Vorige reviews");
+          $carousel
+            .find(".owl-next")
+            .removeAttr("role")
+            .attr("aria-label", "Volgende reviews");
+          $carousel.find(".owl-dot").each((index, dot) => {
+            jQuery(dot)
+              .removeAttr("role")
+              .attr("aria-label", `Toon reviews, deel ${index + 1}`);
+          });
+        }
+        labelKnoppen();
+        $carousel.on("refreshed.owl.carousel resized.owl.carousel", labelKnoppen);
 
         // Nav en dots samen op één rij: in een eigen wrapper gezet i.p.v.
         // via CSS op #review-carousel zelf, want Owl berekent zijn
