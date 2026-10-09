@@ -52,11 +52,10 @@ simon@oviondigital.nl voor de testfase).
 ## Openstaande punten
 
 - **CookieFirst** staat erin (script in `BaseLayout.astro`, config in
-  `src/data/cookies.ts`, pagina `/cookieverklaring`). Nog doen: in het
-  CookieFirst-dashboard controleren dat Google Maps en Adobe Fonts in de scan
-  staan, en uitzoeken hoe CookieFirst de Maps-iframe blokkeert tot er
-  toestemming is (nu laadt de kaart altijd). Banner pas te testen op het live
-  domein kapsalonwiggers.nl.
+  `src/data/cookies.ts`, pagina `/cookieverklaring`). De Google Maps-iframe
+  laadt pas na toestemming voor de categorie "functional" (`data-src` +
+  `data-cookiefirst-category`, volgens de CookieFirst-handleiding; Autoblock
+  werkt niet voor iframes). Banner alleen te testen op kapsalonwiggers.nl.
 - Na de testfase `CONTACT_TO` in Cloudflare Pages op info@kapsalonwiggers.nl
   zetten.
 - Nog veel content ontbreekt: teamleden, foto's van John en Astrid, de

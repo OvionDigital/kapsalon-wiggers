@@ -3,7 +3,8 @@ import Openingstijden from "../Openingstijden.astro";
 import { vestigingen } from "../../data/vestigingen";
 import { openingstijdenSectie } from "../../data/home";
 import { parkerenNotitie } from "../../data/contact";
-import { getGoogleMapsEmbedSrc, getTelHref } from "../../lib/salon";
+import { getGoogleMapsEmbedSrc, getGoogleMapsHref, getTelHref } from "../../lib/salon";
+import { kaartCategorie, kaartMelding } from "../../data/cookies";
 
 interface Props {
   /** Toont de parkeernotitie onder het adres — alleen relevant op de
@@ -14,6 +15,11 @@ interface Props {
 const { toonParkerenNotitie = false } = Astro.props;
 const vestiging = vestigingen[0];
 const mapsEmbedSrc = getGoogleMapsEmbedSrc(
+  vestiging.adres,
+  vestiging.postcode,
+  vestiging.plaats,
+);
+const mapsHref = getGoogleMapsHref(
   vestiging.adres,
   vestiging.postcode,
   vestiging.plaats,
@@ -50,19 +56,48 @@ const mapsEmbedSrc = getGoogleMapsEmbedSrc(
     }
     <div class="grid md:grid-cols-12">
       <div class="relative mt-16 md:col-span-10 md:col-start-2 md:mt-14">
-        <div class="overflow-hidden rounded-md md:ml-64 lg:ml-72">
+        {
+          /* Google Maps plaatst cookies, dus de iframe laadt pas na
+             toestemming voor de categorie "functional" in CookieFirst. Daarom
+             data-src i.p.v. src (volgens de CookieFirst-handleiding voor
+             iframes); CookieFirst of het script hieronder zet src zodra er
+             toestemming is. Tot die tijd staat de melding in hetzelfde vlak. */
+        }
+        <div
+          class="kaart relative h-96 overflow-hidden rounded-md bg-white md:ml-64 md:h-176 lg:ml-72"
+        >
           <iframe
-            src={mapsEmbedSrc}
+            data-src={mapsEmbedSrc}
+            data-cookiefirst-category={kaartCategorie}
             title={`Kaart met de ligging van Kapsalon Wiggers in ${vestiging.plaats}`}
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
-            class="h-96 w-full border-0 md:h-176"></iframe>
+            class="h-full w-full border-0"></iframe>
+          <div
+            class="kaart-melding absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 pb-16 text-center md:pb-6 md:pl-22 lg:pl-30"
+          >
+            <p class="max-w-xs text-small text-muted">{kaartMelding.tekst}</p>
+            <button
+              type="button"
+              class="btn btn-primary px-6 py-3 text-small"
+              data-kaart-toestaan
+            >
+              {kaartMelding.knop}
+            </button>
+            <a
+              href={mapsHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-small font-semibold text-burgundy underline underline-offset-4"
+            >
+              {kaartMelding.routeLink}
+            </a>
+          </div>
         </div>
 
         {
           /* Op mobiel hangt het locatieblok gecentreerd een stukje over de
-             onderrand van de kaart. TODO: CookieFirst moet deze iframe blokkeren
-             tot er toestemming is (zie CLAUDE.md, openstaande punten). */
+             onderrand van de kaart. */
         }
         <div
           class="relative z-10 mx-6 -mt-10 rounded-md bg-white p-8 md:absolute md:top-1/2 md:left-0 md:mx-0 md:mt-0 md:w-80 md:-translate-y-1/2 lg:w-96"
@@ -101,3 +136,57 @@ const mapsEmbedSrc = getGoogleMapsEmbedSrc(
     </div>
   </div>
 </section>
+
+<style>
+  /* Melding weg zodra de iframe een src heeft (toestemming gegeven). */
+  .kaart iframe[src] ~ .kaart-melding {
+    display: none;
+  }
+</style>
+
+<script>
+  import { kaartCategorie } from "../../data/cookies";
+
+  type CookieFirstApi = {
+    consent?: Record<string, boolean> | null;
+    acceptCategory?: (categorie: string) => void;
+  };
+  const venster = window as Window & { CookieFirst?: CookieFirstApi };
+
+  function laadKaarten() {
+    document
+      .querySelectorAll<HTMLIFrameElement>(
+        `iframe[data-cookiefirst-category="${kaartCategorie}"]:not([src])`,
+      )
+      .forEach((iframe) => {
+        if (iframe.dataset.src) iframe.src = iframe.dataset.src;
+      });
+  }
+
+  function heeftToestemming() {
+    return venster.CookieFirst?.consent?.[kaartCategorie] === true;
+  }
+
+  // Knop bij de kaart: geeft toestemming in CookieFirst en laadt de kaart
+  // meteen. Is CookieFirst niet geladen (bv. op het pages.dev-adres of door
+  // een adblocker), dan laden we de kaart op deze expliciete klik toch.
+  document.addEventListener("click", (event) => {
+    const knop = (event.target as Element | null)?.closest(
+      "[data-kaart-toestaan]",
+    );
+    if (!knop) return;
+    venster.CookieFirst?.acceptCategory?.(kaartCategorie);
+    laadKaarten();
+  });
+
+  // Toestemming gegeven of gewijzigd via de banner.
+  window.addEventListener("cf_consent", () => {
+    if (heeftToestemming()) laadKaarten();
+  });
+
+  // Na een paginanavigatie via de ClientRouter verwerkt CookieFirst nieuwe
+  // iframes niet vanzelf; bij eerder gegeven toestemming laden we ze hier.
+  document.addEventListener("astro:page-load", () => {
+    if (heeftToestemming()) laadKaarten();
+  });
+</script>
