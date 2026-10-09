@@ -31,6 +31,7 @@ export const privacySecties: PrivacySectie[] = [
     paragrafen: [
       "Als je het contactformulier invult, ontvangen we je naam, je e-mailadres, je bericht en (als je dat invult) je telefoonnummer. Mail of bel je ons zelf, dan hebben we de gegevens die je daarbij deelt.",
       "Daarnaast verwerkt onze hostingpartij bij elk bezoek technische gegevens, zoals je IP-adres en het type browser. Dat is nodig om de website veilig en goed te laten werken.",
+      "Geef je toestemming voor statistiekcookies, dan meten we met Google Analytics hoe de website wordt gebruikt, zoals welke pagina's worden bekeken. Zo kunnen we de website verbeteren.",
     ],
   },
   {
@@ -55,6 +56,7 @@ export const privacySecties: PrivacySectie[] = [
       "Resend: verstuurt de berichten uit het contactformulier per e-mail naar ons.",
       "Google Maps: de kaart op de website. Google kan daarbij gegevens verzamelen en cookies plaatsen.",
       "Adobe Fonts: levert de lettertypen van de website. Daarbij wordt je IP-adres naar Adobe gestuurd.",
+      "Google Analytics: anonieme statistieken over hoe de website wordt gebruikt. Alleen met je toestemming worden daarbij cookies geplaatst.",
       "CookieFirst: vraagt en registreert je toestemming voor cookies (zie hieronder).",
     ],
   },
@@ -67,7 +69,7 @@ export const privacySecties: PrivacySectie[] = [
   {
     titel: "Cookies",
     paragrafen: [
-      "Onze website gebruikt zelf geen cookies om je te volgen. Externe diensten zoals Google Maps kunnen wel cookies plaatsen. Via de cookiemelding op de website bepaal je zelf welke cookies je toestaat. Welke cookies dat precies zijn, lees je in onze cookieverklaring.",
+      "We gebruiken Google Analytics en Google Maps. Die plaatsen alleen cookies als je daar toestemming voor geeft. Via de cookiemelding op de website bepaal je zelf welke cookies je toestaat. Welke cookies dat precies zijn, lees je in onze cookieverklaring.",
     ],
   },
   // Onderstaande drie secties komen uit de privacytekst die CookieFirst

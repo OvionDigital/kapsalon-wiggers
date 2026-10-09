@@ -22,8 +22,8 @@ Contactpersoon bij de klant is John.
   Maps-iframe (klantwens) en Cloudflare Turnstile op het contactformulier.
   Daarom komt er een cookiebanner via **CookieFirst** (abonnement gaat mee in de
   maandelijkse kosten). Overige externe scripts blijven nog steeds zo veel
-  mogelijk weg; Google Analytics is afgevallen, analytics loopt via de
-  server-side variant van Cloudflare Web Analytics, zonder script in de HTML.
+  mogelijk weg. Google Analytics 4 (G-ERJ9P3WN30) staat erin met Google
+  Consent Mode via CookieFirst (ID in `src/data/cookies.ts`).
 
 ## Stack
 
