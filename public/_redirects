@@ -1,0 +1,48 @@
+# Oude URL's van de vorige website (CMS met genummerde pagina's, o.a. /1-home
+# en /6-product/...). Gevonden via het internetarchief (Wayback Machine),
+# 2026-10-09. Alles 301, zodat Google de nieuwe pagina overneemt.
+# Cloudflare Pages: eerste regel die matcht wint.
+# TODO: na een paar weken in Search Console (Pagina's > "Niet gevonden (404)")
+# controleren of er oude URL's missen.
+
+# Home en nieuws
+/1-home                  /                               301
+/1-home/                 /                               301
+/2                       /                               301
+/14-nieuws               /                               301
+/14-nieuws/              /                               301
+/5-nieuws/*              /                               301
+
+# Over ons, geschiedenis, team
+/2-over-ons              /over-wiggers/                  301
+/2-over-ons/             /over-wiggers/                  301
+/19-geschiedenis         /over-wiggers/                  301
+/19-geschiedenis/        /over-wiggers/                  301
+/21-ons-team             /over-wiggers/                  301
+/21-ons-team/            /over-wiggers/                  301
+
+# Behandelingen en tarieven
+/3-producten             /behandelingen-tarieven/        301
+/3-producten/            /behandelingen-tarieven/        301
+/3-producten--prijzen    /behandelingen-tarieven/        301
+/3-producten--prijzen/   /behandelingen-tarieven/        301
+/20-styling-producten    /behandelingen-tarieven/        301
+/20-styling-producten/   /behandelingen-tarieven/        301
+/6-product/6288-heren              /behandelingen-tarieven/#heren      301
+/6-product/6288-heren-tarieven     /behandelingen-tarieven/#heren      301
+/6-product/6289-dames              /behandelingen-tarieven/#dames      301
+/6-product/6289-dames-tarieven     /behandelingen-tarieven/#dames      301
+/6-product/6299-kinderen           /behandelingen-tarieven/#kinderen   301
+/6-product/6299-kinderen-tarieven  /behandelingen-tarieven/#kinderen   301
+# Overige productpagina's (merken en foto's)
+/6-product/*             /behandelingen-tarieven/        301
+
+# Contact en bedankpagina
+/4-contact               /contact/                       301
+/4-contact/              /contact/                       301
+/16-bedankt-melding      /contact/                       301
+/16-bedankt-melding/     /contact/                       301
+
+# Cookiebeleid
+/22-cookiebeleid         /cookieverklaring/              301
+/22-cookiebeleid/        /cookieverklaring/              301
