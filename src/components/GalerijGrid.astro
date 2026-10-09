@@ -9,9 +9,15 @@ interface GalerijItem {
 
 interface Props {
   items: GalerijItem[];
+  /** Aantal kolommen vanaf md. 4 past bij 8 foto's, 3 bij 9. */
+  kolommen?: 3 | 4;
 }
 
-const { items } = Astro.props;
+const { items, kolommen = 3 } = Astro.props;
+
+// Parallax-kolom per tegel: bij 3 kolommen een trap (0, 1, 2), bij 4
+// kolommen een golf (0, 1, 0, 1), zodat de verschuiving rustig blijft.
+const parallaxKolom = (i: number) => (kolommen === 4 ? i % 2 : i % 3);
 
 // De grid toont een 600px thumbnail (vierkant bijgesneden), maar de
 // lightbox moet groot en scherp kunnen tonen — dezelfde bron dus ook op
@@ -19,7 +25,10 @@ const { items } = Astro.props;
 // rekken (dat oogt wazig/te klein).
 const volledigeAfbeeldingen = await Promise.all(
   items.map((item) =>
-    getImage({ src: item.src, width: 1800, height: 1800, format: "webp" }),
+    // Alleen een breedte: de lightbox toont de hele foto in zijn eigen
+    // verhouding (bijv. een albumpagina met bijschrift), niet vierkant
+    // bijgesneden zoals de tegel.
+    getImage({ src: item.src, width: 1800, format: "webp" }),
   ),
 );
 ---
@@ -33,7 +42,10 @@ const volledigeAfbeeldingen = await Promise.all(
 }
 <div
   id="galerij-grid"
-  class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:pb-0"
+  class:list={[
+    "flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:gap-4 md:overflow-visible md:pb-0",
+    kolommen === 4 ? "md:grid-cols-4" : "md:grid-cols-3",
+  ]}
 >
   {
     items.map((item, i) => (
@@ -41,7 +53,7 @@ const volledigeAfbeeldingen = await Promise.all(
         type="button"
         data-lightbox-trigger
         data-lightbox-full={volledigeAfbeeldingen[i].src}
-        data-parallax-col={i % 3}
+        data-parallax-col={parallaxKolom(i)}
         data-reveal-fade
         style={`--reveal-delay: ${(i % 6) * 70}`}
         aria-label={`${item.alt} — klik om te vergroten`}

@@ -1,0 +1,55 @@
+---
+import GalerijGrid from "../GalerijGrid.astro";
+import Lightbox from "../Lightbox.astro";
+import foto1 from "../../assets/vroeger/opening-1965-1.jpeg";
+import foto2 from "../../assets/vroeger/opening-1965-2.jpeg";
+import foto3 from "../../assets/vroeger/opening-1965-3.jpeg";
+import foto4 from "../../assets/vroeger/opening-1965-4.jpeg";
+import foto5 from "../../assets/vroeger/opening-1965-5.jpeg";
+import foto6 from "../../assets/vroeger/opening-1965-6.jpeg";
+import foto7 from "../../assets/vroeger/opening-1965-7.jpeg";
+import foto8 from "../../assets/vroeger/opening-1965-8.jpeg";
+import { vroegerFotos, vroegerSectie } from "../../data/over";
+
+const afbeeldingen = {
+  "opening-1965-1": foto1,
+  "opening-1965-2": foto2,
+  "opening-1965-3": foto3,
+  "opening-1965-4": foto4,
+  "opening-1965-5": foto5,
+  "opening-1965-6": foto6,
+  "opening-1965-7": foto7,
+  "opening-1965-8": foto8,
+} as const;
+
+const items = vroegerFotos.map((foto) => ({
+  src: afbeeldingen[foto.bestand as keyof typeof afbeeldingen],
+  alt: foto.alt,
+}));
+---
+
+<section class="bg-cream">
+  <div class="container">
+    <div class="mx-auto max-w-[var(--container-prose)] text-center" data-reveal>
+      <span
+        class="mx-auto flex w-fit items-center gap-2 rounded-full bg-gold-light px-4 py-2 text-small font-semibold text-charcoal"
+        ><span class="h-1 w-1 rounded-full bg-charcoal" aria-hidden="true"
+        ></span>{vroegerSectie.eyebrow}</span
+      >
+      <h2 class="mt-6">
+        {vroegerSectie.headingPrefix}<em class="text-gold italic"
+          >{vroegerSectie.headingAccent}</em
+        >
+      </h2>
+      <p class="mt-4 text-(length:--text-body) text-(--color-body)">
+        {vroegerSectie.tekst}
+      </p>
+    </div>
+
+    <div class="mt-12 md:mt-16">
+      <GalerijGrid items={items} kolommen={4} />
+    </div>
+  </div>
+</section>
+
+<Lightbox />

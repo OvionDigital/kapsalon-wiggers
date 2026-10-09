@@ -32,3 +32,51 @@ export const features: Feature[] = [
     beeldZijde: "rechts",
   },
 ];
+
+// Foto's uit het familiealbum, aangeleverd door John (2026-10-09). Een van de
+// albumpagina's heeft als bijschrift "Opening Kapsalon 1965". Wie er op de
+// foto's staan is niet bekend, dus de alt-teksten noemen geen namen.
+// TODO: bij John navragen wie er op de foto's staan (Jan en Diny?).
+export const vroegerSectie = {
+  eyebrow: "Uit het familiealbum",
+  // headingAccent wordt cursief en in het accentgoud gezet.
+  headingPrefix: "De opening in ",
+  headingAccent: "1965",
+  tekst:
+    "In 1965 opende de kapsalon aan de Julianastraat in Wehl. Deze foto's uit het familiealbum laten zien hoe het er toen uitzag. Klik op een foto om hem groter te bekijken.",
+};
+
+export const vroegerFotos: { bestand: string; alt: string }[] = [
+  {
+    bestand: "opening-1965-1",
+    alt: "Albumpagina met een foto van het nieuwe pand en het bijschrift 'Opening Kapsalon 1965'",
+  },
+  {
+    bestand: "opening-1965-2",
+    alt: "Het nieuwe pand van de kapsalon, schuin van voren gezien",
+  },
+  {
+    bestand: "opening-1965-3",
+    alt: "Een man en een vrouw proosten achter de toonbank, met bloemen en producten",
+  },
+  {
+    bestand: "opening-1965-4",
+    alt: "Bezoekers in de kapsalon tijdens de opening",
+  },
+  {
+    bestand: "opening-1965-5",
+    alt: "De kappersstoelen met droogkappen langs de spiegelwand",
+  },
+  {
+    bestand: "opening-1965-6",
+    alt: "Een man in pak staat in de nieuwe salon tussen de kappersstoelen",
+  },
+  {
+    bestand: "opening-1965-7",
+    alt: "Een vrouw biedt een gast een drankje aan in de salon",
+  },
+  {
+    bestand: "opening-1965-8",
+    alt: "De voorgevel van de kapsalon met de etalage",
+  },
+];
