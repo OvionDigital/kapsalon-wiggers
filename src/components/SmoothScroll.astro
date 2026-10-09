@@ -34,5 +34,19 @@
     document.addEventListener("astro:after-swap", () => {
       lenis.scrollTo(0, { immediate: true });
     });
+
+    // Menu, afspraakdialoog en lightbox zetten html.no-scroll. Lenis scrolt
+    // zelf via wheel/touch-events en trekt zich daar niets van aan, dus hier
+    // pauzeren we hem zolang die class er staat.
+    new MutationObserver(() => {
+      if (document.documentElement.classList.contains("no-scroll")) {
+        lenis.stop();
+      } else {
+        lenis.start();
+      }
+    }).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
   }
 </script>

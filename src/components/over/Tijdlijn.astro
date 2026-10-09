@@ -1,13 +1,5 @@
 ---
-import { Image } from "astro:assets";
-import img1932 from "../../assets/tijdlijn-1932-placeholder.jpg";
-import img1981 from "../../assets/tijdlijn-1981-placeholder.jpg";
 import { geschiedenis } from "../../data/geschiedenis";
-
-const afbeeldingen = {
-  "1932": img1932,
-  "1981": img1981,
-} as const;
 ---
 
 <section class="bg-sand">
@@ -33,9 +25,6 @@ const afbeeldingen = {
 
       {
         geschiedenis.map((gebeurtenis, index) => {
-          const afbeelding =
-            gebeurtenis.afbeelding &&
-            afbeeldingen[gebeurtenis.afbeelding as keyof typeof afbeeldingen];
           const rechts = index % 2 === 0;
 
           return (
@@ -63,20 +52,7 @@ const afbeeldingen = {
                     {gebeurtenis.jaartal}
                   </p>
                   <h3 class="mt-1 text-h4">{gebeurtenis.titel}</h3>
-                  <p class="mt-2 text-small text-muted">{gebeurtenis.tekst}</p>
-                  {afbeelding && (
-                    <Image
-                      src={afbeelding}
-                      alt={`Sfeerbeeld bij "${gebeurtenis.titel}" (${gebeurtenis.jaartal})`}
-                      width={800}
-                      height={600}
-                      loading="lazy"
-                      class:list={[
-                        "mt-4 h-auto w-full max-w-sm rounded-md object-cover",
-                        rechts ? "md:ml-0" : "md:ml-auto",
-                      ]}
-                    />
-                  )}
+                  <p class="mt-2 text-muted">{gebeurtenis.tekst}</p>
                 </div>
               </div>
             </li>
@@ -94,94 +70,96 @@ const afbeeldingen = {
   // Zonder deze listener zou de tijdlijn na een eerste bezoek blijvend op
   // opacity-0 blijven staan bij een volgend bezoek aan deze pagina.
   document.addEventListener("astro:page-load", () => {
-  const lijst = document.getElementById("tijdlijn-lijst");
-  const items = document.querySelectorAll<HTMLElement>("[data-tijdlijn-item]");
-  const lijnVulling = document.getElementById("tijdlijn-lijn-vulling");
-  const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
-
-  function zetActief(item: HTMLElement) {
-    item.dataset.tijdlijnActief = "true";
-    item
-      .querySelector<HTMLElement>("[data-tijdlijn-dot]")
-      ?.classList.replace("bg-border", "bg-burgundy");
-    item
-      .querySelector<HTMLElement>("[data-tijdlijn-jaartal]")
-      ?.classList.replace("text-muted", "text-burgundy");
-  }
-
-  if (prefersReducedMotion || !("IntersectionObserver" in window)) {
-    items.forEach((item) => {
-      item.classList.remove("opacity-0", "translate-y-4");
-      zetActief(item);
-    });
-    if (lijnVulling) lijnVulling.style.height = "100%";
-  } else {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.remove("opacity-0", "translate-y-4");
-            zetActief(entry.target as HTMLElement);
-            observer.unobserve(entry.target);
-          }
-        }
-      },
-      { threshold: 0.2 },
+    const lijst = document.getElementById("tijdlijn-lijst");
+    const items = document.querySelectorAll<HTMLElement>(
+      "[data-tijdlijn-item]",
     );
+    const lijnVulling = document.getElementById("tijdlijn-lijn-vulling");
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
-    items.forEach((item) => observer.observe(item));
+    function zetActief(item: HTMLElement) {
+      item.dataset.tijdlijnActief = "true";
+      item
+        .querySelector<HTMLElement>("[data-tijdlijn-dot]")
+        ?.classList.replace("bg-border", "bg-burgundy");
+      item
+        .querySelector<HTMLElement>("[data-tijdlijn-jaartal]")
+        ?.classList.replace("text-muted", "text-burgundy");
+    }
 
-    // De lijn vult mee met de scrollvoortgang door de tijdlijn: 0% zodra de
-    // lijst van onderen in beeld komt, 100% zodra het laatste punt het
-    // midden van het scherm passeert. Zelfde scroll-gekoppelde aanpak als
-    // de parallax elders op de site (Verhaal.astro, GalerijGrid.astro).
-    if (lijst && lijnVulling) {
-      let opgehangen = false;
+    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+      items.forEach((item) => {
+        item.classList.remove("opacity-0", "translate-y-4");
+        zetActief(item);
+      });
+      if (lijnVulling) lijnVulling.style.height = "100%";
+    } else {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.remove("opacity-0", "translate-y-4");
+              zetActief(entry.target as HTMLElement);
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.2 },
+      );
 
-      function bijwerken() {
-        const rect = lijst!.getBoundingClientRect();
-        const middenScherm = window.innerHeight / 2;
-        const voortgang = Math.min(
-          Math.max((middenScherm - rect.top) / rect.height, 0),
-          1,
+      items.forEach((item) => observer.observe(item));
+
+      // De lijn vult mee met de scrollvoortgang door de tijdlijn: 0% zodra de
+      // lijst van onderen in beeld komt, 100% zodra het laatste punt het
+      // midden van het scherm passeert. Zelfde scroll-gekoppelde aanpak als
+      // de parallax elders op de site (Verhaal.astro, GalerijGrid.astro).
+      if (lijst && lijnVulling) {
+        let opgehangen = false;
+
+        function bijwerken() {
+          const rect = lijst!.getBoundingClientRect();
+          const middenScherm = window.innerHeight / 2;
+          const voortgang = Math.min(
+            Math.max((middenScherm - rect.top) / rect.height, 0),
+            1,
+          );
+          lijnVulling!.style.height = `${(voortgang * 100).toFixed(1)}%`;
+        }
+
+        function opVolgendeFrame() {
+          opgehangen = false;
+          bijwerken();
+        }
+
+        function planBijwerken() {
+          if (opgehangen) return;
+          opgehangen = true;
+          requestAnimationFrame(opVolgendeFrame);
+        }
+
+        // AbortController i.p.v. losse removeEventListener-calls: window
+        // overleeft paginanavigaties zelf, dus zonder opruimen zou elk
+        // hernieuwd bezoek aan deze pagina een extra scroll/resize-listener
+        // stapelen. astro:before-swap (ééns, vlak vóór de volgende overgang)
+        // ruimt precies deze twee op.
+        const controller = new AbortController();
+        window.addEventListener("scroll", planBijwerken, {
+          passive: true,
+          signal: controller.signal,
+        });
+        window.addEventListener("resize", planBijwerken, {
+          passive: true,
+          signal: controller.signal,
+        });
+        document.addEventListener(
+          "astro:before-swap",
+          () => controller.abort(),
+          { once: true },
         );
-        lijnVulling!.style.height = `${(voortgang * 100).toFixed(1)}%`;
-      }
-
-      function opVolgendeFrame() {
-        opgehangen = false;
         bijwerken();
       }
-
-      function planBijwerken() {
-        if (opgehangen) return;
-        opgehangen = true;
-        requestAnimationFrame(opVolgendeFrame);
-      }
-
-      // AbortController i.p.v. losse removeEventListener-calls: window
-      // overleeft paginanavigaties zelf, dus zonder opruimen zou elk
-      // hernieuwd bezoek aan deze pagina een extra scroll/resize-listener
-      // stapelen. astro:before-swap (ééns, vlak vóór de volgende overgang)
-      // ruimt precies deze twee op.
-      const controller = new AbortController();
-      window.addEventListener("scroll", planBijwerken, {
-        passive: true,
-        signal: controller.signal,
-      });
-      window.addEventListener("resize", planBijwerken, {
-        passive: true,
-        signal: controller.signal,
-      });
-      document.addEventListener(
-        "astro:before-swap",
-        () => controller.abort(),
-        { once: true },
-      );
-      bijwerken();
     }
-  }
   });
 </script>

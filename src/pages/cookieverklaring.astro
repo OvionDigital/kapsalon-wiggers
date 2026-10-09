@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { cookieverklaring } from "../data/cookies";
+---
+
+<BaseLayout
+  title="Cookieverklaring | Kapsalon Wiggers"
+  description="Lees welke cookies de website van Kapsalon Wiggers in Wehl gebruikt en hoe je je toestemming beheert."
+>
+  <PageHero
+    title="Cookieverklaring"
+    intro={cookieverklaring.intro}
+    lijnVariant={3}
+  />
+
+  <section class="bg-cream pt-0">
+    <div class="container">
+      <div class="mx-auto flex max-w-[var(--container-prose)] flex-col gap-4">
+        {
+          cookieverklaring.paragrafen.map((paragraaf) => (
+            <p class="text-(length:--text-body) text-(--color-body)">
+              {paragraaf}
+            </p>
+          ))
+        }
+
+        {
+          /* CookieFirst vult dit blok met de actuele cookielijst. Dat gebeurt
+             alleen bij een volledige paginalading, daarom linken we naar deze
+             pagina met data-astro-reload. */
+        }
+        <div id="cookiefirst-policy-cookie-list" class="mt-6"></div>
+        <p class="text-small text-muted">
+          Deze cookieverklaring is opgesteld en bijgewerkt door de{" "}
+          <a
+            href="https://cookiefirst.com/nl/cookiebeleid/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-burgundy underline underline-offset-4"
+          >
+            Cookiebeleid generator
+          </a>
+          .
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

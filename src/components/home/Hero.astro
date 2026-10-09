@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import heroImage from "../../assets/Firefly_Photorealistic editorial photograph inside a warm, upscale hair salon. A female_hairs 624775.jpg";
+import heroImage from "../../assets/48468-1000-kapsalon-wiggers-wehl.jpeg";
 import HeroBoekingskaart from "./HeroBoekingskaart.astro";
 import { hero } from "../../data/hero";
 ---
@@ -38,8 +38,8 @@ import { hero } from "../../data/hero";
   </svg>
 
   <div class="container relative">
-    <div class="grid gap-10 md:grid-cols-12 md:items-center md:gap-14">
-      <div class="relative z-10 md:col-span-6">
+    <div class="grid gap-10 md:grid-cols-2 md:items-center md:gap-14">
+      <div class="relative z-10">
         <h1 class="text-display">
           {hero.headingPrefix}<em class="text-gold italic"
             >{hero.headingAccent}</em
@@ -49,13 +49,13 @@ import { hero } from "../../data/hero";
         </h1>
 
         <p
-          class="hero-animate hero-animate-2 mt-12 max-w-[var(--container-prose)] text-(length:--text-body) text-(--color-body)"
+          class="hero-animate hero-animate-2 mt-6 lg:mt-12 max-w-[var(--container-prose)] text-(length:--text-body) text-(--color-body)"
         >
           {hero.intro}
         </p>
       </div>
 
-      <div class="hero-animate hero-animate-3 relative md:col-span-6">
+      <div class="hero-animate hero-animate-3 relative">
         <Image
           src={heroImage}
           alt="Sfeerbeeld van het interieur van Kapsalon Wiggers"
@@ -66,7 +66,7 @@ import { hero } from "../../data/hero";
           class="mx-auto aspect-square w-full max-w-[85%] rounded-t-full object-cover object-right"
         />
 
-        <div class="mt-6 md:hidden">
+        <div class="mb-6 lg:hidden">
           <HeroBoekingskaart />
         </div>
       </div>
@@ -79,7 +79,7 @@ import { hero } from "../../data/hero";
        overheen — en dankzij z-20 blijft dat overhangende stuk zichtbaar bóven
        de Intro-sectie eronder, niet erachter weggezakt. */
   }
-  <div class="pointer-events-none absolute inset-0 z-20 hidden md:block">
+  <div class="pointer-events-none absolute inset-0 z-20 hidden lg:block">
     <div class="container relative h-full">
       <HeroBoekingskaart
         class="hero-animate hero-animate-3 pointer-events-auto absolute right-3 -bottom-30 w-80 border border-border"

@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# lokale secrets voor wrangler pages dev
+.dev.vars
+
+# lokale cache van wrangler pages dev
+.wrangler/

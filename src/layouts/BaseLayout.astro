@@ -18,6 +18,7 @@ import {
   foundingYear,
   foundingLocation,
 } from "../data/vestigingen";
+import { cookieFirstScript } from "../data/cookies";
 import { parseDagenEngels, parseTijden } from "../lib/openingstijden";
 import { getSalonId, getTelHref } from "../lib/salon";
 
@@ -89,17 +90,25 @@ const structuredData = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {
+      /* CookieFirst (cookiebanner en toestemming) zo vroeg mogelijk in de
+         head, vóór andere externe diensten. is:inline zodat Astro het script
+         ongewijzigd laat. Het draait één keer per sessie: de ClientRouter
+         voert head-scripts met dezelfde src na een navigatie niet opnieuw uit. */
+    }
+    <script is:inline src={cookieFirstScript}></script>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Wiggers" />
+    <link rel="manifest" href="/site.webmanifest" />
     {
-      /* Kopfont via Adobe Fonts (Typekit) — bewuste uitzondering op de
-         trackervrij-eis uit CLAUDE.md, akkoord met de klant/Simon op
+      /* Kopfont via Adobe Fonts (Typekit), akkoord met de klant/Simon op
          2026-09-14. De licentie staat zelf hosten niet toe, dus dit moet via
-         hun CDN; daarmee is de site niet meer volledig scriptvrij en hoort er
-         eigenlijk weer een cookie-melding bij. CLAUDE.md is hier nog niet op
-         bijgewerkt. */
+         hun CDN. Valt onder de CookieFirst-banner (zie CLAUDE.md). */
     }
     <link rel="preconnect" href="https://use.typekit.net" crossorigin />
     <link rel="stylesheet" href="https://use.typekit.net/mlv3wzp.css" />
@@ -182,6 +191,18 @@ const structuredData = {
     <AfspraakDialog />
 
     <script>
+      // CookieFirst zet zijn banner en instellingenknop zelf in de <body>. De
+      // ClientRouter vervangt bij een navigatie de hele body, waardoor die
+      // elementen zouden verdwijnen (het script draait niet opnieuw). Hier
+      // verhuizen we ze vlak vóór de wissel naar de nieuwe body.
+      document.addEventListener("astro:before-swap", (event) => {
+        document.body
+          .querySelectorAll(
+            ':scope > [class*="cookiefirst" i], :scope > [id*="cookiefirst" i]',
+          )
+          .forEach((element) => event.newDocument.body.append(element));
+      });
+
       const panel = document.getElementById("reveal-panel");
       const overlay = document.getElementById("footer-overlay");
 

@@ -65,9 +65,14 @@ import TopBar from "./TopBar.astro";
     </div>
   </div>
 
+  {
+    /* Absoluut onder de header, zodat het menu over de pagina valt i.p.v.
+       de inhoud omlaag te duwen. invisible + opacity i.p.v. hidden, zodat
+       openen en sluiten kunnen animeren. */
+  }
   <div
     id="mobile-menu"
-    class="hidden border-t border-border bg-cream md:hidden"
+    class="mobile-menu invisible absolute inset-x-0 top-full border-t border-border bg-cream opacity-0 shadow-lg md:hidden"
   >
     <Nav />
     <div class="px-4 pb-4">
@@ -75,6 +80,18 @@ import TopBar from "./TopBar.astro";
     </div>
   </div>
 </header>
+
+{
+  /* Buiten de header: die krijgt bij het scrollen een transform, en daarmee
+     zou een fixed overlay ín de header niet meer het hele scherm dekken. */
+}
+<div
+  id="menu-overlay"
+  class="menu-overlay invisible fixed inset-0 z-30 bg-ink/50 opacity-0 md:hidden"
+  aria-hidden="true"
+  transition:persist="menu-overlay"
+>
+</div>
 
 <style>
   /* Laadanimatie: de header valt kort na het laden zachtjes op zijn plek. */
@@ -97,6 +114,36 @@ import TopBar from "./TopBar.astro";
   .header-enter {
     animation: header-fade-in var(--duration-entrance) ease-out both;
   }
+
+  /* visibility schakelt pas om ná de fade bij sluiten (delay), en meteen
+     bij openen, zodat het menu niet klikbaar is terwijl het onzichtbaar is. */
+  .mobile-menu,
+  .menu-overlay {
+    transition:
+      opacity var(--transition-duration-long) ease,
+      transform var(--transition-duration-long) ease,
+      visibility 0s linear var(--transition-duration-long);
+  }
+
+  .mobile-menu {
+    transform: translateY(-0.5rem);
+  }
+
+  .mobile-menu.is-open,
+  .menu-overlay.is-open {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition-delay: 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu,
+    .menu-overlay {
+      transition: none;
+      transform: none;
+    }
+  }
 </style>
 
 <script>
@@ -107,25 +154,47 @@ import TopBar from "./TopBar.astro";
   const header = document.getElementById("site-header");
   const topBar = document.getElementById("top-bar");
 
+  const overlay = document.getElementById("menu-overlay");
+
+  const isMenuOpen = () => toggle?.getAttribute("aria-expanded") === "true";
+
   const closeMenu = () => {
+    if (!isMenuOpen()) return;
     toggle?.setAttribute("aria-expanded", "false");
-    menu?.classList.add("hidden");
+    menu?.classList.remove("is-open");
+    overlay?.classList.remove("is-open");
     iconOpen?.classList.remove("hidden");
     iconClose?.classList.add("hidden");
     document.documentElement.classList.remove("no-scroll");
   };
 
   toggle?.addEventListener("click", () => {
-    const isOpen = toggle.getAttribute("aria-expanded") === "true";
-    if (isOpen) {
+    if (isMenuOpen()) {
       closeMenu();
       return;
     }
     toggle.setAttribute("aria-expanded", "true");
-    menu?.classList.remove("hidden");
+    menu?.classList.add("is-open");
+    overlay?.classList.add("is-open");
     iconOpen?.classList.add("hidden");
     iconClose?.classList.remove("hidden");
     document.documentElement.classList.add("no-scroll");
+  });
+
+  // Sluiten bij een klik buiten het menu (de overlay dekt de rest van de
+  // pagina af) en met Escape, waarna de focus terug naar de menuknop gaat.
+  overlay?.addEventListener("click", closeMenu);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isMenuOpen()) {
+      closeMenu();
+      toggle?.focus();
+    }
+  });
+
+  // Op een breder scherm verdwijnt de menuknop; dan mag het menu (en de
+  // scroll-lock) niet open blijven hangen.
+  window.matchMedia("(min-width: 768px)").addEventListener("change", (e) => {
+    if (e.matches) closeMenu();
   });
 
   // Sluit het mobiele menu zodra een link erin wordt aangeklikt — ook de

@@ -1,0 +1,61 @@
+---
+import { faq, faqSectie } from "../../data/faq";
+---
+
+<section class="bg-sand">
+  <div class="container">
+    <div class="mx-auto max-w-[var(--container-prose)]">
+      <span
+        class="flex w-fit items-center gap-2 rounded-full bg-gold-light px-4 py-2 text-small font-semibold text-charcoal"
+        ><span class="h-1 w-1 rounded-full bg-charcoal" aria-hidden="true"
+        ></span>{faqSectie.eyebrow}</span
+      >
+      <h2 class="mt-6">
+        {faqSectie.headingPrefix}<em class="text-gold italic"
+          >{faqSectie.headingAccent}</em
+        >
+      </h2>
+
+      {
+        /* Native <details>/<summary>: toetsenbord- en schermlezer-
+           toegankelijk zonder eigen JS, en de antwoorden staan gewoon in de
+           HTML (ook voor zoekmachines). */
+      }
+      <div class="mt-10 flex flex-col gap-3" data-reveal>
+        {
+          faq.map((item) => (
+            <details class="faq-item group rounded-md bg-white">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 rounded-md px-5 py-4 font-semibold text-ink sm:px-6">
+                {item.vraag}
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="shrink-0 text-burgundy transition-transform duration-(--transition-duration) group-open:rotate-45"
+                  aria-hidden="true"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </summary>
+              <p class="px-5 pb-5 text-(length:--text-body) text-(--color-body) sm:px-6">
+                {item.antwoord}
+              </p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Safari toont anders nog zijn eigen driehoekje naast list-none. */
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

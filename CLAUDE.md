@@ -16,10 +16,13 @@ Contactpersoon bij de klant is John.
   uitgesteld naar na oplevering. De afspraakknop loopt nu via een dialoog met
   het telefoonnummer. Omschakelen naar Aimy gaat via één waarde in
   `src/data/afspraak.ts`.
-- **De site moet cookie- en trackervrij blijven.** Dit is expliciet aan de klant
-  verkocht als voordeel, want het scheelt een cookiebanner. Dus geen Google
-  Fonts, geen externe scripts, geen iframes, geen embeds. Fonts lokaal bundelen.
-  Google Analytics is om deze reden afgevallen; analytics loopt straks via de
+- **Cookies en externe diensten (herzien 2026-10-09).** Oorspronkelijk was de
+  site cookie- en trackervrij verkocht. Dat is losgelaten: de site gebruikt nu
+  Adobe Fonts (Typekit, licentie staat zelf hosten niet toe), een Google
+  Maps-iframe (klantwens) en Cloudflare Turnstile op het contactformulier.
+  Daarom komt er een cookiebanner via **CookieFirst** (abonnement gaat mee in de
+  maandelijkse kosten). Overige externe scripts blijven nog steeds zo veel
+  mogelijk weg; Google Analytics is afgevallen, analytics loopt via de
   server-side variant van Cloudflare Web Analytics, zonder script in de HTML.
 
 ## Stack
@@ -28,9 +31,12 @@ Astro (empty template, strict TypeScript) + Tailwind CSS, `output: 'static'`,
 npm als package manager. Deploy via Cloudflare Pages met Git-integratie
 (build: `npm run build`, output: `dist`). Geen Cloudflare adapter.
 
-Het contactformulier krijgt later een Cloudflare Pages Function als backend.
-Welke mailprovider dat wordt is nog niet besloten; Simon kijkt naar de oplossing
-die hij eerder in het Ivory Global Care-project heeft gebouwd.
+Het contactformulier post naar een Cloudflare Pages Function
+(`functions/api/contact.ts`) die via Resend mailt, met afzender
+`noreply@oviondigital.nl` (zelfde opzet als het Ivory Global Care-project).
+Environment variables in Cloudflare Pages: `RESEND_API_KEY`,
+`TURNSTILE_SECRET_KEY` en optioneel `CONTACT_TO` (standaard
+simon@oviondigital.nl voor de testfase).
 
 ## Werkwijze en stijl
 
@@ -45,14 +51,19 @@ die hij eerder in het Ivory Global Care-project heeft gebouwd.
 
 ## Openstaande punten
 
-- Vrijwel alle content is placeholder: NAW-gegevens, tarieven, teamleden,
-  geschiedenis, reviews, foto's. Simon vult dit zelf aan zodra de klant levert.
-  Nooit zelf content verzinnen zonder het als TODO te markeren.
-- Nog te bouwen: privacyverklaring, favicon-set, OG-afbeelding, bevestigings-
-  pagina na formulier, 404-pagina afmaken, contactformulier-backend
-- De vanaf-prijzen op de homepage staan los van `behandelingen.ts` en moeten uit
-  één bron komen
-- De Facebook-link staat op `href="#"` en heeft nog geen echte URL
+- **CookieFirst** staat erin (script in `BaseLayout.astro`, config in
+  `src/data/cookies.ts`, pagina `/cookieverklaring`). Nog doen: in het
+  CookieFirst-dashboard controleren dat Google Maps en Adobe Fonts in de scan
+  staan, en uitzoeken hoe CookieFirst de Maps-iframe blokkeert tot er
+  toestemming is (nu laadt de kaart altijd). Banner pas te testen op het live
+  domein kapsalonwiggers.nl.
+- Na de testfase `CONTACT_TO` in Cloudflare Pages op info@kapsalonwiggers.nl
+  zetten.
+- Nog veel content ontbreekt: teamleden, foto's van John en Astrid, de
+  categorie "Overig" bij de tarieven, extra FAQ-antwoorden (pinnen, afzeggen).
+  Simon vult dit aan zodra de klant levert. Nooit zelf content verzinnen zonder
+  het als TODO te markeren.
+- Nog te bouwen: bevestigingspagina na formulier, 404-pagina afmaken
 
 ## Development
 

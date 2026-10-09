@@ -17,8 +17,8 @@ const { categorie, image, imageAlt, omgekeerd = false } = Astro.props;
 
 <section id={categorie.id} class="scroll-mt-(--header-height) pt-0">
   <div class="container">
-    <div class="grid gap-10 md:grid-cols-12 md:items-center md:gap-14 lg:gap-30">
-      <div class:list={["md:col-span-6", omgekeerd && "md:order-2"]}>
+    <div class="grid gap-10 md:grid-cols-2 md:items-center md:gap-14 lg:gap-30">
+      <div class:list={[omgekeerd && "md:order-2"]}>
         <h2>{categorie.naam}</h2>
         <p class="mt-3 text-(length:--text-body) text-(--color-body)">
           {categorie.omschrijving}
@@ -62,7 +62,7 @@ const { categorie, image, imageAlt, omgekeerd = false } = Astro.props;
       }
       <div
         class:list={[
-          "relative aspect-[4/5] overflow-hidden rounded-full md:col-span-6 md:mx-auto md:w-4/5",
+          "relative aspect-[4/5] overflow-hidden rounded-full md:mx-auto md:w-4/5",
           omgekeerd && "md:order-1",
         ]}
         data-parallax

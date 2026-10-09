@@ -1,5 +1,5 @@
 ---
-import { privacyRegel } from "../../data/contact";
+import { privacyRegel, turnstileSiteKey } from "../../data/contact";
 
 const inputClass =
   "mt-2 w-full rounded-md border border-border bg-cream px-5 py-3.5 text-(length:--text-body) text-ink placeholder:text-muted focus-visible:bg-white";
@@ -106,6 +106,12 @@ const inputClass =
         </div>
         <input type="hidden" id="ts" name="ts" value="" />
 
+        {
+          /* Cloudflare Turnstile. Het widget zet zelf een verborgen
+             "cf-turnstile-response"-veld in dit formulier. */
+        }
+        <div id="turnstile-widget" data-sitekey={turnstileSiteKey}></div>
+
         <button
           type="submit"
           id="contact-submit"
@@ -124,16 +130,71 @@ const inputClass =
       </form>
       </div>
 
-      <p class="mt-6 text-center text-small text-muted">{privacyRegel}</p>
+      <p class="mt-6 text-center text-small text-muted">
+        {privacyRegel}{" "}
+        <a href="/privacyverklaring" class="text-burgundy underline underline-offset-4">
+          Lees onze privacyverklaring
+        </a>
+      </p>
     </div>
   </div>
 </section>
 
 <script>
+  interface Turnstile {
+    render(
+      element: HTMLElement,
+      opties: Record<string, unknown>,
+    ): string | undefined;
+    reset(widgetId?: string): void;
+  }
+  const turnstileVenster = window as Window & { turnstile?: Turnstile };
+
+  // Het Turnstile-script één keer per sessie laden (expliciete render-modus,
+  // omdat het widget bij elke paginanavigatie via de ClientRouter in een
+  // nieuwe DOM-node moet komen).
+  let turnstileGeladen: Promise<Turnstile> | null = null;
+  function laadTurnstile() {
+    turnstileGeladen ??= new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src =
+        "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      script.async = true;
+      script.onload = () =>
+        turnstileVenster.turnstile
+          ? resolve(turnstileVenster.turnstile)
+          : reject(new Error("Turnstile niet beschikbaar"));
+      script.onerror = () => {
+        turnstileGeladen = null;
+        reject(new Error("Kon Turnstile niet laden"));
+      };
+      document.head.appendChild(script);
+    });
+    return turnstileGeladen;
+  }
+
   // In astro:page-load gewrapt voor View Transitions (ClientRouter in
   // BaseLayout.astro): dit <script> draait als module maar één keer per
   // sessie, terwijl #contact-form bij elk bezoek een nieuwe DOM-node is.
   document.addEventListener("astro:page-load", () => {
+  const widget = document.getElementById("turnstile-widget");
+  let widgetId: string | undefined;
+  if (widget?.dataset.sitekey) {
+    laadTurnstile()
+      .then((turnstile) => {
+        widgetId = turnstile.render(widget, {
+          sitekey: widget.dataset.sitekey,
+          language: "nl",
+          theme: "light",
+          size: "flexible",
+        });
+      })
+      .catch((error) => console.error(error));
+  }
+  const resetTurnstile = () => {
+    if (widgetId !== undefined) turnstileVenster.turnstile?.reset(widgetId);
+  };
+
   const form = document.getElementById("contact-form") as HTMLFormElement | null;
   const statusEl = document.getElementById("contact-status");
   const submitButton = document.getElementById(
@@ -209,6 +270,13 @@ const inputClass =
         return;
       }
 
+      const turnstileToken = new FormData(form).get("cf-turnstile-response");
+      if (widget && !turnstileToken) {
+        statusEl.textContent =
+          "Even geduld, de controle tegen spam is nog bezig. Probeer het zo nog een keer.";
+        return;
+      }
+
       submitButton.disabled = true;
       if (submitLabel) submitLabel.textContent = "Versturen…";
       statusEl.textContent = "";
@@ -239,6 +307,8 @@ const inputClass =
         statusEl.textContent =
           "Er ging iets mis bij het versturen. Probeer het later opnieuw of bel ons.";
       } finally {
+        // Een Turnstile-token is maar één keer bruikbaar.
+        resetTurnstile();
         submitButton.disabled = false;
         if (submitLabel) submitLabel.textContent = "Versturen";
       }

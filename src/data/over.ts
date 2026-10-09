@@ -1,9 +1,9 @@
 export const verhaal = {
   paragrafen: [
-    "Wiggers is geen salon die gisteren is begonnen. We knippen al sinds 1932, drie generaties lang, en dat merk je zodra je binnenstapt: geen gehaaste afspraak, maar tijd en aandacht voor wie er in de stoel zit.",
-    "Wat begon als een eenmansbedrijfje met één stoel is uitgegroeid tot een vertrouwde salon in Wehl, waar heren, dames en kinderen even makkelijk terechtkunnen. Het vakmanschap is met de jaren meegegroeid, maar de persoonlijke aanpak is nooit veranderd.",
+    "Kapsalon Wiggers beschikt over tal van vakcertificaten. We knippen alle soorten kapsels en coupes, en je kunt bij ons ook terecht voor kleuren, permanenten en bruidskapsels. Noem het maar op!",
+    "We knippen iedereen van 0 tot 103 jaar. In de salon staat zelfs een stoere zwarte Mercedes (63 AMG) om de kleintjes te vermaken tijdens het knippen. En we hebben een uitgebreid aanbod aan producten om je haar mee te verwennen.",
   ],
-  oudeFotoOnderschrift: "De salon ergens in de jaren '30, kort na de opening in Kilder.",
+  oudeFotoOnderschrift: "",
 };
 
 export interface Feature {
@@ -17,14 +17,16 @@ export interface Feature {
 export const features: Feature[] = [
   {
     titel: "De kinderstoel: een Mercedes 63 AMG",
-    tekst: "Onze kinderstoel is geen gewoon stoeltje — het is een echte Mercedes 63 AMG. Precies het soort detail dat kinderen (en hun ouders) niet snel vergeten.",
+    tekst:
+      "Onze kinderstoel is geen gewoon stoeltje, het is een echte Mercedes 63 AMG. Precies het soort detail dat kinderen (en hun ouders) niet snel vergeten.",
     afbeelding: "kinderstoel",
     alt: "De kindersalonstoel in de vorm van een Mercedes 63 AMG",
     beeldZijde: "links",
   },
   {
     titel: "Altijd tijd voor een praatje",
-    tekst: "Bij ons hoef je nooit te haasten. Een kop koffie, een goed gesprek en alle tijd voor advies — zo hoort een bezoek aan de kapper te zijn.",
+    tekst:
+      "Bij ons hoef je je nooit te haasten. We nemen ruim de tijd voor advies en zijn altijd in voor een goed gesprek. Zo hoort een bezoek aan de kapper te zijn.",
     afbeelding: "sfeer",
     alt: "Sfeerbeeld van de zithoek in de salon",
     beeldZijde: "rechts",

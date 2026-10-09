@@ -4,6 +4,8 @@ import PageHero from "../components/PageHero.astro";
 import OpeningstijdenLocatie from "../components/home/OpeningstijdenLocatie.astro";
 import ContactFormulier from "../components/contact/ContactFormulier.astro";
 import SnelContact from "../components/contact/SnelContact.astro";
+import Faq from "../components/contact/Faq.astro";
+import { faq } from "../data/faq";
 import { getSalonId } from "../lib/salon";
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -14,12 +16,22 @@ const contactPageJsonLd = {
   url: canonicalURL.toString(),
   about: { "@id": getSalonId(Astro.site) },
 };
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({
+    "@type": "Question",
+    name: item.vraag,
+    acceptedAnswer: { "@type": "Answer", text: item.antwoord },
+  })),
+};
 ---
 
 <BaseLayout
   title="Contact | Kapsalon Wiggers — kapper in Wehl"
-  description="Neem contact op met Kapsalon Wiggers in Wehl. Bel voor een afspraak of stuur een bericht — hier vind je adres, openingstijden en route."
-  extraJsonLd={[contactPageJsonLd]}
+  description="Neem contact op met Kapsalon Wiggers in Wehl. Bel voor een afspraak of stuur een bericht. Hier vind je adres, openingstijden, route en antwoorden op veelgestelde vragen."
+  extraJsonLd={[contactPageJsonLd, faqJsonLd]}
 >
   <PageHero
     title="Contact"
@@ -30,4 +42,5 @@ const contactPageJsonLd = {
   <SnelContact />
   <OpeningstijdenLocatie toonParkerenNotitie />
   <ContactFormulier />
+  <Faq />
 </BaseLayout>

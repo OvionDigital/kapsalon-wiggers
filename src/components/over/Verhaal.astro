@@ -1,14 +1,12 @@
 ---
 import { Image } from "astro:assets";
-import oudeFotoImage from "../../assets/salon-oud-placeholder.jpg";
+import oudeFotoImage from "../../assets/kapsalon-wiggers-binnen.webp";
 import { verhaal } from "../../data/over";
 ---
 
 <section class="bg-cream">
   <div class="container">
-    <div
-      class="grid gap-10 md:grid-cols-12 md:items-center md:gap-14"
-    >
+    <div class="grid gap-10 md:grid-cols-12 md:items-center md:gap-14">
       <div class="md:col-span-7">
         <h2>Ons verhaal</h2>
         <div
@@ -30,7 +28,7 @@ import { verhaal } from "../../data/over";
           <div id="verhaal-parallax" class="overflow-hidden rounded-md">
             <Image
               src={oudeFotoImage}
-              alt="Oude foto van de kapsalon, kort na de opening"
+              alt="Interieur van Kapsalon Wiggers in Wehl"
               width={800}
               height={1000}
               loading="lazy"
@@ -80,7 +78,8 @@ import { verhaal } from "../../data/over";
             1,
           );
           const verschuiving = (voortgang - 0.5) * rect.height * snelheid;
-          (img as HTMLElement).style.transform = `translateY(${verschuiving.toFixed(1)}px)`;
+          (img as HTMLElement).style.transform =
+            `translateY(${verschuiving.toFixed(1)}px)`;
         }
 
         function opVolgendeFrame() {

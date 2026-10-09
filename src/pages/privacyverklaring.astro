@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { privacySecties, privacyBijgewerkt } from "../data/privacy";
+---
+
+<BaseLayout
+  title="Privacyverklaring | Kapsalon Wiggers"
+  description="Lees hoe Kapsalon Wiggers in Wehl omgaat met je persoonsgegevens, bijvoorbeeld als je het contactformulier invult."
+>
+  <PageHero
+    title="Privacyverklaring"
+    intro="Hoe we omgaan met je gegevens als je onze website bezoekt of contact met ons opneemt."
+    lijnVariant={2}
+  />
+
+  <section class="bg-cream pt-0">
+    <div class="container">
+      <div class="mx-auto flex max-w-[var(--container-prose)] flex-col gap-10">
+        {
+          privacySecties.map((sectie) => (
+            <div>
+              <h2 class="text-h3">{sectie.titel}</h2>
+              {sectie.paragrafen.map((paragraaf) => (
+                <p class="mt-3 text-(length:--text-body) text-(--color-body)">
+                  {paragraaf}
+                </p>
+              ))}
+              {sectie.lijst && (
+                <ul class="mt-3 flex list-disc flex-col gap-2 pl-5 text-(length:--text-body) text-(--color-body)">
+                  {sectie.lijst.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))
+        }
+        <p class="text-small text-muted">
+          Laatst bijgewerkt op {privacyBijgewerkt}.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

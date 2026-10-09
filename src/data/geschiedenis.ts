@@ -1,40 +1,43 @@
-// TODO: definitieve content opvragen bij klant — onderstaande tijdlijn en
-// teksten zijn plausibele placeholders, geen historisch geverifieerde feiten.
+// Gebaseerd op de geschiedenistekst van de oude website van Kapsalon Wiggers
+// (aangeleverd door Simon op 2026-10-09). Geen aanvullingen verzonnen: waar
+// een jaartal ontbreekt, staat het er ook hier niet bij.
+// TODO: oude foto's opvragen bij John; Tijdlijn.astro toont nu alleen tekst.
 
 export interface GeschiedenisGebeurtenis {
   jaartal: string;
   titel: string;
   tekst: string;
-  /** Optioneel: key naar een geïmporteerde afbeelding in Tijdlijn.astro. */
-  afbeelding?: string;
 }
 
 export const geschiedenis: GeschiedenisGebeurtenis[] = [
   {
     jaartal: "1932",
-    titel: "De start in Kilder",
-    tekst: "Opa Wiggers begint een kleine kapsalon in Kilder. Eén stoel, een scheermes en veel vakmanschap waren genoeg om te beginnen.",
-    afbeelding: "1932",
+    titel: "Het begin in Kilder",
+    tekst:
+      "Gradus J. Wiggers trouwt met Truus en begint in Kilder een kapperszaak, met een taxibedrijf ernaast.",
   },
   {
-    jaartal: "1958",
-    titel: "Een tweede generatie",
-    tekst: "Het vak gaat over van vader op zoon. De salon groeit mee met het dorp en krijgt klanten voor het leven.",
+    jaartal: "Daarna",
+    titel: "Een familiebedrijf",
+    tekst:
+      "De kinderen Annie, Leen, Mimmi, Henk en Jan krijgen ieder hun deel in het bedrijf. Henk en Jan nemen de kapsalon en de taxi op zich.",
   },
   {
-    jaartal: "1981",
-    titel: "Verhuizing naar Wehl",
-    tekst: "De salon verhuist naar een groter pand in Wehl, dichter bij waar inmiddels de meeste klanten wonen.",
-    afbeelding: "1981",
+    jaartal: "1963",
+    titel: "Jan en Diny beginnen voor zichzelf",
+    tekst:
+      "Jan en Diny Wiggers beginnen zelfstandig een kapperszaakje aan de Oranjestraat.",
   },
   {
-    jaartal: "2005",
-    titel: "Derde generatie achter de schaar",
-    tekst: "Weer een generatie Wiggers pakt de tondeuse over, met dezelfde aandacht voor het vak als opa ooit had.",
+    jaartal: "1965",
+    titel: "Naar de Julianastraat",
+    tekst:
+      "Het huidige pand aan de Julianastraat 10 is klaar. Vanaf hier groeit de salon uit tot het Kapsalon Wiggers van nu.",
   },
   {
-    jaartal: "Nu",
-    titel: "Nog steeds hetzelfde vakmanschap",
-    tekst: "Ruim 90 jaar later knippen we nog steeds heren, dames en kinderen met dezelfde persoonlijke aandacht als in 1932.",
+    jaartal: "2009",
+    titel: "John en Astrid nemen het over",
+    tekst:
+      "Op 1 januari 2009 nemen John en Astrid de kapsalon over. Samen kijken ze inmiddels terug op meer dan 90 jaar familiebedrijf.",
   },
 ];

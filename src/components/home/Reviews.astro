@@ -7,13 +7,16 @@ import owlCarouselUrl from "../../lib/owlcarousel/owl.carousel.min.js?url";
 import "../../lib/owlcarousel/owl.carousel.min.css";
 import "../../lib/owlcarousel/owl.theme.default.min.css";
 
-// Kleurcirkel-avatar i.p.v. een (verzonnen) profielfoto — zie de TODO bij
+// Kleurcirkel-avatar i.p.v. een profielfoto — zie de toelichting bij
 // uitgelichteReviews. Rouleert over een klein palet uit de bestaande tokens.
 const avatarKleuren = ["bg-burgundy", "bg-gold-dark", "bg-olive"];
 
+// Eerste letter van de voornaam en van het laatste naamdeel, zodat
+// tussenvoegsels ("van") en tekens als "&" worden overgeslagen.
 function initialen(naam: string) {
-  return naam
-    .split(" ")
+  const delen = naam.split(" ").filter((deel) => /^\p{L}/u.test(deel));
+  return [delen[0], delen.length > 1 ? delen[delen.length - 1] : undefined]
+    .filter((deel): deel is string => Boolean(deel))
     .map((deel) => deel[0])
     .join("")
     .slice(0, 2)

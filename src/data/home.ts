@@ -1,3 +1,6 @@
+import { categorieen } from "./behandelingen";
+import { formatPrijs } from "../lib/prijzen";
+
 export const intro = {
   eyebrow: "Sinds 1932",
   // headingAccent wordt cursief en in het accentgoud gezet.
@@ -5,7 +8,7 @@ export const intro = {
   headingAccent: "voelt",
   paragrafen: [
     "Kapsalon Wiggers begon in 1932 in Kilder en is inmiddels al bijna een eeuw onderdeel van de streek. Die geschiedenis merk je nog steeds: we werken met vakmanschap dat van generatie op generatie is doorgegeven, in een salon in Wehl waar je je meteen op je gemak voelt.",
-    "Geen haastig knipbeurtje, maar tijd en aandacht voor wat jij wilt — of je nou al jaren bij ons komt of voor het eerst binnenstapt. Voor heren, dames en kinderen, van klassieke coupes tot een frisse nieuwe stijl.",
+    "We nemen de tijd voor wat jij wilt, of je nou al jaren bij ons komt of voor het eerst binnenstapt. Voor heren, dames en kinderen, van klassieke coupes tot een frisse nieuwe stijl.",
   ],
 };
 
@@ -13,8 +16,21 @@ export const behandelingenSectie = {
   eyebrow: "Voor iedereen",
 };
 
-// Elke kaart licht één concrete behandeling per doelgroep uit, met de prijs uit
-// behandelingen.ts. De prijzen zijn de echte tarieven van de klant.
+// De laagste vaste prijs van alle "Knippen…"-regels in een categorie, zodat
+// de vanaf-prijzen op de homepage altijd uit behandelingen.ts komen.
+function vanafPrijsKnippen(categorieId: string) {
+  const prijzen = categorieen
+    .find((categorie) => categorie.id === categorieId)
+    ?.behandelingen.filter((b) => b.naam.startsWith("Knippen"))
+    .map((b) => b.prijs)
+    .filter((prijs): prijs is number => typeof prijs === "number");
+  if (!prijzen?.length) {
+    throw new Error(`Geen knipprijs gevonden voor categorie "${categorieId}"`);
+  }
+  return formatPrijs(Math.min(...prijzen));
+}
+
+// Elke kaart licht één concrete behandeling per doelgroep uit.
 // TODO: bij de klant checken of "Knippen" per doelgroep inderdaad de
 // populairste behandeling is die we hier willen tonen.
 // TODO: placeholder-foto's vervangen door echte portretten van een man, een
@@ -23,21 +39,21 @@ export const behandelingen = [
   {
     doelgroep: "Heren",
     behandeling: "Knippen",
-    prijs: "€ 28",
+    prijs: vanafPrijsKnippen("heren"),
     vanaf: true,
     afbeelding: "heren",
   },
   {
     doelgroep: "Dames",
     behandeling: "Knippen",
-    prijs: "€ 31,50",
+    prijs: vanafPrijsKnippen("dames"),
     vanaf: true,
     afbeelding: "dames",
   },
   {
     doelgroep: "Kinderen",
     behandeling: "Knippen",
-    prijs: "€ 19",
+    prijs: vanafPrijsKnippen("kinderen"),
     vanaf: true,
     afbeelding: "kinderen",
   },
@@ -52,82 +68,64 @@ export const reviewsSectie = {
     "Bijna een eeuw kappen doe je niet zonder tevreden klanten. Dit is wat ze over ons zeggen.",
 };
 
-// TODO: vervangen door de automatische koppeling met Google Reviews, zodra
-// die na oplevering wordt gebouwd. Tot die tijd zijn dit placeholder-teksten
-// (namen, datums en sterren incluis) — ook "datum" is dus geen echte
-// review-datum. Geen echte profielfoto's: de avatar in de slider toont tot
-// die koppeling er is een kleurcirkel met initialen, nooit een verzonnen foto
-// van een niet-bestaand persoon.
+// Echte Google-reviews: een selectie van de meest recente 5-sterrenreviews
+// met tekst, overgenomen op 2026-10-09. Alleen spelling en interpunctie zijn
+// licht rechtgezet. Geen profielfoto's: rechtstreeks van Google laden maakt
+// de site niet meer trackervrij, dus de slider toont initialen.
 export const uitgelichteReviews = [
+  {
+    naam: "Harry Betcke",
+    sterren: 5,
+    tekst:
+      "Kapsters knippen erg goed en gebruiken L'ANZA-producten, die erg goed voor mijn haar zijn.",
+  },
+  {
+    naam: "Tom van Hal",
+    sterren: 5,
+    tekst: "Een hele goede en gezellige kapsalon.",
+  },
+  {
+    naam: "Nick Beumer",
+    sterren: 5,
+    tekst: "Heel fijne kapper.",
+  },
+  {
+    naam: "Gerard Baars",
+    sterren: 5,
+    tekst: "Prima kapper. Mooie zaak, goeie service.",
+  },
+  {
+    naam: "Manfred Goorman",
+    sterren: 5,
+    tekst: "Geweldig modern en zeer vriendelijk allemaal. En altijd gezellig.",
+  },
+  {
+    naam: "Renate Kruis",
+    sterren: 5,
+    tekst:
+      "Bij Kapsalon Wiggers word je in de watten gelegd, ze nemen ruim de tijd voor je. En altijd in voor een praatje.",
+  },
+  {
+    naam: "Masja Hendricksen",
+    sterren: 5,
+    tekst: "Heel klantvriendelijk en ook een hele goede kapper.",
+  },
+  {
+    naam: "Pedro Koster",
+    sterren: 5,
+    tekst: "Toppie!!",
+  },
   {
     naam: "Food & Place Testers",
     sterren: 5,
-    datum: "2 weken geleden",
     tekst:
-      "Al jaren mijn vaste kapsalon. Altijd gezellig, en ze nemen echt de tijd voor je.",
+      "Geweldige aardige eigenaars. Vader op zoon en natuurlijk schoondochter, zo mooi om te zien. Werken hard, genieten goed, zijn daarom ook altijd positief. Fijn dat ik jullie heb leren kennen.",
   },
   {
-    naam: "Tom H.",
+    naam: "Dawid Markiewicz",
     sterren: 5,
-    datum: "3 weken geleden",
     tekst:
-      "Nette scheerbeurt en een goed gesprek erbij. Precies zoals een kapsalon hoort te zijn.",
-  },
-  {
-    naam: "Sanne V.",
-    sterren: 5,
-    datum: "een maand geleden",
-    tekst:
-      "Mijn zoontje vond het spannend om voor het eerst geknipt te worden, maar hier ging dat top.",
-  },
-  {
-    naam: "Ellen K.",
-    sterren: 5,
-    datum: "een maand geleden",
-    tekst:
-      "Kom hier al sinds ik klein ben. Altijd een goed advies en nooit een teleurstellend resultaat.",
-  },
-  {
-    naam: "Peter D.",
-    sterren: 4,
-    datum: "2 maanden geleden",
-    tekst:
-      "Prettige sfeer en een vakkundige knipbeurt. Iets langer wachten dan verwacht, maar dat mocht de pret niet drukken.",
-  },
-  {
-    naam: "Linda W.",
-    sterren: 5,
-    datum: "2 maanden geleden",
-    tekst:
-      "Eindelijk een kapper die echt luistert naar wat je wilt. Kom hier al jaren met plezier.",
-  },
-  {
-    naam: "Henk B.",
-    sterren: 5,
-    datum: "3 maanden geleden",
-    tekst:
-      "Vakmanschap van de oude stempel. Je voelt meteen dat ze weten wat ze doen.",
-  },
-  {
-    naam: "Anouk S.",
-    sterren: 5,
-    datum: "3 maanden geleden",
-    tekst:
-      "Gezellige salon met een persoonlijke touch. Ik kom er altijd tevreden vandaan.",
-  },
-  {
-    naam: "Rick T.",
-    sterren: 5,
-    datum: "4 maanden geleden",
-    tekst:
-      "Snel geholpen zonder dat het gehaast voelt. Precies zoals ik het wil.",
-  },
-  {
-    naam: "Judith M.",
-    sterren: 5,
-    datum: "4 maanden geleden",
-    tekst:
-      "Al meerdere generaties in de familie klant hier. Dat zegt genoeg over de kwaliteit.",
+      "Zeer goede en professionele service. Na mijn bezoek aan de salon zijn mijn haar en baard precies zoals ik ze wilde hebben. Ik beveel deze salon van harte aan!",
   },
 ];
 

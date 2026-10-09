@@ -1,6 +1,7 @@
-// TODO: tarieven voor de categorie "Overig" zijn nog placeholders en moeten
-// bij de klant geverifieerd worden. Heren, Dames en Kinderen zijn al bijgewerkt
-// met de echte tarieven van de klant.
+// Tarieven zoals aangeleverd door de klant.
+// TODO: de categorie "Overig" (stylen voor een gelegenheid, kleuradvies,
+// wenkbrauwen) is voor de soft launch weggehaald omdat die prijzen niet
+// geverifieerd waren. Terugzetten zodra John de echte tarieven doorgeeft.
 
 export interface Behandeling {
   naam: string;
@@ -25,7 +26,7 @@ export const categorieen: Categorie[] = [
     omschrijving: "",
     behandelingen: [
       { naam: "Knippen", prijs: 28 },
-      { naam: "Knippen senior", prijs: 27 },
+      { naam: "Knippen senior", toelichting: "Vanaf 70 jaar", prijs: 27 },
       { naam: "Permanenten", prijs: "Vanaf € 72,50" },
       { naam: "Alleen zijkanten", prijs: 17.5 },
       { naam: "Tondeuze kapsel", prijs: 19 },
@@ -62,16 +63,6 @@ export const categorieen: Categorie[] = [
       { naam: "Pony knippen", prijs: 10 },
       { naam: "Lijnen inscheren", prijs: "Vanaf € 5,-" },
       { naam: "Figuren inscheren", prijs: "Vanaf € 7,50" },
-    ],
-  },
-  {
-    id: "overig",
-    naam: "Overig",
-    omschrijving: "",
-    behandelingen: [
-      { naam: "Stylen voor gelegenheid", prijs: "Vanaf € 25,-" },
-      { naam: "Kleuradvies", prijs: "Gratis" },
-      { naam: "Wenkbrauwen bijwerken", prijs: 8.5 },
     ],
   },
 ];

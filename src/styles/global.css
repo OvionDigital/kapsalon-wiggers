@@ -173,8 +173,12 @@
     font-size: 1rem;
   }
 
-  html.no-scroll,
-  html.no-scroll body {
+  /* Alleen op html, niet ook op body: overflow:hidden op beide maakt body
+     een eigen scrollcontainer, waarna de sticky header aan de bovenkant van
+     het document plakt i.p.v. aan het scherm en uit beeld verdwijnt zodra
+     je een stukje gescrold bent. Lenis wordt apart gepauzeerd
+     (SmoothScroll.astro). */
+  html.no-scroll {
     overflow: hidden;
   }
 
@@ -562,8 +566,19 @@
     .owl-stage {
       display: flex;
 
-      blockquote {
-        height: 100%;
+      /* Op mobiel staat er één kaart tegelijk in beeld: daar krijgt elke
+         kaart zijn eigen hoogte, anders rekt een korte review ("Toppie!!")
+         op tot de hoogte van de langste en blijft er een leeg vlak over.
+         Vanaf md staan er twee naast elkaar en zijn gelijke hoogtes juist
+         rustiger. */
+      align-items: flex-start;
+
+      @media (min-width: 768px) {
+        align-items: stretch;
+
+        blockquote {
+          height: 100%;
+        }
       }
     }
   }
@@ -665,15 +680,20 @@
     position: relative;
     z-index: 2;
 
-    &:before {
-      content: "";
-      position: absolute;
-      z-index: 1;
-      top: -4rem;
-      left: 0;
-      height: calc(100% + 8rem);
-      width: calc(100% + calc(var(--spacing) * 14));
-      background-color: var(--color-cream);
+    /* Alleen naast elkaar (md+) nodig: daar dekt dit vlak de kaarten af die
+       links uit de carousel schuiven. Gestapeld op mobiel viel het juist
+       over de bovenkant van de eerste kaart heen. */
+    @media (min-width: 768px) {
+      &:before {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        top: -4rem;
+        left: 0;
+        height: calc(100% + 8rem);
+        width: calc(100% + calc(var(--spacing) * 14));
+        background-color: var(--color-cream);
+      }
     }
   }
 }

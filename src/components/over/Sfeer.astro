@@ -1,7 +1,7 @@
 ---
 import FeatureBlock from "./FeatureBlock.astro";
-import kinderstoelImage from "../../assets/feature-kinderstoel-placeholder.jpg";
-import sfeerImage from "../../assets/feature-sfeer-placeholder.jpg";
+import kinderstoelImage from "../../assets/wiggers-kinderstoel.webp";
+import sfeerImage from "../../assets/kapsalon-wiggers-buitenkant.jpg";
 import { features } from "../../data/over";
 
 const afbeeldingen = {
@@ -20,7 +20,9 @@ const afbeeldingen = {
           <FeatureBlock
             titel={feature.titel}
             tekst={feature.tekst}
-            image={afbeeldingen[feature.afbeelding as keyof typeof afbeeldingen]}
+            image={
+              afbeeldingen[feature.afbeelding as keyof typeof afbeeldingen]
+            }
             alt={feature.alt}
             beeldZijde={feature.beeldZijde}
           />

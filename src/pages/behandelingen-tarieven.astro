@@ -2,15 +2,14 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import CategorieBlok from "../components/behandelingen/CategorieBlok.astro";
-import Galerij from "../components/home/Galerij.astro";
+// import Galerij from "../components/home/Galerij.astro";
 import herenImage from "../assets/man-haircut.jpg";
 import damesImage from "../assets/woman-haircut.jpg";
 import kinderenImage from "../assets/Kids-Haircut.webp";
-import overigImage from "../assets/agustin-fernandez-Znyjl9pbaUs-unsplash.jpg";
 import { categorieen } from "../data/behandelingen";
 import { getSalonId } from "../lib/salon";
 
-const [heren, dames, kinderen, overig] = categorieen;
+const [heren, dames, kinderen] = categorieen;
 
 const categorieItems = [
   { categorie: heren, image: herenImage, imageAlt: "Kapper knipt een heer" },
@@ -19,11 +18,6 @@ const categorieItems = [
     categorie: kinderen,
     image: kinderenImage,
     imageAlt: "Kapper knipt een kind",
-  },
-  {
-    categorie: overig,
-    image: overigImage,
-    imageAlt: "Gereedschap van de kapsalon",
   },
 ];
 
@@ -87,5 +81,5 @@ const offerCatalog = {
       </div>
     </div> -->
 
-  <Galerij />
+  <!-- <Galerij /> -->
 </BaseLayout>
