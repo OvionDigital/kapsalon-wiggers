@@ -125,6 +125,12 @@ const structuredData = {
       // Het gtag-script zelf pas laden nadat de pagina klaar is en de browser
       // even niets te doen heeft. Het blokkeerde anders ±0,7 s de pagina.
       // De opdrachten hierboven wachten in dataLayer tot het script er is.
+      // Conversie in Google Analytics (key event "click_to_call") bij een
+      // klik op een telefoonnummer, waar op de site dan ook.
+      document.addEventListener("click", function (event) {
+        var link = event.target.closest && event.target.closest("a[href^=\"tel:\"]");
+        if (link) gtag("event", "click_to_call", { link_url: link.href });
+      });
       function laadGtag() {
         var script = document.createElement("script");
         script.async = true;

@@ -299,6 +299,12 @@ const inputClass =
         if (response.ok) {
           statusEl.textContent =
             data?.message ?? "Bedankt, je bericht is verstuurd!";
+          // Conversie in Google Analytics (key event "generate_lead").
+          (window as Window & { gtag?: (...args: unknown[]) => void }).gtag?.(
+            "event",
+            "generate_lead",
+            { form_name: "contact" },
+          );
           form.reset();
           if (tsField) tsField.value = String(Date.now());
         } else {
