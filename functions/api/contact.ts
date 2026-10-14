@@ -7,9 +7,8 @@
  * - RESEND_API_KEY (secret, verplicht)
  * - TURNSTILE_SECRET_KEY (secret, verplicht): hoort bij de site key in
  *   src/data/contact.ts.
- * - CONTACT_TO (optioneel): ontvanger. Zonder deze variabele gaat alles naar
- *   simon@oviondigital.nl, voor de testfase.
- *   TODO: na de test CONTACT_TO op info@kapsalonwiggers.nl zetten.
+ * - CONTACT_TO: ontvanger, staat op info@kapsalonwiggers.nl. Zonder deze
+ *   variabele gaat alles naar simon@oviondigital.nl.
  *
  * Spam wordt tegengehouden met Cloudflare Turnstile, plus de honeypot
  * ("website") en een minimale invultijd ("ts", gezet door

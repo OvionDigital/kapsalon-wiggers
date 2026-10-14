@@ -35,8 +35,22 @@ Het contactformulier post naar een Cloudflare Pages Function
 (`functions/api/contact.ts`) die via Resend mailt, met afzender
 `noreply@oviondigital.nl` (zelfde opzet als het Ivory Global Care-project).
 Environment variables in Cloudflare Pages: `RESEND_API_KEY`,
-`TURNSTILE_SECRET_KEY` en optioneel `CONTACT_TO` (standaard
-simon@oviondigital.nl voor de testfase).
+`TURNSTILE_SECRET_KEY` en `CONTACT_TO` (staat op info@kapsalonwiggers.nl;
+zonder deze variabele gaat alles naar simon@oviondigital.nl).
+
+Na verzenden vervangt een bevestiging met vinkje het formulier (geen aparte
+bedankpagina). Teksten in `src/data/contact.ts`.
+
+## Domein, DNS en mail
+
+- **Registrar: mijn.host** (account van Simon), verhuisd van TransIP op
+  2026-10-14. Vervaldatum 1 april 2027. DNSSEC bij mijn.host staat bewust uit.
+- **DNS: Cloudflare** (`addilyn` / `donovan.ns.cloudflare.com`), account van
+  Simon. Alle records beheer je daar. De DNS-tabbladen bij mijn.host en
+  TransIP worden niet gebruikt.
+- **Mail: Nowonline** (MX `mx1.nowonline.nl`, CNAME `mail`, SPF
+  `include:_spf.nowonline.nl`). Later gaat de klant naar Gmail. Regel dan
+  SPF, DKIM en DMARC opnieuw in Cloudflare.
 
 ## Werkwijze en stijl
 
@@ -56,13 +70,23 @@ simon@oviondigital.nl voor de testfase).
   laadt pas na toestemming voor de categorie "functional" (`data-src` +
   `data-cookiefirst-category`, volgens de CookieFirst-handleiding; Autoblock
   werkt niet voor iframes). Banner alleen te testen op kapsalonwiggers.nl.
-- Na de testfase `CONTACT_TO` in Cloudflare Pages op info@kapsalonwiggers.nl
-  zetten.
+- Houder bij mijn.host staat nog op Simon Overbeek, moet Kapsalon Wiggers
+  worden (Simon beslist of dat nodig is).
 - Nog veel content ontbreekt: teamleden, foto's van John en Astrid, de
   categorie "Overig" bij de tarieven, extra FAQ-antwoorden (pinnen, afzeggen).
   Simon vult dit aan zodra de klant levert. Nooit zelf content verzinnen zonder
   het als TODO te markeren.
-- Nog te bouwen: bevestigingspagina na formulier, 404-pagina afmaken
+- Na 2–4 weken live: Search Console → Pagina's → "Niet gevonden (404)"
+  nalopen en ontbrekende oude URL's toevoegen aan `public/_redirects`.
+
+## Kwaliteitscontrole
+
+- Scan en browsertest via de gedeelde repo `../ovion-site-tools`:
+  `npm run audit -- <url>` en `npm run browsers -- <url>`.
+  Draai beide vóór livegang (geen punten met prioriteit hoog) en direct erna
+  op het echte domein.
+- Volg `../ovion-site-tools/LIVEGANG-CHECKLIST.md` bij elke livegang.
+- Verbeteringen aan de tools doe je in die repo, niet in de site.
 
 ## Development
 
