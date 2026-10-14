@@ -1,5 +1,13 @@
 ---
-import { privacyRegel, turnstileSiteKey } from "../../data/contact";
+import {
+  formulierBevestiging,
+  privacyRegel,
+  turnstileSiteKey,
+} from "../../data/contact";
+import { vestigingen } from "../../data/vestigingen";
+import { getTelHref } from "../../lib/salon";
+
+const vestiging = vestigingen[0];
 
 const inputClass =
   "mt-2 w-full rounded-md border border-border bg-cream px-5 py-3.5 text-(length:--text-body) text-ink placeholder:text-muted focus-visible:bg-white";
@@ -129,6 +137,55 @@ const inputClass =
         >
         </p>
       </form>
+
+      {
+        /* Bevestiging na verzenden: vervangt het formulier op dezelfde plek. */
+      }
+      <div id="contact-bevestiging" class="py-4 text-center" hidden>
+        <span
+          class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gold-light text-burgundy"
+          aria-hidden="true"
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 6 9 17l-5-5"></path>
+          </svg>
+        </span>
+        <h3
+          id="contact-bevestiging-titel"
+          tabindex="-1"
+          class="mt-6 focus:outline-none"
+        >
+          {formulierBevestiging.titel}
+        </h3>
+        <p class="mt-3 text-(length:--text-body) text-(--color-body)">
+          {formulierBevestiging.tekst}
+        </p>
+        <p class="mt-3 text-small text-muted">
+          {formulierBevestiging.telefoonIntro}{" "}
+          <a
+            href={`tel:${getTelHref(vestiging.telefoon)}`}
+            class="font-semibold whitespace-nowrap text-burgundy underline underline-offset-4"
+          >
+            {vestiging.telefoon}
+          </a>.
+        </p>
+        <button
+          type="button"
+          id="contact-opnieuw"
+          class="btn mt-8 border border-burgundy bg-transparent px-6 py-3 text-small text-burgundy hover:bg-burgundy hover:text-white"
+        >
+          {formulierBevestiging.opnieuw}
+        </button>
+      </div>
       </div>
 
       <p class="mt-6 text-center text-small text-muted">
@@ -257,6 +314,26 @@ const inputClass =
       return true;
     };
 
+    // Na verzenden maakt het formulier plaats voor de bevestiging; met
+    // "Nog een bericht sturen" komt het (leeg) weer terug.
+    const bevestiging = document.getElementById("contact-bevestiging");
+    const toonBevestiging = () => {
+      if (!bevestiging) {
+        statusEl.textContent = "Bedankt, je bericht is verstuurd!";
+        return;
+      }
+      form.hidden = true;
+      bevestiging.hidden = false;
+      document.getElementById("contact-bevestiging-titel")?.focus();
+    };
+    document.getElementById("contact-opnieuw")?.addEventListener("click", () => {
+      if (!bevestiging) return;
+      bevestiging.hidden = true;
+      form.hidden = false;
+      heeftGepoogdVersturen = false;
+      document.getElementById("naam")?.focus();
+    });
+
     velden.forEach((naam) => {
       document.getElementById(naam)?.addEventListener("blur", () => {
         if (heeftGepoogdVersturen) valideerVeld(naam);
@@ -297,8 +374,7 @@ const inputClass =
         const data = await response.json().catch(() => null);
 
         if (response.ok) {
-          statusEl.textContent =
-            data?.message ?? "Bedankt, je bericht is verstuurd!";
+          toonBevestiging();
           // Conversie in Google Analytics (key event "generate_lead").
           (window as Window & { gtag?: (...args: unknown[]) => void }).gtag?.(
             "event",

@@ -2,6 +2,14 @@
 // salon. Het precieze aantal is niet bekend, dus dat noemen we niet.
 export const parkerenNotitie = "Voor de salon zijn een paar parkeervakken.";
 
+// Verschijnt op de plek van het formulier zodra een bericht verstuurd is.
+export const formulierBevestiging = {
+  titel: "Bedankt voor je bericht!",
+  tekst: "We hebben je bericht goed ontvangen en reageren zo snel mogelijk.",
+  telefoonIntro: "Heb je haast? Bel ons dan even op",
+  opnieuw: "Nog een bericht sturen",
+};
+
 export const privacyRegel =
   "We gebruiken je gegevens alleen om te reageren op je bericht en delen ze niet met anderen.";
 
