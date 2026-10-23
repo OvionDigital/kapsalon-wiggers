@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E-mailhandtekening Kapsalon Wiggers</title>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; background: #f6f6f6; color: #222; margin: 0; padding: 32px 16px; }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 24px; margin: 16px 0; }
+  button { font: inherit; padding: 10px 16px; border-radius: 6px; border: 0; background: #4a2f1f; color: #fff; cursor: pointer; }
+  button:focus-visible { outline: 3px solid #e0a636; outline-offset: 2px; }
+  #status { margin-left: 12px; color: #2e7d32; }
+  ol { line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 style="font-size:20px">E-mailhandtekening info@kapsalonwiggers.nl</h1>
+  <p>Het logo laadt van kapsalonwiggers.nl. Zie je hieronder geen logo, dan staat <code>public/images/email/logo-handtekening.png</code> nog niet live.</p>
+
+  <div class="card">
+    <!-- HANDTEKENING: alles binnen #handtekening wordt gekopieerd -->
+    <div id="handtekening">
+<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">
+  <tr>
+    <td style="padding:0 0 10px 0;">
+      <a href="https://kapsalonwiggers.nl" style="text-decoration:none;"><img src="https://kapsalonwiggers.nl/images/email/logo-handtekening.png" width="180" height="64" alt="Kapsalon Wiggers" style="display:block;width:180px;height:64px;border:0;"></a>
+    </td>
+  </tr>
+  <tr>
+    <td style="border-top:2px solid #e0a636;padding:10px 0 0 0;font-size:13px;line-height:20px;color:#4a3c2e;">
+      Julianastraat 10, 7031 ZX Wehl<br>
+      <a href="tel:+31314681220" style="color:#4a2f1f;text-decoration:none;">0314 - 68 12 20</a><br>
+      <a href="https://kapsalonwiggers.nl" style="color:#4a2f1f;text-decoration:none;">kapsalonwiggers.nl</a>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:8px 0 0 0;font-size:12px;line-height:18px;color:#6b5d4c;font-style:italic;">
+      Al ruim 90 jaar geknipt voor het vak
+    </td>
+  </tr>
+</table>
+    </div>
+    <!-- /HANDTEKENING -->
+  </div>
+
+  <p><button type="button" id="kopieer">Kopieer handtekening</button><span id="status" role="status"></span></p>
+
+  <h2 style="font-size:16px">Instellen in Gmail</h2>
+  <ol>
+    <li>Klik op <strong>Kopieer handtekening</strong> (of selecteer alles in het witte vak en kopieer).</li>
+    <li>Gmail op de computer: tandwiel → <strong>Alle instellingen bekijken</strong> → tab <strong>Algemeen</strong> → <strong>Handtekening</strong> → <strong>Nieuwe maken</strong>.</li>
+    <li>Typ eerst bijvoorbeeld "Met vriendelijke groet," en een lege regel, plak daaronder de handtekening.</li>
+    <li>Kies de handtekening bij <strong>Voor nieuwe e-mails</strong> en <strong>Bij beantwoorden/doorsturen</strong>, en vink "Deze handtekening invoegen vóór geciteerde tekst" aan.</li>
+    <li>Scroll naar beneden en klik op <strong>Wijzigingen opslaan</strong>.</li>
+  </ol>
+  <p>De Gmail-app op de telefoon gebruikt deze handtekening automatisch, mits in de app (Instellingen → account → Mobiele handtekening) geen eigen tekst staat.</p>
+</div>
+<script>
+  const btn = document.getElementById("kopieer");
+  const status = document.getElementById("status");
+  btn.addEventListener("click", async () => {
+    const el = document.getElementById("handtekening");
+    try {
+      await navigator.clipboard.write([new ClipboardItem({
+        "text/html": new Blob([el.innerHTML], { type: "text/html" }),
+        "text/plain": new Blob([el.innerText], { type: "text/plain" }),
+      })]);
+    } catch {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      document.execCommand("copy");
+      sel.removeAllRanges();
+    }
+    status.textContent = "Gekopieerd. Plak het nu in Gmail.";
+  });
+</script>
+</body>
+</html>
