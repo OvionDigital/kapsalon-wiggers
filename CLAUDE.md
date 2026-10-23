@@ -48,9 +48,16 @@ bedankpagina). Teksten in `src/data/contact.ts`.
 - **DNS: Cloudflare** (`addilyn` / `donovan.ns.cloudflare.com`), account van
   Simon. Alle records beheer je daar. De DNS-tabbladen bij mijn.host en
   TransIP worden niet gebruikt.
-- **Mail: Nowonline** (MX `mx1.nowonline.nl`, CNAME `mail`, SPF
-  `include:_spf.nowonline.nl`). Later gaat de klant naar Gmail. Regel dan
-  SPF, DKIM en DMARC opnieuw in Cloudflare.
+- **Mail: Google Workspace** (sinds 2026-10-23, daarvoor Nowonline/DirectAdmin).
+  Eén gebruiker, `info@kapsalonwiggers.nl`. MX `smtp.google.com` (prio 1),
+  SPF `include:_spf.google.com ~all`, DKIM selector `google`, DMARC via
+  Cloudflare DMARC Management (`p=none`, na een paar weken naar `quarantine`).
+  Oude mail is via de Workspace-importtool (IMAP) overgezet.
+- Na het opzeggen van Nowonline de A-records `autodiscover` en `webmail`
+  (37.203.60.12) verwijderen.
+- E-mailhandtekening: `docs/email-handtekening.html`, logo op
+  `public/images/email/logo-handtekening.png` (niet verplaatsen of hernoemen,
+  verstuurde mails verwijzen ernaar).
 
 ## Werkwijze en stijl
 
