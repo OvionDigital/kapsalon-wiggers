@@ -7,7 +7,7 @@ const vestiging = vestigingen[0];
 // Bevestigd door Simon (2026-10-09): vof, KvK 09030014, bewaartermijn 12
 // maanden akkoord, geen klantkaart en geen digitale agenda.
 // CookieFirst-paragrafen toegevoegd op 2026-10-09.
-export const privacyBijgewerkt = "9 oktober 2026";
+export const privacyBijgewerkt = "9 november 2026";
 
 // Zolang dit leeg is, wordt de KvK-regel niet getoond.
 const kvkNummer: string = "09030014";
@@ -53,7 +53,7 @@ export const privacySecties: PrivacySectie[] = [
     ],
     lijst: [
       "Cloudflare: hosting van de website, beveiliging, anonieme bezoekersstatistieken en de controle tegen spam bij het contactformulier (Cloudflare Turnstile).",
-      "Resend: verstuurt de berichten uit het contactformulier per e-mail naar ons.",
+      "Resend: verstuurt de berichten uit het contactformulier per e-mail naar ons. Resend verstuurt deze e-mails vanuit Europa (Ierland).",
       "Google Maps: de kaart op de website. Google kan daarbij gegevens verzamelen en cookies plaatsen.",
       "Adobe Fonts: levert de lettertypen van de website. Daarbij wordt je IP-adres naar Adobe gestuurd.",
       "Google Analytics: anonieme statistieken over hoe de website wordt gebruikt. Alleen met je toestemming worden daarbij cookies geplaatst.",
@@ -63,7 +63,7 @@ export const privacySecties: PrivacySectie[] = [
   {
     titel: "Gegevens buiten Europa",
     paragrafen: [
-      "Sommige van deze diensten zijn gevestigd in de Verenigde Staten. Gegevens worden dan alleen doorgegeven met passende waarborgen, zoals het EU-US Data Privacy Framework of de standaardcontractbepalingen van de Europese Commissie.",
+      "Cloudflare en Resend zijn bedrijven uit de Verenigde Staten, en ook andere diensten hierboven kunnen gegevens daarheen sturen. Gegevens worden dan alleen doorgegeven met passende waarborgen, zoals het EU-US Data Privacy Framework of de standaardcontractbepalingen van de Europese Commissie.",
     ],
   },
   {
