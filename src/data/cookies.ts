@@ -25,7 +25,7 @@ export const cookieverklaring = {
   ],
 };
 
-// Google Analytics 4. Laadt direct na CookieFirst, zodat Google Consent Mode
-// (aan in het CookieFirst-dashboard) de standaardinstellingen al heeft gezet:
-// zonder toestemming voor Performance slaat GA geen cookies op.
+// Google Analytics 4. Het script laadt pas na toestemming voor Performance
+// (zie BaseLayout.astro). Zonder toestemming gaat er niets naar Google.
+// Google Consent Mode staat aan in het CookieFirst-dashboard.
 export const googleAnalyticsId = "G-ERJ9P3WN30";
